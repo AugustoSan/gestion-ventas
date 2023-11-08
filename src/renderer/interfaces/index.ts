@@ -4,17 +4,13 @@ export interface IDiretion {
   direccion: string;
 }
 
-export interface ITelefono {
-  id: number;
-  idClient: number;
-  telefono: string;
-}
-
 export interface IClient {
   id: number;
   nombre: string;
+  app: string,
+  apm: string;
   saldo: number;
-  telefonos: ITelefono[];
+  telefono: string;
   direcciones: IDiretion[];
 }
 

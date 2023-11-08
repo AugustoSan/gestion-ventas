@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { LabelInfoCard } from '../../components/LabelInfoCard';
+import { InfoClienteCard } from './InfoClienteCard';
+// import { appendLogFile } from '../../main/util';
 
 export const ClientesView = ():JSX.Element => {
   const [inputName, setInputName] = useState<string>('');
@@ -19,6 +22,7 @@ export const ClientesView = ():JSX.Element => {
         </div>
         {/* </form> */}
       </div>
+      <InfoClienteCard id={1} nombre={'Augusto'} app={'Sanchez'} apm={'Julian'} saldo={0} telefono={'1234567890'} direcciones={[]} />
       <div className="card">
         <div className="card-body">
           {/* <h5 className="card-title">Agregar Cliente</h5> */}
@@ -82,7 +86,16 @@ export const ClientesView = ():JSX.Element => {
                 </button>
               </div>
               <div className="col-sm-3">
-                <button className="btn btn-primary" onClick={() => console.log('Editar Cliente')} disabled={false}>
+                <button
+                  className="btn btn-primary"
+                  onClick={
+                    () => {
+                      console.log('Editar Cliente');
+                      // appendLogFile({text: 'Pruebas de log'});
+                    }
+                  }
+                  disabled={false}
+                >
                   Editar
                 </button>
               </div>

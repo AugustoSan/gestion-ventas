@@ -3,7 +3,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import {HomeView} from '../views/HomeView';
-import { ClientesView } from '../views/ClientesView';
+import { ClientesView } from '../views/Clientes/ClientesView';
 import { IngresoView } from '../views/IngresoView';
 import { OrderView } from '../views/OrderView';
 import { ProductoView } from '../views/ProductoView';

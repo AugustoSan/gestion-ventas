@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { InfoClienteCard } from './InfoClienteCard';
+import { AddClienteCard } from './AddClienteCard';
+import { TablaClienteCard } from './TablaClientes';
+import { useCustomSelector } from '../../hooks/redux';
+
 // import { appendLogFile } from '../../main/util';
 
 export const ClientesView = ():JSX.Element => {
-  const [inputName, setInputName] = useState<string>('');
-  const [inputApp, setInputApp] = useState<string>('');
-  const [inputApm, setInputApm] = useState<string>('');
+  const { client } = useCustomSelector((state) => state);
+  console.log('client', client);
+  
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -22,92 +26,9 @@ export const ClientesView = ():JSX.Element => {
         </div>
         {/* </form> */}
       </div>
-      <InfoClienteCard id={1} nombre={'Augusto'} app={'Sanchez'} apm={'Julian'} saldo={0} telefono={'1234567890'} direcciones={[]} />
-      <div className="card">
-        <div className="card-body">
-          {/* <h5 className="card-title">Agregar Cliente</h5> */}
-          {/* <form> */}
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Nombre:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={inputName}
-                  placeholder="Nombre"
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputName(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Apellido Paterno:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Apellido Paterno"
-                  value={inputApp}
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputApp(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Apellido Materno:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Apellido Materno"
-                  value={inputApm}
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputApm(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <div className="col-sm-3"></div>
-              <div className="col-sm-3">
-                <button className="btn btn-primary" onClick={() => console.log('Agregar Cliente')}>
-                  Agregar
-                </button>
-              </div>
-              <div className="col-sm-3">
-                <button
-                  className="btn btn-primary"
-                  onClick={
-                    () => {
-                      console.log('Editar Cliente');
-                      // appendLogFile({text: 'Pruebas de log'});
-                    }
-                  }
-                  disabled={false}
-                >
-                  Editar
-                </button>
-              </div>
-              <div className="col-sm-3">
-                <button className="btn btn-danger" onClick={() => console.log('Eliminar Cliente')}>
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          {/* </form> */}
-        </div>
-      </div>
+      <InfoClienteCard cliente={client} />
+      <AddClienteCard />
+      <TablaClienteCard />
     </main>
   );
 }

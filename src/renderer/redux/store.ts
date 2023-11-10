@@ -4,7 +4,7 @@ import clientReducer from './slice/clientes';
 
 const store = configureStore({
   reducer: {
-    client: clientReducer
+    clientSlice: clientReducer
   },
 })
 

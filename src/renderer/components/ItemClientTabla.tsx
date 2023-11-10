@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { IClient } from "../interfaces";
+import { useCustomDispatch } from '../hooks/redux';
+import { setSelectClient } from '../redux/slice/clientes';
 
 interface IDataProps{
   cliente: IClient;
@@ -7,6 +9,7 @@ interface IDataProps{
 }
 
 export const ItemClientTabla = ({cliente}: IDataProps):JSX.Element => {
+  const dispatch = useCustomDispatch();
   return ( 
   <tr>
     <td>{cliente.nombre}</td>
@@ -20,7 +23,7 @@ export const ItemClientTabla = ({cliente}: IDataProps):JSX.Element => {
         onClick={
           () => {
             console.log(`se editara el cliente con id ${cliente.id}`);
-            // setShow(true);
+            dispatch(setSelectClient(cliente));
           }
         }
       >

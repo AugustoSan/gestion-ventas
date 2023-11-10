@@ -1,4 +1,6 @@
 import React from 'react';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
 
 export const Menu = ():JSX.Element => {
   return (
@@ -93,5 +95,6 @@ export const Menu = ():JSX.Element => {
           </ul>
         </div>
       </div>
-    </div>);
+    </div>
+    );
 }

@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import CardGroup from 'react-bootstrap/CardGroup';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { setSelectClient } from '../../redux/slice/clientes';
@@ -13,9 +16,9 @@ export const InfoClienteCard = ():JSX.Element => {
   console.log('cliente: - ', selectClient);
 
   return (
-    <div className="card p-2">
-      <div className="row">
-        <div className="card-body col-9">
+    <CardGroup>
+      <Card>
+        <Card.Body>
           <LabelInfoCard title={'Nombre'} value={nombre} />
           <LabelInfoCard title={'Apellido Paterno'} value={app} />
           <LabelInfoCard title={'Appelido Materno'} value={apm} />
@@ -26,12 +29,9 @@ export const InfoClienteCard = ():JSX.Element => {
               return <LabelInfoCard key={`${direccion.id}-${direccion.idClient}-dir`} title={direccion.id.toString()} value={direccion.direccion} />
             })
           }
-        </div>
-        <div className="card-body col-3 pl-2">
-          <div className="form-group row pr-2">
-            <button
-              type="button"
-              className="btn btn-primary"
+          <Button
+              variant='primary'
+              className='col-3 m-1'
               disabled={selectClient === null ? true : false}
               onClick={
                 () => {
@@ -40,26 +40,22 @@ export const InfoClienteCard = ():JSX.Element => {
               }
             >
               Editar
-            </button>
-          </div>
-          <div className="form-group row mt-2 pr-2">
-            <button
-              type="button"
-              className="btn btn-danger"
+            </Button>
+            <Button
+              variant="danger"
+              className="col-3 m-1"
               disabled={selectClient === null ? true : false}
               onClick={
                 () => {
-                  console.log(`se eliminara el cliente con id ${id}`);
+                  console.log(`Button se eliminara el cliente con id ${id}`);
                 }
               }
             >
               Eliminar
-            </button>
-          </div>
-          <div className="form-group row mt-2 pr-2">
-            <button
-              type="button"
-              className="btn btn-primary"
+            </Button>
+            <Button
+              variant='primary'
+              className='col-3 m-1'
               disabled={selectClient === null ? true : false}
               onClick={
                 () => {
@@ -69,10 +65,9 @@ export const InfoClienteCard = ():JSX.Element => {
               }
             >
               Deseleccionar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Button>
+        </Card.Body>
+      </Card>
+    </CardGroup>
   );
 }

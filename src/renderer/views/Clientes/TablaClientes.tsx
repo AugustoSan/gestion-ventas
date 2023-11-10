@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Table from 'react-bootstrap/Table';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { ItemClientTabla } from '../../components/ItemClientTabla';
 import { IClient } from '../../interfaces';
@@ -36,12 +37,12 @@ const clientes: IClient[] = [
 
 export const TablaClienteCard = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes
-  
+
   return (
       <div className="card">
         <div className="card-body">
         <div className="table-responsive small">
-        <table className="table table-striped table-sm">
+        <Table striped bordered hover size="sm">
           <thead>
             <tr>
               <th scope="col">Nombre</th>
@@ -58,7 +59,7 @@ export const TablaClienteCard = ():JSX.Element => {
               })
             }
           </tbody>
-        </table>
+        </Table>
       </div>
         </div>
       </div>

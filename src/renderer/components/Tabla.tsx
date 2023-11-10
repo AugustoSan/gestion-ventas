@@ -1,10 +1,12 @@
+import Table from 'react-bootstrap/Table';
+
 export const Tabla = ():JSX.Element => {
 
   return (
     <>
     <h2>Section title</h2>
       <div className="table-responsive small">
-        <table className="table table-striped table-sm">
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -128,7 +130,7 @@ export const Tabla = ():JSX.Element => {
               <td>text</td>
             </tr>
           </tbody>
-        </table>
+        </Table>
       </div>
     </>
   );

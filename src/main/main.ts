@@ -14,6 +14,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { addCliente, findAllClients } from './database/database';
+import { IDataAddClient } from './interfaces/IClients';
+// import { IDataAddClient } from './interfaces/IClients';
+// import * as sqlite3 from 'sqlite3';
 
 class AppUpdater {
   constructor() {
@@ -24,11 +28,34 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
+// const db = new sqlite3.Database('mi_base_de_datos.db');
+
+// db.serialize(async() => {
+//   await db.run('CREATE TABLE IF NOT EXISTS datos (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT)');
+//   const result = await db.exec('SELECT * FROM');
+//   console.log('result: ', result);
+// });
+
+// addCliente('Augusto', '1234567890').then((id) => {
+//   console.log('id', id);
+//   findAllClients().then((data) => {
+//     console.log('data: ', data);
+//   });
+// });
+
+findAllClients().then((data) => {
+  console.log('data: ', data);
+});
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.handle('clients:getAllClients', findAllClients);
+ipcMain.handle('clients:addlClient', (event, data:IDataAddClient) => {
+  addCliente(data);
 });
 
 if (process.env.NODE_ENV === 'production') {

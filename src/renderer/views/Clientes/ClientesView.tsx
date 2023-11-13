@@ -6,11 +6,20 @@ import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { InfoClienteCard } from './InfoClienteCard';
 import { AddClienteCard } from './AddClienteCard';
 import { TablaClienteCard } from './TablaClientes';
-import { useCustomSelector } from '../../hooks/redux';
+import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 
 // import { appendLogFile } from '../../main/util';
+import { useEffect } from 'react';
+import { GetAllClients } from '../../redux/slice/clientes';
 
 export const ClientesView = ():JSX.Element => {
+
+  const dispatch = useCustomDispatch();
+
+  useEffect(() => {
+    dispatch(GetAllClients());
+  }, []);
+
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -42,6 +51,7 @@ export const ClientesView = ():JSX.Element => {
       </div> */}
       {/* <InfoClienteCard cliente={client} />
       <AddClienteCard /> */}
+      <AddClienteCard />
       <TablaClienteCard />
     </main>
   );

@@ -6,11 +6,11 @@ export interface IDiretion {
 
 export interface IClient {
   id: number;
-  nombre: string;
+  name: string;
   app: string,
   apm: string;
   saldo: number;
-  telefono: string;
+  tel: string;
   direcciones: IDiretion[];
 }
 

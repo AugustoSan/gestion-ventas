@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { useCustomDispatch } from '../../hooks/redux';
-import { setCliente } from '../../redux/slice/clientes';
+import { AddClient, setCliente } from '../../redux/slice/clientes';
+import { IDataAddClient } from '../../../main/interfaces/IClients';
 // import { appendLogFile } from '../../main/util';
 
 export const AddClienteCard = ():JSX.Element => {
@@ -87,15 +88,24 @@ export const AddClienteCard = ():JSX.Element => {
                 <button className="btn btn-primary" onClick={() => {
                   console.log('Agregar Cliente');
                   // validar que todos los campos estan completos
-                  dispatch(setCliente({
-                    id: 10,
-                    nombre: 'Augusto',
-                    app: 'Sanchez',
-                    apm: 'Julian',
-                    saldo: 0,
-                    telefono: '-',
-                    direcciones: []
-                  }))
+                  // dispatch(setCliente({
+                  //   id: 10,
+                  //   nombre: 'Augusto',
+                  //   app: 'Sanchez',
+                  //   apm: 'Julian',
+                  //   saldo: 0,
+                  //   telefono: '-',
+                  //   direcciones: []
+                  // }))
+                  if(inputName.length > 2 && inputApp.length > 2 && inputApm.length > 2 && inputTelefono.length > 2){
+                    const newClient:IDataAddClient = {
+                      name: inputName,
+                      app: inputApp,
+                      apm: inputApm,
+                      tel: inputTelefono
+                    }
+                    dispatch(AddClient(newClient));
+                  }
                 }}>
                   Agregar
                 </button>

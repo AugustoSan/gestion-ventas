@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from 'react-bootstrap/Button';
-import { IClient } from "../interfaces";
+import { IClient } from "../../main/interfaces";
 import { useCustomDispatch } from '../hooks/redux';
 import { setSelectClient } from '../redux/slice/clientes';
 
@@ -13,10 +13,10 @@ export const ItemClientTabla = ({cliente}: IDataProps):JSX.Element => {
   const dispatch = useCustomDispatch();
   return (
   <tr>
-    <td>{cliente.nombre}</td>
+    <td>{cliente.name}</td>
     <td>{cliente.app}</td>
     <td>{cliente.apm}</td>
-    <td>{cliente.telefono}</td>
+    <td>{cliente.tel}</td>
     <td>
       <Button
         variant="primary"

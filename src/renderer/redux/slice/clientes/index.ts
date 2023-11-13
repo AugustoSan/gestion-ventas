@@ -1,10 +1,14 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IClient } from '../../../interfaces';
+import { IClient } from '../../../../main/interfaces';
+import { Thunk } from '../../store';
+import { IDataAddClient } from '../../../../main/interfaces/IClients';
+// import { findAllClients } from '../../../../main/database/database';
 
 interface IClientSlice {
     cliente: IClient;
     selectClient: IClient | null;
+    clientesArray: Array<IClient>;
 }
 
 const initialState: IClientSlice =
@@ -12,14 +16,15 @@ const initialState: IClientSlice =
     cliente :
     {
         id: 0,
-        nombre: '',
+        name: '',
         app: '',
         apm: '',
         saldo: 0,
-        telefono: '',
+        tel: '',
         direcciones: []
     },
-    selectClient: null
+    selectClient: null,
+    clientesArray: []
 }
 
 const clientSlice = createSlice({
@@ -40,16 +45,12 @@ const clientSlice = createSlice({
         },
         setSelectClient: (state, action: PayloadAction<IClient | null>) => {
             console.log('Entro en setSelectClient: ', action.payload);
-
-            // state.cliente.id = action.payload.id;
-            // state.cliente.nombre = action.payload.nombre;
-            // state.cliente.app = action.payload.app;
-            // state.cliente.apm = action.payload.apm;
-            // state.cliente.telefono = action.payload.telefono;
-            // state.cliente.saldo = action.payload.saldo;
-            // state.cliente.direcciones = action.payload.direcciones;
             state.selectClient = action.payload;
         },
+        setClientesArray: (state, action: PayloadAction<Array<IClient>>) => {
+          console.log('Entro en setClientesArray: ', action.payload);
+          state.clientesArray = action.payload;
+      },
         // increment: (state) => {
         //     state.value += 1
         //   },
@@ -65,7 +66,25 @@ const clientSlice = createSlice({
 
 export const {
     setCliente,
-    setSelectClient
+    setSelectClient,
+    setClientesArray
 } = clientSlice.actions;
 
 export default clientSlice.reducer;
+
+// const AddClient = async(): Promise<>
+export const GetAllClients = (): Thunk => async (dispatch): Promise<Array<IClient>> => {
+  // const filePath = await window.electron.getAllClients();
+  const clients = await window.electron.ipcRenderer.GetAllClients();
+  console.log('GetAllClients: ', clients);
+  dispatch(setClientesArray(clients));
+  return clients;
+}
+
+export const AddClient = (client: IDataAddClient): Thunk => async (dispatch): Promise<number> => {
+  // const filePath = await window.electron.getAllClients();
+  const result = await window.electron.ipcRenderer.AddClient(client);
+  console.log('result: ', result);
+
+  return 0;
+}

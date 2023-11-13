@@ -12,17 +12,17 @@ export const InfoClienteCard = ():JSX.Element => {
   const { selectClient } = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
   console.log('selectClient', selectClient);
-  const {id = 0, nombre = '', app = '', apm = '', telefono = '', direcciones = [], saldo = 0} = selectClient ?? {};
+  const {id = 0, name = '', app = '', apm = '', tel = '', direcciones = [], saldo = 0} = selectClient ?? {};
   console.log('cliente: - ', selectClient);
 
   return (
     <CardGroup>
       <Card>
         <Card.Body>
-          <LabelInfoCard title={'Nombre'} value={nombre} />
+          <LabelInfoCard title={'Nombre'} value={name} />
           <LabelInfoCard title={'Apellido Paterno'} value={app} />
           <LabelInfoCard title={'Appelido Materno'} value={apm} />
-          <LabelInfoCard title={'Telefono'} value={telefono} />
+          <LabelInfoCard title={'Telefono'} value={tel} />
           <LabelInfoCard title={'Saldo'} value={saldo.toString()} />
           {
             direcciones.map((direccion) => {

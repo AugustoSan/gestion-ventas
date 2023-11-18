@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
@@ -9,65 +10,68 @@ import { setSelectClient } from '../../redux/slice/clientes';
 
 
 export const InfoClienteCard = ():JSX.Element => {
-  const { selectClient } = useCustomSelector((state) => state.clientSlice);
+  const { selectClient, handleSelectClient } = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
   console.log('selectClient', selectClient);
   const {id = 0, name = '', app = '', apm = '', tel = '', direcciones = [], saldo = 0} = selectClient ?? {};
   console.log('cliente: - ', selectClient);
 
-  return (
-    <CardGroup>
-      <Card>
-        <Card.Body>
-          <LabelInfoCard title={'Nombre'} value={name} />
-          <LabelInfoCard title={'Apellido Paterno'} value={app} />
-          <LabelInfoCard title={'Appelido Materno'} value={apm} />
-          <LabelInfoCard title={'Telefono'} value={tel} />
-          <LabelInfoCard title={'Saldo'} value={saldo.toString()} />
-          {
-            direcciones.map((direccion) => {
-              return <LabelInfoCard key={`${direccion.id}-${direccion.idClient}-dir`} title={direccion.id.toString()} value={direccion.direccion} />
-            })
+  return handleSelectClient === false ? <></> : (
+    <div
+    className="modal show"
+    style={{ display: 'block', position: 'initial' }}
+  >
+    <Modal.Dialog>
+      <Modal.Header>
+        <Modal.Title>Información del cliente</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+            <LabelInfoCard title={'Nombre'} value={name} />
+            <LabelInfoCard title={'Apellido Paterno'} value={app} />
+            <LabelInfoCard title={'Appelido Materno'} value={apm} />
+            <LabelInfoCard title={'Telefono'} value={tel} />
+            <LabelInfoCard title={'Saldo'} value={saldo.toString()} />
+            {
+              direcciones.map((direccion) => {
+                return <LabelInfoCard key={`${direccion.id}-${direccion.idClient}-dir`} title={direccion.id.toString()} value={direccion.direccion} />
+              })
+            }
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button
+          variant="danger"
+          onClick={
+            () => {
+              console.log(`Button se eliminara el cliente con id ${id}`);
+            }
           }
-          <Button
-              variant='primary'
-              className='col-3 m-1'
-              disabled={selectClient === null ? true : false}
-              onClick={
-                () => {
-                  console.log(`se editara el cliente con id ${id}`);
-                }
-              }
-            >
-              Editar
-            </Button>
-            <Button
-              variant="danger"
-              className="col-3 m-1"
-              disabled={selectClient === null ? true : false}
-              onClick={
-                () => {
-                  console.log(`Button se eliminara el cliente con id ${id}`);
-                }
-              }
-            >
-              Eliminar
-            </Button>
-            <Button
-              variant='primary'
-              className='col-3 m-1'
-              disabled={selectClient === null ? true : false}
-              onClick={
-                () => {
-                  console.log(`se deseleccionara el cliente con id ${id}`);
-                  dispatch(setSelectClient(null));
-                }
-              }
-            >
-              Deseleccionar
-            </Button>
-        </Card.Body>
-      </Card>
-    </CardGroup>
+        >
+          Eliminar
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={
+            () => {
+              dispatch(setSelectClient(null))
+            }
+          }
+        >
+          Cerrar
+        </Button>
+        <Button
+          variant="primary"
+          onClick={
+            () => {
+              console.log(`se editara el cliente con id ${id}`);
+            }
+          }
+        >
+          Editar
+        </Button>
+      </Modal.Footer>
+    </Modal.Dialog>
+  </div>
   );
 }

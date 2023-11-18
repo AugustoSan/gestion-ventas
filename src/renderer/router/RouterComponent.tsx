@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import {HomeView} from '../views/HomeView';
 import { ClientesView } from '../views/Clientes/ClientesView';
 import { IngresoView } from '../views/IngresoView';
-import { OrderView } from '../views/OrderView';
+import { OrderView } from '../views/Order/OrderView';
 import { ProductoView } from '../views/ProductoView';
 
 export const RouterComponent:React.FC = () => {

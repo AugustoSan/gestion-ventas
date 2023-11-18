@@ -51,7 +51,7 @@ export const ClientesView = ():JSX.Element => {
       </div> */}
       {/* <InfoClienteCard cliente={client} />
       <AddClienteCard /> */}
-      <AddClienteCard />
+      {/* <AddClienteCard /> */}
       <TablaClienteCard />
     </main>
   );

@@ -9,7 +9,7 @@ interface IClientSlice {
     cliente: IClient;
     selectClient: IClient | null;
     clientesArray: Array<IClient>;
-    handleSelectClient: boolean;
+    handleUpdateClient: boolean;
 }
 
 const initialState: IClientSlice =
@@ -26,7 +26,7 @@ const initialState: IClientSlice =
     },
     selectClient: null,
     clientesArray: [],
-    handleSelectClient: false
+    handleUpdateClient: false
 }
 
 const clientSlice = createSlice({
@@ -40,8 +40,11 @@ const clientSlice = createSlice({
         setSelectClient: (state, action: PayloadAction<IClient | null>) => {
             console.log('Entro en setSelectClient: ', action.payload);
             state.selectClient = action.payload;
-            state.handleSelectClient = action.payload === null ? false : true;
         },
+        setHandleUpdateClient: (state, action: PayloadAction<boolean>) => {
+          console.log('Entro en setHandleUpdateClient: ', action.payload);
+          state.handleUpdateClient = action.payload;
+      },
         setClientesArray: (state, action: PayloadAction<Array<IClient>>) => {
           console.log('Entro en setClientesArray: ', action.payload);
           state.clientesArray = action.payload;
@@ -52,6 +55,7 @@ const clientSlice = createSlice({
 export const {
     setCliente,
     setSelectClient,
+    setHandleUpdateClient,
     setClientesArray
 } = clientSlice.actions;
 

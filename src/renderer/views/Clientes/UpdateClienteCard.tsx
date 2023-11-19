@@ -8,36 +8,32 @@ import Col from 'react-bootstrap/Col';
 import CardGroup from 'react-bootstrap/CardGroup';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
-import { setHandleUpdateClient, setSelectClient } from '../../redux/slice/clientes';
+import { setSelectClient } from '../../redux/slice/clientes';
+import { IClient } from '../../../main/interfaces';
 import { InputCard } from '../../components/InputCard';
 // import { appendLogFile } from '../../main/util';
 
+interface IDataProps {
+  cliente: IClient
+}
 
-export const InfoClienteCard = ():JSX.Element => {
-  const { selectClient, handleUpdateClient } = useCustomSelector((state) => state.clientSlice);
+export const UpdateClienteCard = ({ cliente } : IDataProps):JSX.Element => {
+  const { selectClient } = useCustomSelector((state) => state.clientSlice);
+  const [inputName = cliente.name, setInputName] = useState<string>('');
   const dispatch = useCustomDispatch();
   console.log('selectClient', selectClient);
   const {id = 0, name = '', app = '', apm = '', tel = '', direcciones = [], saldo = 0} = selectClient ?? {};
-  const [enabledEdit, setEnabledEdit] = useState<boolean>(false);
-  const [inputName, setInputName] = useState<string>(name);
-  const [inputAPP, setInputAPP] = useState<string>(app);
-  const [inputAPM, setInputAPM] = useState<string>(apm);
-  const [inputTel, setInputTel] = useState<string>(tel);
-  // const [inputName, setInputName] = useState<string>(name);
   console.log('cliente: - ', selectClient);
 
   return selectClient === null ? <></> : (
     <Card className="mb-2">
       <Card.Header>Información del cliente</Card.Header>
       <Card.Body>
-        <InputCard title={'Nombre'} value={inputName} onChange={setInputName} disabled={!enabledEdit}/>
-        <InputCard title={'Apellido Paterno'} value={inputAPP} onChange={setInputAPP} disabled={!enabledEdit}/>
-        <InputCard title={'Appelido Materno'} value={inputAPM} onChange={setInputAPM} disabled={!enabledEdit}/>
-        <InputCard title={'Telefono'} value={inputTel} onChange={setInputTel} disabled={!enabledEdit}/>
-        {/* <LabelInfoCard title={'Nombre'} value={name} />
+        <InputCard title={'Nombre'} value={inputName} onChange={setInputName} />
+        <LabelInfoCard title={'Nombre'} value={name} />
         <LabelInfoCard title={'Apellido Paterno'} value={app} />
         <LabelInfoCard title={'Appelido Materno'} value={apm} />
-        <LabelInfoCard title={'Telefono'} value={tel} /> */}
+        <LabelInfoCard title={'Telefono'} value={tel} />
         <LabelInfoCard title={'Saldo'} value={saldo.toString()} />
         {
           direcciones.map((direccion) => {
@@ -78,7 +74,6 @@ export const InfoClienteCard = ():JSX.Element => {
                 onClick={
                   () => {
                     console.log(`se editara el cliente con id ${id}`);
-                    setEnabledEdit(true);
                   }
                 }
                 >

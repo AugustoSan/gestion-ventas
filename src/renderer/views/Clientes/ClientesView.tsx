@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { GetAllClients } from '../../redux/slice/clientes';
 
 export const ClientesView = ():JSX.Element => {
+  const { selectClient } = useCustomSelector((state) => state.clientSlice);
 
   const dispatch = useCustomDispatch();
 
@@ -46,13 +47,9 @@ export const ClientesView = ():JSX.Element => {
       </div>
         {/* </form> */}
       </div>
-      <InfoClienteCard />
-      {/* <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      </div> */}
-      {/* <InfoClienteCard cliente={client} />
-      <AddClienteCard /> */}
-      {/* <AddClienteCard /> */}
-      <TablaClienteCard />
+      {
+        selectClient === null ? <TablaClienteCard /> : <InfoClienteCard />
+      }
     </main>
   );
 }

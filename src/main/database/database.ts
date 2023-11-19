@@ -1,7 +1,7 @@
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
 import { IClient } from '../interfaces'
-import { IDataAddClient } from '../interfaces/IClients'
+import { IDataAddClient, IDataUpdateClient } from '../interfaces/IClients'
 // import { appendLogFile } from '../../main/util'
 
 // you would have to import / invoke this in another file
@@ -82,7 +82,32 @@ export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
       ':apm': cliente.apm,
       ':tel': cliente.tel
     });
+    console.log(`changes: ${result.changes}`);
+    console.log(`lastID: ${result.lastID}`);
     return result.lastID ?? 0;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return -1;
+  }
+}
+
+export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> => {
+  try {
+    if(!(await createTables())){
+      return -2;
+    }
+    const db = await openDb();
+    const result = await db.run('UPDATE clientes SET name=:name, app=:app, apm=:apm, tel=:tel WHERE id=:id', {
+      ':id': cliente.id,
+      ':name': cliente.client.name,
+      ':app': cliente.client.app,
+      ':apm': cliente.client.apm,
+      ':tel': cliente.client.tel
+    });
+    console.log(`changes: ${result.changes}`);
+    console.log(`lastID: ${result.lastID}`);
+
+    return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
@@ -99,6 +124,8 @@ export const deleteCliente = async (id: number):Promise<number> => {
     const result = await db.run('DELETE FROM clientes WHERE id=:id', {
       ':id': id
     });
+    console.log(`changes: ${result.changes}`);
+    console.log(`lastID: ${result.lastID}`);
     return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);

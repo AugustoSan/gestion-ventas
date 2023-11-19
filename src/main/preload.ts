@@ -2,7 +2,7 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { IClient } from './interfaces';
-import { IDataAddClient } from './interfaces/IClients';
+import { IDataAddClient, IDataUpdateClient } from './interfaces/IClients';
 
 export type Channels = 'ipc-example';
 
@@ -25,6 +25,8 @@ const electronHandler = {
     },
     GetAllClients:():Promise<Array<IClient>> => ipcRenderer.invoke('clients:getAllClients', []),
     AddClient:(data: IDataAddClient):Promise<number> => ipcRenderer.invoke('clients:addlClient', data),
+    UpdateClient:(data: IDataUpdateClient):Promise<number> => ipcRenderer.invoke('clients:updateClient', data),
+    DeleteClient:(data: number):Promise<number> => ipcRenderer.invoke('clients:deleteClient', data),
   },
 };
 

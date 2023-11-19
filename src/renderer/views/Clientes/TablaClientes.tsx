@@ -4,37 +4,6 @@ import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { ItemClientTabla } from '../../components/ItemClientTabla';
 import { IClient } from '../../../main/interfaces';
 import { useCustomSelector } from '../../hooks/redux';
-// import { appendLogFile } from '../../main/util';
-
-// const clientes: IClient[] = [
-//   {
-//     id: 0,
-//     nombre: 'Augusto',
-//     app: 'Sanchez',
-//     apm: 'Julian',
-//     saldo: 0,
-//     telefono: '1234567891',
-//     direcciones: []
-//   },
-//   {
-//     id: 1,
-//     nombre: 'Javier',
-//     app: 'Tapia',
-//     apm: 'Julian',
-//     saldo: 0,
-//     telefono: '1234567891',
-//     direcciones: []
-//   },
-//   {
-//     id: 2,
-//     nombre: 'Areli',
-//     app: 'Murrieta',
-//     apm: 'Julian',
-//     saldo: 0,
-//     telefono: '1234567891',
-//     direcciones: []
-//   }
-// ];
 
 export const TablaClienteCard = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes

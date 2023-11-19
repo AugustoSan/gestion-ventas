@@ -1,104 +1,87 @@
 import React, { useState } from 'react';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
-import { useCustomDispatch } from '../../hooks/redux';
-import { AddClient, setCliente } from '../../redux/slice/clientes';
+import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
+import { AddClient, setCliente, setHandleAddClient } from '../../redux/slice/clientes';
 import { IDataAddClient } from '../../../main/interfaces/IClients';
+import { InputCard } from '../../components/InputCard';
 // import { appendLogFile } from '../../main/util';
 
 export const AddClienteCard = ():JSX.Element => {
+  const { handleAddClient } = useCustomSelector((state) => state.clientSlice);
   const [inputName, setInputName] = useState<string>('');
   const [inputApp, setInputApp] = useState<string>('');
   const [inputApm, setInputApm] = useState<string>('');
   const [inputTelefono, setInputTelefono] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
+
+  const validateInputs = (): boolean => {
+    if(inputName.length <= 2) {
+      setError('Por favor introduce un nombre.');
+      return false;
+    }
+    if(inputApp.length <= 2) {
+      setError('Por favor introduce un apellido paterno.');
+      return false;
+    }
+    setError('');
+    return true;
+  }
+
   return (
-      <div className="card">
-        <div className="card-body">
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Nombre:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={inputName}
-                  placeholder="Nombre"
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputName(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Apellido Paterno:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Apellido Paterno"
-                  value={inputApp}
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputApp(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Apellido Materno:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Apellido Materno"
-                  value={inputApm}
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputApm(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <label className="col-sm-3 col-form-label">Teléfono:</label>
-              <div className="col-sm-9">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Teléfono"
-                  value={inputTelefono}
-                  onChange={
-                    (event) => {
-                      // console.log(event.target.value);
-                      setInputTelefono(event.target.value);
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group row mb-2">
-              <div className="col-sm-3"></div>
-              <div className="col-sm-3">
-                <button className="btn btn-primary" onClick={() => {
-                  console.log('Agregar Cliente');
-                  // validar que todos los campos estan completos
-                  // dispatch(setCliente({
-                  //   id: 10,
-                  //   nombre: 'Augusto',
-                  //   app: 'Sanchez',
-                  //   apm: 'Julian',
-                  //   saldo: 0,
-                  //   telefono: '-',
-                  //   direcciones: []
-                  // }))
-                  if(inputName.length > 2 && inputApp.length > 2 && inputApm.length > 2 && inputTelefono.length > 2){
-                    const newClient:IDataAddClient = {
+    <Card className="mb-2">
+      <Card.Header>Crear nuevo cliente</Card.Header>
+      <Card.Body>
+        <InputCard
+          title={'Nombre'}
+          value={inputName}
+          onChange={setInputName}
+        />
+        <InputCard
+          title={'Apellido Paterno'}
+          value={inputApp}
+          onChange={setInputApp}
+        />
+        <InputCard
+          title={'Apellido Materno'}
+          value={inputApm}
+          onChange={setInputApm}
+        />
+        <InputCard
+          title={'Teléfono'}
+          value={inputTelefono}
+          onChange={setInputTelefono}
+        />
+        {
+          error.length !== 0
+          ? (<Alert variant={'danger'}>{error}</Alert>)
+          : <></>
+        }
+      </Card.Body>
+      <Card.Footer>
+        <Container>
+          <Row>
+            <Col xs={6}>
+              <Button
+                variant='outline-secondary'
+                onClick={() => dispatch(setHandleAddClient(false))}
+              >
+                Cancelar
+              </Button>
+            </Col>
+            <Col xs={6}>
+              <Button
+                variant='outline-primary'
+                onClick={() => {
+                  if(validateInputs()){
+                    console.log('Se va a guardar el nuevo cliente');
+                    const newClient: IDataAddClient = {
                       name: inputName,
                       app: inputApp,
                       apm: inputApm,
@@ -106,32 +89,14 @@ export const AddClienteCard = ():JSX.Element => {
                     }
                     dispatch(AddClient(newClient));
                   }
-                }}>
-                  Agregar
-                </button>
-              </div>
-              <div className="col-sm-3">
-                <button
-                  className="btn btn-primary"
-                  onClick={
-                    () => {
-                      console.log('Editar Cliente');
-                      // appendLogFile({text: 'Pruebas de log'});
-                    }
-                  }
-                  disabled={false}
-                >
-                  Editar
-                </button>
-              </div>
-              <div className="col-sm-3">
-                <button className="btn btn-danger" onClick={() => console.log('Eliminar Cliente')}>
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          {/* </form> */}
-        </div>
-      </div>
+                }}
+              >
+                Guardar
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </Card.Footer>
+    </Card>
   );
 }

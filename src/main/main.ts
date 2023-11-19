@@ -14,8 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addCliente, findAllClients } from './database/database';
-import { IDataAddClient } from './interfaces/IClients';
+import { addCliente, deleteCliente, findAllClients, updateCliente } from './database/database';
+import { IDataAddClient, IDataUpdateClient } from './interfaces/IClients';
 // import { IDataAddClient } from './interfaces/IClients';
 // import * as sqlite3 from 'sqlite3';
 
@@ -54,8 +54,14 @@ ipcMain.on('ipc-example', async (event, arg) => {
 });
 
 ipcMain.handle('clients:getAllClients', findAllClients);
-ipcMain.handle('clients:addlClient', (event, data:IDataAddClient) => {
-  addCliente(data);
+ipcMain.handle('clients:addlClient', async (event, data:IDataAddClient):Promise<number> => {
+  return await addCliente(data);
+});
+ipcMain.handle('clients:updateClient',async (event, data:IDataUpdateClient):Promise<number> => {
+  return await updateCliente(data);
+});
+ipcMain.handle('clients:deleteClient',async (event, data:number):Promise<number> => {
+  return await deleteCliente(data);
 });
 
 if (process.env.NODE_ENV === 'production') {

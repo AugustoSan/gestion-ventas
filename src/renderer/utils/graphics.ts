@@ -1,6 +1,6 @@
 import { ChartConfiguration } from "chart.js";
 
-export const graphicData = [
+export const graphicDataIngresos = [
   15339,
   21345,
   18483,
@@ -9,6 +9,17 @@ export const graphicData = [
   24092,
   12034
 ];
+
+export const graphicDataPedidos = [
+  19339,
+  15345,
+  28483,
+  14003,
+  21489,
+  29092,
+  19034
+];
+
 export const graphicLabels = [
   'Sunday',
   'Monday',
@@ -18,42 +29,27 @@ export const graphicLabels = [
   'Friday',
   'Saturday'
 ];
-// {
-//   type: 'line',
-//   data: {
-//     labels: [
-//       'Sunday',
-//       'Monday',
-//       'Tuesday',
-//       'Wednesday',
-//       'Thursday',
-//       'Friday',
-//       'Saturday'
-//     ],
-//     datasets: [{
-//       data: [
-//         15339,
-//         21345,
-//         18483,
-//         24003,
-//         23489,
-//         24092,
-//         12034
-//       ],
-//       backgroundColor: 'transparent',
-//       borderColor: '#007bff',
-//       borderWidth: 4,
-//       pointBackgroundColor: '#007bff'
-//     }]
-//   },
-//   options: {
-//     plugins: {
-//       legend: {
-//         display: false
-//       },
-//       tooltip: {
-//         boxPadding: 3
-//       }
-//     }
-//   }
-// }
+
+export const graphicLabelsDays = [
+  'Lunes',
+  'Martes',
+  'Miercoles',
+  'Jueves',
+  'Viernes',
+  'Sabado',
+  'Domingo'
+];
+
+export const graphicLabelsMonths = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Noviembre',
+  'Diciembre',
+]

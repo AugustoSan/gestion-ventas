@@ -10,10 +10,10 @@ import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 
 // import { appendLogFile } from '../../main/util';
 import { useEffect } from 'react';
-import { GetAllClients } from '../../redux/slice/clientes';
+import { GetAllClients, setHandleAddClient } from '../../redux/slice/clientes';
 
 export const ClientesView = ():JSX.Element => {
-  const { selectClient } = useCustomSelector((state) => state.clientSlice);
+  const { selectClient, handleAddClient } = useCustomSelector((state) => state.clientSlice);
 
   const dispatch = useCustomDispatch();
 
@@ -26,29 +26,30 @@ export const ClientesView = ():JSX.Element => {
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 className="h2">Clientes</h1>
-        {/* <form className="form-inline my-2 my-lg-0"> */}
-        <div className="col-9 row">
+        {/* <div className="col-9 row">
           <InputGroup className="mb-3">
             <Form.Control
               placeholder="Buscar cliente"
               aria-label="Buscar cliente"
               aria-describedby="Nombre apellido"
             />
-            <Button variant="primary">
+            <Button variant="outline-primary">
               Buscar
             </Button>
-        </InputGroup>
-          {/* <div className="col-10">
-            <input className="form-control" type="search" placeholder="Buscar cliente" aria-label="Search" />
-          </div>
-          <div className="col-2">
-            <button className="btn btn-outline-success">Buscar</button>
-          </div> */}
-      </div>
-        {/* </form> */}
+          </InputGroup>
+        </div> */}
       </div>
       {
-        selectClient === null ? <TablaClienteCard /> : <InfoClienteCard />
+        selectClient === null && handleAddClient !== true
+          ? (<div className="card mb-2">
+              <Button variant="outline-primary" size="lg" onClick={() => dispatch(setHandleAddClient(!handleAddClient))}>
+                {'Agregar nuevo cliente'}
+              </Button>
+            </div>)
+          : <></>
+      }
+      {
+        selectClient === null ? handleAddClient === true ? <AddClienteCard /> : <TablaClienteCard /> : <InfoClienteCard />
       }
     </main>
   );

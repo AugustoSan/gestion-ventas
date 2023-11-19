@@ -4,3 +4,8 @@ export interface IDataAddClient {
   apm: string;
   tel: string;
 }
+
+export interface IDataUpdateClient {
+  id: number;
+  client: IDataAddClient;
+}

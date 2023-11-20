@@ -5,19 +5,18 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import { LabelInfoCard } from '../../components/LabelInfoCard';
-import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
-import { AddClient, setCliente, setHandleAddClient } from '../../redux/slice/clientes';
+import { useCustomDispatch } from '../../hooks/redux';
+import { AddClient, setHandleAddClient } from '../../redux/slice/clientes';
 import { IDataAddClient } from '../../../main/interfaces/IClients';
 import { InputCard } from '../../components/InputCard';
 // import { appendLogFile } from '../../main/util';
 
 export const AddClienteCard = ():JSX.Element => {
-  const { handleAddClient } = useCustomSelector((state) => state.clientSlice);
   const [inputName, setInputName] = useState<string>('');
   const [inputApp, setInputApp] = useState<string>('');
   const [inputApm, setInputApm] = useState<string>('');
   const [inputTelefono, setInputTelefono] = useState<string>('');
+  const [inputAddress, setInputAddress] = useState<string>('');
   const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
 
@@ -28,6 +27,10 @@ export const AddClienteCard = ():JSX.Element => {
     }
     if(inputApp.length <= 2) {
       setError('Por favor introduce un apellido paterno.');
+      return false;
+    }
+    if(inputAddress.length <= 2) {
+      setError('Por favor introduce una dirección.');
       return false;
     }
     setError('');
@@ -57,6 +60,11 @@ export const AddClienteCard = ():JSX.Element => {
           title={'Teléfono'}
           value={inputTelefono}
           onChange={setInputTelefono}
+        />
+        <InputCard
+          title={'Dirección'}
+          value={inputAddress}
+          onChange={setInputAddress}
         />
         {
           error.length !== 0

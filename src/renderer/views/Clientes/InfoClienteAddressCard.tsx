@@ -13,7 +13,7 @@ import { IDataUpdateClient } from '../../../main/interfaces/IClients';
 // import { appendLogFile } from '../../main/util';
 
 
-export const InfoClienteCard = ():JSX.Element => {
+export const InfoClienteAddressCard = ():JSX.Element => {
   const { selectClient, handleUpdateClient } = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
   console.log('selectClient', selectClient);
@@ -40,43 +40,21 @@ export const InfoClienteCard = ():JSX.Element => {
 
   return selectClient === null ? <></> : (
     <Card className="mb-2">
-      <Card.Header>Información del cliente</Card.Header>
+      <Card.Header>{`Direcciones del cliente ${name} ${apm}`}</Card.Header>
       <Card.Body>
-        <InputCard
-          title={'Nombre'}
-          value={inputName}
-          onChange={setInputName}
-          disabled={!handleUpdateClient}
-        />
-        <InputCard
-          title={'Apellido Paterno'}
-          value={inputAPP}
-          onChange={setInputAPP}
-          disabled={!handleUpdateClient}
-        />
-        <InputCard
-          title={'Appelido Materno'}
-          value={inputAPM}
-          onChange={setInputAPM}
-          disabled={!handleUpdateClient}
-        />
-        <InputCard
-          title={'Telefono'}
-          value={inputTel}
-          onChange={setInputTel}
-          disabled={!handleUpdateClient}
-        />
-        <InputCard
-          title={'Saldo'}
-          value={`$ ${saldo.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}
-          onChange={() => {}}
-          disabled={true}
-        />
-        <div className="d-grid gap-2 mb-2 mt-2">
-          <Button variant="primary" size="lg" onClick={() => dispatch(setHandleWatchAddress(true))}>
-            Ver direcciones
-          </Button>
-        </div>
+        {
+          direcciones.length === 0
+          ? <Alert variant='primary'> Sin direcciones registradas </Alert>
+          : direcciones.map((direccion, index) => {
+            return <InputCard
+              key={`${direccion.id}-${direccion.idClient}-dir`}
+              title={`Dirección ${index+1}`}
+              value={direccion.direccion}
+              onChange={() => {}}
+              disabled={true}
+            />
+          })
+        }
         {
           error !== null
           ? <Alert variant='danger'>{error}</Alert>
@@ -92,10 +70,7 @@ export const InfoClienteCard = ():JSX.Element => {
                 onClick={
                   () => {
                     console.log(`Button se eliminara el cliente con id ${id}`);
-                    const resultConfirm = confirm('Realmente desea eliminar el cliente');
-                    if(resultConfirm){
-                      dispatch(DeleteClient(selectClient.id));
-                    }
+                    dispatch(DeleteClient(selectClient.id));
                   }
                 }
               >
@@ -107,12 +82,11 @@ export const InfoClienteCard = ():JSX.Element => {
                 variant="secondary"
                 onClick={
                   () => {
-                    dispatch(setSelectClient(null))
-                    dispatch(setHandleUpdateClient(false));
+                    dispatch(setHandleWatchAddress(false));
                   }
                 }
                 >
-                Cerrar
+                Regresar
               </Button>
             </Col>
             <Col xs={4}>

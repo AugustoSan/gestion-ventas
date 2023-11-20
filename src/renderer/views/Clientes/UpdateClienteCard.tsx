@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import CardGroup from 'react-bootstrap/CardGroup';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
-import { setSelectClient } from '../../redux/slice/clientes';
+import { DeleteClient, setSelectClient } from '../../redux/slice/clientes';
 import { IClient } from '../../../main/interfaces';
 import { InputCard } from '../../components/InputCard';
 // import { appendLogFile } from '../../main/util';
@@ -50,6 +50,10 @@ export const UpdateClienteCard = ({ cliente } : IDataProps):JSX.Element => {
                 onClick={
                   () => {
                     console.log(`Button se eliminara el cliente con id ${id}`);
+                    const resultConfirm = confirm('Realmente desea eliminar el cliente');
+                    if(resultConfirm){
+                      dispatch(DeleteClient(selectClient.id));
+                    }
                   }
                 }
               >

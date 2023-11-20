@@ -11,7 +11,7 @@ import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { DeleteClient, UpdateClient, setHandleUpdateClient, setSelectClient } from '../../redux/slice/clientes';
 import { InputCard } from '../../components/InputCard';
 import { IDataUpdateClient } from '../../../main/interfaces/IClients';
-import { UpdateProduct, setSelectProduct } from '../../redux/slice/productos';
+import { DeleteProduct, UpdateProduct, setHandleUpdateProduct, setSelectProduct } from '../../redux/slice/productos';
 import { IDataUpdateProduct } from '../../../main/interfaces/IProducts';
 import { InputPriceCard } from '../../components/InputPriceCard';
 // import { appendLogFile } from '../../main/util';
@@ -61,8 +61,10 @@ export const InfoProductoCard = ():JSX.Element => {
                 variant="danger"
                 onClick={
                   () => {
-                    console.log(`Button se eliminara el cliente con id ${id}`);
-                    dispatch(DeleteClient(selectProducto.id));
+                    const resultConfirm = confirm('Realmente desea eliminar el producto');
+                    if(resultConfirm){
+                      dispatch(DeleteProduct(selectProducto.id));
+                    }
                   }
                 }
               >
@@ -75,7 +77,7 @@ export const InfoProductoCard = ():JSX.Element => {
                 onClick={
                   () => {
                     dispatch(setSelectProduct(null))
-                    dispatch(setHandleUpdateClient(false));
+                    dispatch(setHandleUpdateProduct(false));
                   }
                 }
                 >

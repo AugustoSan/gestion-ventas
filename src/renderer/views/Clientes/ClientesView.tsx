@@ -11,9 +11,13 @@ import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 // import { appendLogFile } from '../../main/util';
 import { useEffect } from 'react';
 import { FindClient, GetAllClients, setHandleAddClient } from '../../redux/slice/clientes';
+import { InfoClienteAddressCard } from './InfoClienteAddressCard';
+import { TablaAddressByCliente } from './TablaAddressByCliente';
+import { InputSearchCliente } from '../../components/InputSearchCliente';
+import { ButtonAddNewAddress } from '../../components/ButtonAddNewAddress';
 
 export const ClientesView = ():JSX.Element => {
-  const { selectClient, handleAddClient } = useCustomSelector((state) => state.clientSlice);
+  const { selectClient, handleAddClient, handleWatchAddress } = useCustomSelector((state) => state.clientSlice);
   const [inputSearch, setInputSearch] = useState<string>('');
 
   const dispatch = useCustomDispatch();
@@ -27,25 +31,11 @@ export const ClientesView = ():JSX.Element => {
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 className="h2">Clientes</h1>
-        <div className="col-9 row">
-          <InputGroup className="mb-3">
-            <Form.Control
-              placeholder="Buscar cliente"
-              aria-label="Buscar cliente"
-              aria-describedby="Nombre apellido"
-              value={inputSearch}
-              onChange={(event) => {
-                setInputSearch(event.target.value);
-                dispatch(FindClient(event.target.value));
-              }}
-            />
-            <Button variant="outline-primary" onClick={() => {
-              dispatch(FindClient(inputSearch));
-            }}>
-              Buscar
-            </Button>
-          </InputGroup>
-        </div>
+        {
+          selectClient === null
+          ? (<InputSearchCliente />)
+          : <ButtonAddNewAddress idCliente={selectClient.id}/>
+        }
       </div>
       {
         selectClient === null && handleAddClient !== true
@@ -57,7 +47,9 @@ export const ClientesView = ():JSX.Element => {
           : <></>
       }
       {
-        selectClient === null ? handleAddClient === true ? <AddClienteCard /> : <TablaClienteCard /> : <InfoClienteCard />
+        selectClient === null ? handleAddClient === true
+          ? <AddClienteCard /> : <TablaClienteCard />
+          : handleWatchAddress === false ? <InfoClienteCard /> : <TablaAddressByCliente />
       }
     </main>
   );

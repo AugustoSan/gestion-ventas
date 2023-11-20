@@ -10,6 +10,7 @@ interface IClientSlice {
   selectClient: IClient | null;
   clientesArray: Array<IClient>;
   handleAddClient: boolean;
+  handleWatchAddress: boolean;
   handleUpdateClient: boolean;
 }
 
@@ -19,6 +20,7 @@ const initialState: IClientSlice =
   selectClient: null,
   clientesArray: [],
   handleAddClient: false,
+  handleWatchAddress: false,
   handleUpdateClient: false
 }
 
@@ -35,8 +37,12 @@ const clientSlice = createSlice({
           state.handleUpdateClient = action.payload;
         },
         setHandleAddClient: (state, action: PayloadAction<boolean>) => {
-          console.log('Entro en setHandleUpdateClient: ', action.payload);
+          console.log('Entro en setHandleAddClient: ', action.payload);
           state.handleAddClient = action.payload;
+        },
+        setHandleWatchAddress: (state, action: PayloadAction<boolean>) => {
+          console.log('Entro en setHandleWatchAddress: ', action.payload);
+          state.handleWatchAddress = action.payload;
         },
         setSearchClientes: (state, action: PayloadAction<Array<IClient>>) => {
           console.log('Entro en setSearchClientes: ', action.payload);
@@ -77,6 +83,9 @@ const clientSlice = createSlice({
             return client;
           });
           state.clientesArray = newArray;
+          if(state.selectClient !== null){
+            state.selectClient.direcciones = [...state.selectClient.direcciones, action.payload]
+          }
         },
     }
 });
@@ -84,6 +93,7 @@ const clientSlice = createSlice({
 export const {
     setSelectClient,
     setHandleAddClient,
+    setHandleWatchAddress,
     setHandleUpdateClient,
     setClientesArray,
     setSearchClientes,

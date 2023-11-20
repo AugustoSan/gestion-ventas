@@ -67,6 +67,7 @@ export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
       return -2;
     }
     const db = await openDb();
+    // const backupQuery = `INSERT INTO clientes(name, app, apm, tel) VALUES (${cliente.name}, ${cliente.app}, ${cliente.apm}, :tel)`;
     const result = await db.run('INSERT INTO clientes(name, app, apm, tel) VALUES (:name, :app, :apm, :tel)', {
       ':name': cliente.name,
       ':app': cliente.app,
@@ -75,6 +76,7 @@ export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
     });
     console.log(`changes: ${result.changes}`);
     console.log(`lastID: ${result.lastID}`);
+    console.log(`sql: ${result.stmt}`);
     return result.lastID ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -125,6 +127,20 @@ export const deleteCliente = async (id: number):Promise<number> => {
 }
 
 // Direcciones
+export const findAllAddress = async ():Promise<Array<IDirection>> => {
+  try {
+    if(!(await createTables())){
+      return [];
+    }
+    const db = await openDb();
+    const result:Array<IDirection> = await db.all('SELECT * FROM direcciones');
+    return result;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return [];
+  }
+}
+
 export const addAddress = async (direccion: IDataAddAddress):Promise<number> => {
   try {
     if(!(await createTables())){

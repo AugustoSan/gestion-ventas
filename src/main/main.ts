@@ -16,6 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllClientsHandler, findClienteHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
 import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
+import { migrateDB } from './database/database';
 
 class AppUpdater {
   constructor() {
@@ -155,6 +156,7 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    migrateDB();
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

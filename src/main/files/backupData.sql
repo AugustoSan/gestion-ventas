@@ -1,0 +1,1 @@
+INSERT INTO productos(concepto, precio) VALUES (pruebas de bakcup en sql, 25)

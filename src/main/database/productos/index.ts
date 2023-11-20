@@ -1,3 +1,4 @@
+import { WriteFileSQLBackup } from "../../files/log";
 import { IProducto } from "../../interfaces";
 import { IDataAddProduct, IDataUpdateProduct } from "../../interfaces/IProducts";
 import { createTables, openDb } from "../database";
@@ -34,18 +35,20 @@ export const findProducto = async (concepto: string):Promise<Array<IProducto>> =
 }
 
 
-export const addProducto = async (producto: IDataAddProduct):Promise<number> => {
+export const addProducto = async ({concepto, precio}: IDataAddProduct):Promise<number> => {
   try {
     if(!(await createTables())){
       return -2;
     }
     const db = await openDb();
+    const query = `INSERT INTO productos(concepto, precio) VALUES ('${concepto}', ${precio})`;
     const result = await db.run('INSERT INTO productos(concepto, precio) VALUES (:concepto, :precio)', {
-      ':concepto': producto.concepto,
-      ':precio': producto.precio
+      ':concepto': concepto,
+      ':precio': precio
     });
     console.log(`changes: ${result.changes}`);
     console.log(`lastID: ${result.lastID}`);
+    WriteFileSQLBackup(query);
     return result.lastID ?? 0;
   } catch (error) {
     console.log('ERROR:', error);

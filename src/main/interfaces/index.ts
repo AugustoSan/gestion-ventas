@@ -1,6 +1,6 @@
 export interface IDirection {
   id: number;
-  idClient: number;
+  id_client: number;
   direccion: string;
 }
 

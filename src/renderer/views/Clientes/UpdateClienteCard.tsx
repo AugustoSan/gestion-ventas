@@ -37,7 +37,7 @@ export const UpdateClienteCard = ({ cliente } : IDataProps):JSX.Element => {
         <LabelInfoCard title={'Saldo'} value={saldo.toString()} />
         {
           direcciones.map((direccion) => {
-            return <LabelInfoCard key={`${direccion.id}-${direccion.idClient}-dir`} title={direccion.id.toString()} value={direccion.direccion} />
+            return <LabelInfoCard key={`${direccion.id}-${direccion.id_client}-dir`} title={direccion.id.toString()} value={direccion.direccion} />
           })
         }
       </Card.Body>

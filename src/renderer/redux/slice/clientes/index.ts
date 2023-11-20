@@ -77,7 +77,7 @@ const clientSlice = createSlice({
         setAddAddressToClient: (state, action: PayloadAction<IDirection>) => {
           console.log('Entro en setAddAddressToClient: ', action.payload);
           const newArray = state.clientesArray.map((client) => {
-            if(client.id === action.payload.idClient){
+            if(client.id === action.payload.id_client){
               client.direcciones = [...client.direcciones, action.payload];
             }
             return client;
@@ -174,7 +174,7 @@ export const AddAddres = (address: IDataAddAddress): Thunk => async (dispatch): 
   if(result !== 0){
     const newAddress:IDirection = {
       id: result,
-      idClient: address.id_client,
+      id_client: address.id_client,
       direccion: address.direccion
     }
     dispatch(setAddAddressToClient(newAddress));

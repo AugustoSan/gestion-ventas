@@ -11,7 +11,6 @@ import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 // import { appendLogFile } from '../../main/util';
 import { useEffect } from 'react';
 import { FindClient, GetAllClients, setHandleAddClient } from '../../redux/slice/clientes';
-import { InfoClienteAddressCard } from './InfoClienteAddressCard';
 import { TablaAddressByCliente } from './TablaAddressByCliente';
 import { InputSearchCliente } from '../../components/InputSearchCliente';
 import { ButtonAddNewAddress } from '../../components/ButtonAddNewAddress';

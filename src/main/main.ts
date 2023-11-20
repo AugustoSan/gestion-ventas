@@ -14,10 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addCliente, deleteCliente, findAllClients, updateCliente } from './database/database';
-import { IDataAddClient, IDataUpdateClient } from './interfaces/IClients';
-// import { IDataAddClient } from './interfaces/IClients';
-// import * as sqlite3 from 'sqlite3';
+import { addClienteHandler, deleteClienteHandler, findAllClientsHandler, findClienteHandler, updateClienteHandler } from './handles/Clientes';
+import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
 
 class AppUpdater {
   constructor() {
@@ -28,24 +26,10 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-// const db = new sqlite3.Database('mi_base_de_datos.db');
 
-// db.serialize(async() => {
-//   await db.run('CREATE TABLE IF NOT EXISTS datos (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT)');
-//   const result = await db.exec('SELECT * FROM');
-//   console.log('result: ', result);
+// findAllClients().then((data) => {
+//   console.log('data: ', data);
 // });
-
-// addCliente('Augusto', '1234567890').then((id) => {
-//   console.log('id', id);
-//   findAllClients().then((data) => {
-//     console.log('data: ', data);
-//   });
-// });
-
-findAllClients().then((data) => {
-  console.log('data: ', data);
-});
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
@@ -53,16 +37,19 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.handle('clients:getAllClients', findAllClients);
-ipcMain.handle('clients:addlClient', async (event, data:IDataAddClient):Promise<number> => {
-  return await addCliente(data);
-});
-ipcMain.handle('clients:updateClient',async (event, data:IDataUpdateClient):Promise<number> => {
-  return await updateCliente(data);
-});
-ipcMain.handle('clients:deleteClient',async (event, data:number):Promise<number> => {
-  return await deleteCliente(data);
-});
+// Clientes
+ipcMain.handle('clients:getAllClients', findAllClientsHandler);
+ipcMain.handle('clients:findClient', findClienteHandler);
+ipcMain.handle('clients:addlClient', addClienteHandler);
+ipcMain.handle('clients:updateClient', updateClienteHandler);
+ipcMain.handle('clients:deleteClient', deleteClienteHandler);
+
+// Productos
+ipcMain.handle('products:getAllProducts', findAllProductosHandler);
+ipcMain.handle('products:findProduct', findProductoHandler);
+ipcMain.handle('products:addlProduct', addProductoHandler);
+ipcMain.handle('products:updateProduct', updateProductoHandler);
+ipcMain.handle('products:deleteProduct', deleteProductoHandler);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

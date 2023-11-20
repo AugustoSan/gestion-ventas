@@ -21,7 +21,13 @@ export const Menu = ():JSX.Element => {
             <li className="nav-item">
               <a className="nav-link d-flex align-items-center gap-2" href="/order">
                 <svg className="bi"><use href="#file-earmark"/></svg>
-                Ordenes
+                Ventas
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link d-flex align-items-center gap-2" href="/ingresos">
+                <svg className="bi"><use href="#puzzle"/></svg>
+                Ingresos
               </a>
             </li>
             <li className="nav-item">
@@ -34,12 +40,6 @@ export const Menu = ():JSX.Element => {
               <a className="nav-link d-flex align-items-center gap-2" href="/clientes">
                 <svg className="bi"><use href="/clientes"/></svg>
                 Clientes
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link d-flex align-items-center gap-2" href="/ingresos">
-                <svg className="bi"><use href="#puzzle"/></svg>
-                Ingresos
               </a>
             </li>
           </ul>

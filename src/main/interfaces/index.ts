@@ -1,4 +1,4 @@
-export interface IDiretion {
+export interface IDirection {
   id: number;
   idClient: number;
   direccion: string;
@@ -11,25 +11,26 @@ export interface IClient {
   apm: string;
   saldo: number;
   tel: string;
-  direcciones: IDiretion[];
+  direcciones: IDirection[];
 }
 
 export interface IProducto {
   id: number;
-  descripcion: string;
-  precio: number;
+  concepto: string;
 }
 
 export interface IPago {
   id: number;
+  idClient: number;
   fecha: string;
-  cantidad: number;
+  monto: number;
 }
 
 export interface IVenta {
   id: number;
+  idCliente: number;
+  idProducto: IProducto;
   fechaVenta: string;
   cantidad: number;
-  producto: IProducto;
-  fechaPago: IPago[];
+  total: number;
 }

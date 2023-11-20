@@ -7,7 +7,7 @@ import { useCustomSelector } from '../../hooks/redux';
 
 export const TablaClienteCard = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes
-  const {clientesArray} = useCustomSelector((state) => state.clientSlice);
+  const {clientesArray, searchCliente} = useCustomSelector((state) => state.clientSlice);
 
   console.log('clientesArray: ', clientesArray);
 
@@ -27,7 +27,11 @@ export const TablaClienteCard = ():JSX.Element => {
           </thead>
           <tbody>
             {
-              clientesArray.map( (cliente, index) => {
+              searchCliente.length > 0
+              ? searchCliente.map( (cliente, index) => {
+                return <ItemClientTabla key={`${index}-${cliente.id}-item-cliente-search`} cliente={cliente} />
+              })
+              : clientesArray.map( (cliente, index) => {
                 return <ItemClientTabla key={`${index}-${cliente.id}-item-cliente`} cliente={cliente} />
               })
             }

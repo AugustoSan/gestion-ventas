@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useCustomDispatch } from '../hooks/redux';
+import { GetAllClients } from '../redux/slice/clientes';
+import { GetAllProducts } from '../redux/slice/productos';
 
 export const Header = ():JSX.Element => {
+  const dispatch = useCustomDispatch();
+
+  useEffect(() => {
+    dispatch(GetAllClients());
+    dispatch(GetAllProducts());
+  }, []);
   return (
   <header className="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
   <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Gestión de ventas</a>

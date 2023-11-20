@@ -6,39 +6,26 @@ import { IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/I
 // import { findAllClients } from '../../../../main/database/database';
 
 interface IClientSlice {
-    cliente: IClient;
-    selectClient: IClient | null;
-    clientesArray: Array<IClient>;
-    handleAddClient: boolean;
-    handleUpdateClient: boolean;
+  searchCliente: Array<IClient>;
+  selectClient: IClient | null;
+  clientesArray: Array<IClient>;
+  handleAddClient: boolean;
+  handleUpdateClient: boolean;
 }
 
 const initialState: IClientSlice =
 {
-    cliente :
-    {
-        id: 0,
-        name: '',
-        app: '',
-        apm: '',
-        saldo: 0,
-        tel: '',
-        direcciones: []
-    },
-    selectClient: null,
-    clientesArray: [],
-    handleAddClient: false,
-    handleUpdateClient: false
+  searchCliente: [],
+  selectClient: null,
+  clientesArray: [],
+  handleAddClient: false,
+  handleUpdateClient: false
 }
 
 const clientSlice = createSlice({
     name: 'cliente',
     initialState,
     reducers: {
-        setCliente: (state, action: PayloadAction<IClient>) => {
-            console.log('Entro en setCliente: ', action.payload);
-            state.cliente = action.payload;
-        },
         setSelectClient: (state, action: PayloadAction<IClient | null>) => {
             console.log('Entro en setSelectClient: ', action.payload);
             state.selectClient = action.payload;
@@ -50,6 +37,10 @@ const clientSlice = createSlice({
         setHandleAddClient: (state, action: PayloadAction<boolean>) => {
           console.log('Entro en setHandleUpdateClient: ', action.payload);
           state.handleAddClient = action.payload;
+        },
+        setSearchClientes: (state, action: PayloadAction<Array<IClient>>) => {
+          console.log('Entro en setSearchClientes: ', action.payload);
+          state.searchCliente = action.payload;
         },
         setClientesArray: (state, action: PayloadAction<Array<IClient>>) => {
           console.log('Entro en setClientesArray: ', action.payload);
@@ -81,11 +72,11 @@ const clientSlice = createSlice({
 });
 
 export const {
-    setCliente,
     setSelectClient,
     setHandleAddClient,
     setHandleUpdateClient,
     setClientesArray,
+    setSearchClientes,
     setAddClienteArray,
     updateClienteArray,
     deleteClienteArray
@@ -100,6 +91,14 @@ export const GetAllClients = (): Thunk => async (dispatch): Promise<Array<IClien
   console.log('GetAllClients: ', clients);
   dispatch(setClientesArray(clients));
   return clients;
+}
+
+export const FindClient = (texto: string): Thunk => async (dispatch): Promise<Array<IClient>> => {
+  // const filePath = await window.electron.getAllProducts();
+  const cliente = await window.electron.ipcRenderer.FindCliente(texto);
+  console.log('FindCliente: ', cliente);
+  dispatch(setSearchClientes(cliente));
+  return cliente;
 }
 
 export const AddClient = (client: IDataAddClient): Thunk => async (dispatch): Promise<number> => {

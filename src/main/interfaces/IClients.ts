@@ -9,3 +9,13 @@ export interface IDataUpdateClient {
   id: number;
   client: IDataAddClient;
 }
+
+export interface IDataAddAddress {
+  id_client: number;
+  direccion: string;
+}
+
+export interface IDataUpdateAddress {
+  id: number;
+  direccion: IDataAddAddress;
+}

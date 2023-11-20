@@ -40,8 +40,9 @@ export const addProducto = async (producto: IDataAddProduct):Promise<number> => 
       return -2;
     }
     const db = await openDb();
-    const result = await db.run('INSERT INTO productos(concepto) VALUES (:concepto)', {
+    const result = await db.run('INSERT INTO productos(concepto, precio) VALUES (:concepto, :precio)', {
       ':concepto': producto.concepto,
+      ':precio': producto.precio
     });
     console.log(`changes: ${result.changes}`);
     console.log(`lastID: ${result.lastID}`);
@@ -58,9 +59,10 @@ export const updateProducto = async (producto: IDataUpdateProduct):Promise<numbe
       return -2;
     }
     const db = await openDb();
-    const result = await db.run('UPDATE productos SET concepto=:concepto WHERE id=:id', {
+    const result = await db.run('UPDATE productos SET concepto=:concepto, precio=:precio WHERE id=:id', {
       ':id': producto.id,
       ':concepto': producto.product.concepto,
+      ':precio': producto.product.precio,
     });
     console.log(`changes: ${result.changes}`);
     console.log(`lastID: ${result.lastID}`);

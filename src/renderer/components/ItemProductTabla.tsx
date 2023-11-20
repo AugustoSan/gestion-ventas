@@ -14,6 +14,7 @@ export const ItemProductoTabla = ({producto}: IDataProps):JSX.Element => {
   <tr>
     <td>{producto.id}</td>
     <td>{producto.concepto}</td>
+    <td>$ {(producto.precio ?? 0).toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
     <td>
       <Button
         variant="primary"

@@ -17,6 +17,7 @@ export interface IClient {
 export interface IProducto {
   id: number;
   concepto: string;
+  precio: number;
 }
 
 export interface IPago {

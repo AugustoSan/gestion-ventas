@@ -13,14 +13,16 @@ import { InputCard } from '../../components/InputCard';
 import { IDataUpdateClient } from '../../../main/interfaces/IClients';
 import { UpdateProduct, setSelectProduct } from '../../redux/slice/productos';
 import { IDataUpdateProduct } from '../../../main/interfaces/IProducts';
+import { InputPriceCard } from '../../components/InputPriceCard';
 // import { appendLogFile } from '../../main/util';
 
 
 export const InfoProductoCard = ():JSX.Element => {
   const { selectProducto } = useCustomSelector((state) => state.productSlice);
   const dispatch = useCustomDispatch();
-  const {id = 0, concepto = ''} = selectProducto ?? {};
+  const {id = 0, concepto = '', precio = 0} = selectProducto ?? {};
   const [inputConcepto, setInputConcepto] = useState<string>(concepto ?? '');
+  const [inputPrecio, setInputPrecio] = useState<number>(precio ?? 0)
   console.log('producto: - ', selectProducto);
 
   return selectProducto === null ? <></> : (
@@ -37,6 +39,12 @@ export const InfoProductoCard = ():JSX.Element => {
           title={'Concepto'}
           value={inputConcepto}
           onChange={setInputConcepto}
+          disabled={false}
+        />
+        <InputPriceCard
+          title={'Precio'}
+          value={inputPrecio}
+          onChange={setInputPrecio}
           disabled={false}
         />
         {/* {
@@ -82,7 +90,8 @@ export const InfoProductoCard = ():JSX.Element => {
                     const temp:IDataUpdateProduct = {
                       id: selectProducto.id,
                       product: {
-                        concepto: inputConcepto
+                        concepto: inputConcepto,
+                        precio: inputPrecio
                       }
                     }
                     dispatch(UpdateProduct(temp));

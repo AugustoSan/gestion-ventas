@@ -1,8 +1,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IClient } from '../../../../main/interfaces';
+import { IClient, IDirection } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
-import { IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/IClients';
+import { IDataAddAddress, IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/IClients';
 // import { findAllClients } from '../../../../main/database/database';
 
 interface IClientSlice {
@@ -68,6 +68,16 @@ const clientSlice = createSlice({
           const newArray = state.clientesArray.filter((client) => client.id !== action.payload);
           state.clientesArray = newArray;
         },
+        setAddAddressToClient: (state, action: PayloadAction<IDirection>) => {
+          console.log('Entro en setAddAddressToClient: ', action.payload);
+          const newArray = state.clientesArray.map((client) => {
+            if(client.id === action.payload.idClient){
+              client.direcciones = [...client.direcciones, action.payload];
+            }
+            return client;
+          });
+          state.clientesArray = newArray;
+        },
     }
 });
 
@@ -79,7 +89,8 @@ export const {
     setSearchClientes,
     setAddClienteArray,
     updateClienteArray,
-    deleteClienteArray
+    deleteClienteArray,
+    setAddAddressToClient,
 } = clientSlice.actions;
 
 export default clientSlice.reducer;
@@ -134,6 +145,46 @@ export const UpdateClient = (client: IDataUpdateClient): Thunk => async (dispatc
 }
 
 export const DeleteClient = (id: number): Thunk => async (dispatch): Promise<number> => {
+  // const filePath = await window.electron.getAllClients();
+  const result = await window.electron.ipcRenderer.DeleteClient(id);
+  if(result !== 0){
+    dispatch(deleteClienteArray(id));
+    dispatch(setSelectClient(null));
+  }
+  console.log('result: ', result);
+
+  return 0;
+}
+
+
+export const AddAddres = (address: IDataAddAddress): Thunk => async (dispatch): Promise<number> => {
+  console.log('AddAddress');
+  const result = await window.electron.ipcRenderer.AddAddress(address);
+  console.log('result: ', result);
+  if(result !== 0){
+    const newAddress:IDirection = {
+      id: result,
+      idClient: address.id_client,
+      direccion: address.direccion
+    }
+    dispatch(setAddAddressToClient(newAddress));
+  }
+  return 0;
+}
+
+export const UpdateAddress = (client: IDataUpdateClient): Thunk => async (dispatch): Promise<number> => {
+  // const filePath = await window.electron.getAllClients();
+  const result = await window.electron.ipcRenderer.UpdateClient(client);
+  if(result !== 0){
+    dispatch(updateClienteArray(client));
+    dispatch(setSelectClient(null));
+  }
+  console.log('result: ', result);
+
+  return 0;
+}
+
+export const DeleteAddress = (id: number): Thunk => async (dispatch): Promise<number> => {
   // const filePath = await window.electron.getAllClients();
   const result = await window.electron.ipcRenderer.DeleteClient(id);
   if(result !== 0){

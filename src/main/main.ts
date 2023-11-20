@@ -14,7 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addClienteHandler, deleteClienteHandler, findAllClientsHandler, findClienteHandler, updateClienteHandler } from './handles/Clientes';
+import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllClientsHandler, findClienteHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
 import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
 
 class AppUpdater {
@@ -43,6 +43,11 @@ ipcMain.handle('clients:findClient', findClienteHandler);
 ipcMain.handle('clients:addlClient', addClienteHandler);
 ipcMain.handle('clients:updateClient', updateClienteHandler);
 ipcMain.handle('clients:deleteClient', deleteClienteHandler);
+
+//Direcciones
+ipcMain.handle('address:addlAddress', addAddressHandler);
+ipcMain.handle('address:updateAddress', updateAddressHandler);
+ipcMain.handle('address:deleteAddress', deleteAddressHandler);
 
 // Productos
 ipcMain.handle('products:getAllProducts', findAllProductosHandler);

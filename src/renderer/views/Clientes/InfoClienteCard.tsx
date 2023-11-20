@@ -5,12 +5,13 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import CardGroup from 'react-bootstrap/CardGroup';
+import Alert from 'react-bootstrap/Alert';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
-import { DeleteClient, UpdateClient, setHandleUpdateClient, setSelectClient } from '../../redux/slice/clientes';
+import { AddAddres, DeleteClient, UpdateClient, setHandleUpdateClient, setSelectClient } from '../../redux/slice/clientes';
 import { InputCard } from '../../components/InputCard';
-import { IDataUpdateClient } from '../../../main/interfaces/IClients';
+import { IDataAddAddress, IDataUpdateClient } from '../../../main/interfaces/IClients';
+import { IDirection } from '../../../main/interfaces';
 // import { appendLogFile } from '../../main/util';
 
 
@@ -23,8 +24,29 @@ export const InfoClienteCard = ():JSX.Element => {
   const [inputAPP, setInputAPP] = useState<string>(app ?? '');
   const [inputAPM, setInputAPM] = useState<string>(apm ?? '');
   const [inputTel, setInputTel] = useState<string>(tel ?? '');
+  const [inputAddress, setInputAddress] = useState<string>('');
+  const [enableAddAddress, setEnableAddAddress] = useState<boolean>(false);
+  const [inputArrayAddress, setInputArrayAddress] = useState<Array<IDirection>>(direcciones);
+  const [error, setError] = useState<string | null>(null);
   // const [inputName, setInputName] = useState<string>(name);
   console.log('cliente: - ', selectClient);
+
+  const validateInputs = ():boolean => {
+    if(inputName.length <= 2){
+      setError('El nombre debe de tener al menos dos caractéres');
+      return false;
+    }
+    if(inputAPP.length <= 2){
+      setError('El apellido paerno debe de tener al menos dos caractéres');
+      return false;
+    }
+    if(enableAddAddress && inputAddress.length <= 2){
+      setError('Por favor debe de agregar una nueva dirección u ocultar la seccion para agregar una nueva dirección');
+      return false;
+    }
+    setError(null);
+    return true;
+  }
 
   return selectClient === null ? <></> : (
     <Card className="mb-2">
@@ -54,10 +76,40 @@ export const InfoClienteCard = ():JSX.Element => {
           onChange={setInputTel}
           disabled={!handleUpdateClient}
         />
+        <InputCard
+          title={'Saldo'}
+          value={`$ ${saldo.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}
+          onChange={() => {}}
+          disabled={true}
+        />
+        <Card.Header>Direcciones</Card.Header>
+        <div className="d-grid gap-2 mb-2 mt-2">
+          <Button variant="primary" size="lg" onClick={() => setEnableAddAddress(!enableAddAddress)} disabled={!handleUpdateClient}>
+            { enableAddAddress === false ? 'Agregar una nueva dirección' : 'Ocultar'}
+          </Button>
+        </div>
         {
-          direcciones.map((direccion) => {
-            return <LabelInfoCard key={`${direccion.id}-${direccion.idClient}-dir`} title={direccion.id.toString()} value={direccion.direccion} />
+          enableAddAddress === true
+          ? <InputCard title={'Nueva dirección'} value={inputAddress} onChange={setInputAddress} disabled={false} />
+          : <></>
+        }
+        {
+          direcciones.length === 0
+          ? <Alert variant='primary'> Sin direcciones registradas </Alert>
+          : inputArrayAddress.map((direccion, index) => {
+          //   return <InputCard
+          //   title={`Dirección ${index}`}
+          //   value={direccion.direccion}
+          //   onChange={setInputArrayAddress}
+          //   disabled={!handleUpdateClient}
+          // />
+            return <LabelInfoCard key={`${direccion.id}-${direccion.idClient}-dir`} title={`Dirección ${index+1}`} value={direccion.direccion} />
           })
+        }
+        {
+          error !== null
+          ? <Alert variant='danger'>{error}</Alert>
+          : <></>
         }
       </Card.Body>
       <Card.Footer>
@@ -95,6 +147,9 @@ export const InfoClienteCard = ():JSX.Element => {
                 onClick={
                   () => {
                     console.log(`se ${handleUpdateClient === true ? 'guardará' : 'editará'} el cliente con id ${id}`);
+                    dispatch(setHandleUpdateClient(true));
+                    if(!validateInputs()) return;
+                    console.log(`enableAddAddress: ${enableAddAddress} - inputAddress: ${inputAddress}`);
                     if(handleUpdateClient){
                       const temp:IDataUpdateClient = {
                         id: selectClient.id,
@@ -107,7 +162,13 @@ export const InfoClienteCard = ():JSX.Element => {
                       }
                       dispatch(UpdateClient(temp));
                     }
-                    dispatch(setHandleUpdateClient(!handleUpdateClient));
+                    if(enableAddAddress && inputAddress.length > 2){
+                      const newAddress:IDataAddAddress = {
+                        id_client: selectClient.id,
+                        direccion: inputAddress
+                      }
+                      dispatch(AddAddres(newAddress));
+                    }
                   }
                 }
                 >

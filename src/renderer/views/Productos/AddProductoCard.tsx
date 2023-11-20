@@ -10,10 +10,12 @@ import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { InputCard } from '../../components/InputCard';
 import { AddProduct, setHandleAddProduct } from '../../redux/slice/productos';
 import { IDataAddProduct } from '../../../main/interfaces/IProducts';
+import { InputPriceCard } from '../../components/InputPriceCard';
 // import { appendLogFile } from '../../main/util';
 
 export const AddProductoCard = ():JSX.Element => {
   const [inputConcepto, setInputConcepto] = useState<string>('');
+  const [inputPrecio, setInputPrecio] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
 
@@ -34,6 +36,11 @@ export const AddProductoCard = ():JSX.Element => {
           title={'Concepto'}
           value={inputConcepto}
           onChange={setInputConcepto}
+        />
+        <InputPriceCard
+          title={'Precio'}
+          value={inputPrecio}
+          onChange={setInputPrecio}
         />
         {
           error.length !== 0
@@ -58,10 +65,11 @@ export const AddProductoCard = ():JSX.Element => {
                 onClick={() => {
                   if(validateInputs()){
                     console.log('Se va a guardar el nuevo producto');
-                    const newClient: IDataAddProduct = {
-                      concepto: inputConcepto
+                    const newProduct: IDataAddProduct = {
+                      concepto: inputConcepto,
+                      precio: inputPrecio
                     }
-                    dispatch(AddProduct(newClient));
+                    dispatch(AddProduct(newProduct));
                   }
                 }}
               >

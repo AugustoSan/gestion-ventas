@@ -61,6 +61,7 @@ const productSlice = createSlice({
           const newArray = state.productosArray.map((product, index) => {
             if(product.id === action.payload.id){
               product.concepto = action.payload.product.concepto;
+              product.precio = action.payload.product.precio;
             }
             return product;
           });
@@ -113,7 +114,8 @@ export const AddProduct = (product: IDataAddProduct): Thunk => async (dispatch):
   if(result !== 0){
     const newProduct:IProducto = {
       id: result,
-      concepto: product.concepto
+      concepto: product.concepto,
+      precio: product.precio
     }
     dispatch(setAddProductoArray(newProduct));
     dispatch(setHandleAddProduct(false));

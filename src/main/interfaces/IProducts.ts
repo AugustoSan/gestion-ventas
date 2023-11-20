@@ -1,5 +1,6 @@
 export interface IDataAddProduct {
   concepto: string;
+  precio: number;
 }
 
 export interface IDataUpdateProduct {

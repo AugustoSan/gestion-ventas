@@ -1,12 +1,14 @@
 import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit'
 import clientReducer from './slice/clientes';
 import productReducer from './slice/productos';
+import ventaReducer from './slice/ventas';
 // ...
 
 const store = configureStore({
   reducer: {
     clientSlice: clientReducer,
     productSlice: productReducer,
+    ventaSlice: ventaReducer,
   },
 })
 

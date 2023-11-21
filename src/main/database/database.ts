@@ -20,14 +20,20 @@ export const createTables = async(): Promise<boolean> => {
     const db = await openDb();
     await db.exec('CREATE TABLE IF NOT EXISTS clientes ( id INTEGER PRIMARY KEY, name TEXT, app TEXT, apm TEXT, tel TEXT )');
     await db.exec('CREATE TABLE IF NOT EXISTS direcciones ( id INTEGER PRIMARY KEY, id_client INTEGER, direccion TEXT )');
-    await db.exec('CREATE TABLE IF NOT EXISTS ventas ( id INTEGER PRIMARY KEY, id_client INTEGER, id_direccion INTEGER, id_producto INTEGER, fecha TEXT, cantidad REAL, total REAL, por_pagar REAL, status INTEGER )')
-    await db.exec('CREATE TABLE IF NOT EXISTS pagos ( id INTEGER PRIMARY KEY, id_client INTEGER, fecha TEXT, monto REAL )')
     await db.exec('CREATE TABLE IF NOT EXISTS productos ( id INTEGER PRIMARY KEY, concepto TEXT, precio REAL)')
-    await db.exec('CREATE TABLE IF NOT EXISTS precioProductoCliente ( id INTEGER PRIMARY KEY, id_producto INTEGER, id_client INTEGER, precio REAL)');
+    // await db.exec('DROP TABLE IF EXISTS ventas');
+    // await db.exec('DROP TABLE IF EXISTS venta_productos');
+    // await db.exec('DROP TABLE IF EXISTS pagos');
+    // await db.exec('DROP TABLE IF EXISTS tiempo_pago');
+    // await db.exec('DROP TABLE IF EXISTS precio_producto_cliente');
+    await db.exec('CREATE TABLE IF NOT EXISTS ventas ( id INTEGER PRIMARY KEY, id_client INTEGER, id_direccion INTEGER, fecha TEXT, total REAL, por_pagar REAL, status INTEGER )')
+    await db.exec('CREATE TABLE IF NOT EXISTS venta_productos ( id INTEGER PRIMARY KEY, id_venta INTEGER, id_producto INTEGER, id_precio INTEGER, cantidad REAL)')
+    // await db.exec('CREATE TABLE IF NOT EXISTS pagos ( id INTEGER PRIMARY KEY, id_client INTEGER, fecha TEXT, monto REAL )');
+    // await db.exec('CREATE TABLE IF NOT EXISTS tiempo_pago ( id INTEGER PRIMARY KEY, porcentaje REAL, dias INTEGER )');
+    // await db.exec('CREATE TABLE IF NOT EXISTS precio_producto_cliente ( id INTEGER PRIMARY KEY, id_producto INTEGER, id_client INTEGER, precio REAL)');
     return true;
   } catch (error) {
     console.log('ERROR: ', error);
-
     return false;
   }
 }

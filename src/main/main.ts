@@ -17,6 +17,7 @@ import { resolveHtmlPath } from './util';
 import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllClientsHandler, findClienteHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
 import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
 import { migrateDB } from './database/database';
+import { findAllVentasHandler, findVentasByClienteHandler } from './handles/Ventas';
 
 class AppUpdater {
   constructor() {
@@ -56,6 +57,11 @@ ipcMain.handle('products:findProduct', findProductoHandler);
 ipcMain.handle('products:addlProduct', addProductoHandler);
 ipcMain.handle('products:updateProduct', updateProductoHandler);
 ipcMain.handle('products:deleteProduct', deleteProductoHandler);
+
+// Ventas
+ipcMain.handle('ventas:getAllVentas', findAllVentasHandler);
+ipcMain.handle('ventas:getVentaByCliente', findVentasByClienteHandler);
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -156,7 +162,6 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
-    migrateDB();
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

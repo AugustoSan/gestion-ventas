@@ -9,7 +9,6 @@ export const findAddressByIDClient = async (id: number): Promise<Array<IDirectio
     }
     const db = await openDb();
     const result:Array<IDirection> = await db.all(`SELECT * FROM direcciones WHERE id_client=${id}`);
-    console.log(`clientAddress: ${id}   address: ${result}`);
     return result;
   } catch (error) {
     console.log('ERROR:', error);
@@ -30,7 +29,6 @@ export const findAllClients = async ():Promise<Array<IClient>> => {
         return cliente;
       })
     );
-    console.log('allClients: ', allClients);
     return allClients;
   } catch (error) {
     console.log('ERROR:', error);
@@ -45,7 +43,6 @@ export const findCliente = async (texto: string):Promise<Array<IClient>> => {
     }
     const db = await openDb();
     const query = `SELECT * FROM clientes WHERE name LIKE '%${texto}%' OR app LIKE '%${texto}%' OR apm LIKE '%${texto}%' OR tel LIKE '%${texto}%'`;
-    console.log('query:', query);
     const result:Array<IClient> = await db.all(query);
     const allClients:Array<IClient> = await Promise.all(
       result.map(async (cliente) => {
@@ -53,7 +50,6 @@ export const findCliente = async (texto: string):Promise<Array<IClient>> => {
         return cliente;
       })
     );
-    console.log('allClients: ', allClients);
     return allClients;
   } catch (error) {
     console.log('ERROR:', error);
@@ -74,9 +70,6 @@ export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
       ':apm': cliente.apm,
       ':tel': cliente.tel
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
-    console.log(`sql: ${result.stmt}`);
     return result.lastID ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -97,9 +90,6 @@ export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> 
       ':apm': cliente.client.apm,
       ':tel': cliente.client.tel
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
-
     return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -117,8 +107,6 @@ export const deleteCliente = async (id: number):Promise<number> => {
     const result = await db.run('DELETE FROM clientes WHERE id=:id', {
       ':id': id
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
     return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -151,8 +139,6 @@ export const addAddress = async (direccion: IDataAddAddress):Promise<number> => 
       ':cliente': direccion.id_client,
       ':direccion': direccion.direccion,
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
     return result.lastID ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -170,8 +156,6 @@ export const updateAddress = async (direccion: IDataUpdateAddress):Promise<numbe
       ':id': direccion.id,
       ':direccion': direccion.direccion.direccion
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
 
     return result.changes ?? 0;
   } catch (error) {
@@ -189,8 +173,6 @@ export const deleteAddress = async (id: number):Promise<number> => {
     const result = await db.run('DELETE FROM direcciones WHERE id=:id', {
       ':id': id
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
     return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);

@@ -22,16 +22,33 @@ export interface IProducto {
 
 export interface IPago {
   id: number;
-  idClient: number;
+  id_client: number;
   fecha: string;
   monto: number;
 }
 
+export interface IVentasProductos {
+  id: number;
+  id_venta: number;
+  id_producto: number;
+  id_precio: number;
+  cantidad: number;
+}
+
 export interface IVenta {
   id: number;
-  idCliente: number;
-  idProducto: IProducto;
-  fechaVenta: string;
-  cantidad: number;
+  id_client: number;
+  id_direccion: string;
+  fecha: string;
   total: number;
+  por_pagar: number;
+  status: number;
+  productos: Array<IVentasProductos>
+}
+
+export interface IPrecioProductoCliente {
+  id: number;
+  id_producto: number;
+  id_client: number;
+  precio: number;
 }

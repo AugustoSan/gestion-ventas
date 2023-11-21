@@ -24,8 +24,6 @@ export const findProducto = async (concepto: string):Promise<Array<IProducto>> =
     }
     const db = await openDb();
     const query = `SELECT * FROM productos WHERE concepto LIKE '%${concepto}%'`;
-    console.log('query:', query);
-
     const result:Array<IProducto> = await db.all(query);
     return result;
   } catch (error) {
@@ -46,8 +44,6 @@ export const addProducto = async ({concepto, precio}: IDataAddProduct):Promise<n
       ':concepto': concepto,
       ':precio': precio
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
     WriteFileSQLBackup(query);
     return result.lastID ?? 0;
   } catch (error) {
@@ -67,9 +63,6 @@ export const updateProducto = async (producto: IDataUpdateProduct):Promise<numbe
       ':concepto': producto.product.concepto,
       ':precio': producto.product.precio,
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
-
     return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -87,8 +80,6 @@ export const deleteProducto = async (id: number):Promise<number> => {
     const result = await db.run('DELETE FROM productos WHERE id=:id', {
       ':id': id
     });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
     return result.changes ?? 0;
   } catch (error) {
     console.log('ERROR:', error);

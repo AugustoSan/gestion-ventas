@@ -1,6 +1,6 @@
 import { WriteFileSQLBackup } from "../../files/log";
-import { IProducto } from "../../interfaces";
-import { IDataAddProduct, IDataUpdateProduct } from "../../interfaces/IProducts";
+import { IPriceProduct, IProducto } from "../../interfaces";
+import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from "../../interfaces/IProducts";
 import { createTables, openDb } from "../database";
 
 export const findAllProductos = async ():Promise<Array<IProducto>> => {
@@ -84,5 +84,21 @@ export const deleteProducto = async (id: number):Promise<number> => {
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  }
+}
+
+// Precios Producto
+export const getAllPricesProduct = async (data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => {
+  try {
+    if(!(await createTables())){
+      return [];
+    }
+    const db = await openDb();
+    const query = `SELECT * FROM precio_producto_cliente WHERE id_producto=${data.id_product} AND id_client=${data.id_cliente}`;
+    const result:Array<IPriceProduct> = await db.all(query);
+    return result;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return [];
   }
 }

@@ -14,10 +14,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllClientsHandler, findClienteHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
-import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
+import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllAddressByClientHandler, findAllClientsHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
+import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findPricesProductoHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
 import { migrateDB } from './database/database';
-import { findAllVentasHandler, findVentasByClienteHandler } from './handles/Ventas';
+import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
 
 class AppUpdater {
   constructor() {
@@ -47,6 +47,8 @@ ipcMain.handle('clients:updateClient', updateClienteHandler);
 ipcMain.handle('clients:deleteClient', deleteClienteHandler);
 
 //Direcciones
+ipcMain.handle('address:getAllAddress', getAllAddressHandler);
+ipcMain.handle('address:getAllAddressByClient', findAllAddressByClientHandler);
 ipcMain.handle('address:addlAddress', addAddressHandler);
 ipcMain.handle('address:updateAddress', updateAddressHandler);
 ipcMain.handle('address:deleteAddress', deleteAddressHandler);
@@ -54,6 +56,7 @@ ipcMain.handle('address:deleteAddress', deleteAddressHandler);
 // Productos
 ipcMain.handle('products:getAllProducts', findAllProductosHandler);
 ipcMain.handle('products:findProduct', findProductoHandler);
+ipcMain.handle('products:findPricesProduct', findPricesProductoHandler);
 ipcMain.handle('products:addlProduct', addProductoHandler);
 ipcMain.handle('products:updateProduct', updateProductoHandler);
 ipcMain.handle('products:deleteProduct', deleteProductoHandler);
@@ -61,6 +64,9 @@ ipcMain.handle('products:deleteProduct', deleteProductoHandler);
 // Ventas
 ipcMain.handle('ventas:getAllVentas', findAllVentasHandler);
 ipcMain.handle('ventas:getVentaByCliente', findVentasByClienteHandler);
+ipcMain.handle('ventas:getVentaByID', findVentaByIDHandler);
+ipcMain.handle('ventas:getProductosFromVenta', findProductoFromVentaHandler);
+ipcMain.handle('ventas:addVenta', addVentaHandler);
 
 
 if (process.env.NODE_ENV === 'production') {

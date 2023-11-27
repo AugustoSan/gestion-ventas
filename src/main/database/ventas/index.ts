@@ -1,5 +1,5 @@
-import { IClient, IVenta, IVentasProductos } from "../../interfaces";
-import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from "../../interfaces/IClients";
+import { IVenta, IVentasProductos } from "../../interfaces";
+import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas";
 import { createTables, openDb } from "../database";
 
 export const findProductFromVenta = async (id: number): Promise<Array<IVentasProductos>> => {
@@ -34,6 +34,33 @@ export const findVentasByIDClient = async (id: number): Promise<Array<IVenta>> =
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  }
+}
+
+export const findVentaByID = async (id: number): Promise<IVenta> => {
+  const _response:IVenta = {
+    id: 0,
+    id_client: 0,
+    id_direccion: 0,
+    fecha: "",
+    total: 0,
+    por_pagar: 0,
+    status: 0,
+    productos: []
+  }
+  try {
+    if(!(await createTables())){
+      throw Error("Ocurrio un error al crear las tablas de la Base de datos");
+      // return _response;
+    }
+    const db = await openDb();
+    const result: IVenta | undefined = await db.get(`SELECT * FROM ventas WHERE id_client=${id}`);
+    if(result === undefined) return _response;
+    result.productos = await findProductFromVenta(result.id);
+    return result;
+  } catch (error) {
+    console.log('ERROR:', error);
+    throw Error("Ocurrio un error en la sentencia SQL");
   }
 }
 
@@ -74,28 +101,60 @@ export const findAllVentas = async ():Promise<Array<IVenta>> => {
 //   }
 // }
 
-// export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
-//   try {
-//     if(!(await createTables())){
-//       return -2;
-//     }
-//     const db = await openDb();
-//     // const backupQuery = `INSERT INTO clientes(name, app, apm, tel) VALUES (${cliente.name}, ${cliente.app}, ${cliente.apm}, :tel)`;
-//     const result = await db.run('INSERT INTO clientes(name, app, apm, tel) VALUES (:name, :app, :apm, :tel)', {
-//       ':name': cliente.name,
-//       ':app': cliente.app,
-//       ':apm': cliente.apm,
-//       ':tel': cliente.tel
-//     });
-//     console.log(`changes: ${result.changes}`);
-//     console.log(`lastID: ${result.lastID}`);
-//     console.log(`sql: ${result.stmt}`);
-//     return result.lastID ?? 0;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return -1;
-//   }
-// }
+export const addVenta = async (venta: IDataAddVenta):Promise<number> => {
+  try {
+    if(!(await createTables())){
+      return -2;
+    }
+    const db = await openDb();
+    const result = await db.run('INSERT INTO ventas(id_client, id_direccion, fecha, total, por_pagar, status) VALUES (:id_client, :id_direccion, :fecha, :total, :por_pagar, :status)', {
+      ':id_client': venta.client.id,
+      ':id_direccion': venta.direccion.id,
+      ':fecha': venta.fecha,
+      ':total': venta.total,
+      ':por_pagar': venta.por_pagar,
+      ':status': venta.status,
+    });
+    console.log(`changes: ${result.changes}`);
+    console.log(`lastID: ${result.lastID}`);
+    console.log(`sql: ${result.stmt}`);
+    if(result.lastID !== undefined){
+      await Promise.all(
+        venta.productos.map(async (producto) => {
+          producto.id_venta = result.lastID ?? 0;
+          return await addVentaProducto(producto);
+        })
+      )
+    }
+    return result.lastID ?? 0;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return -1;
+  }
+}
+
+export const addVentaProducto = async (producto: IDataAddVentaProductos):Promise<number> => {
+  try {
+    if(!(await createTables())){
+      return -2;
+    }
+    const db = await openDb();
+    const result = await db.run('INSERT INTO venta_productos(id_venta, id_producto, id_precio, cantidad) VALUES (:id_venta, :id_producto, :id_precio, :cantidad)', {
+      ':id_venta': producto.id_venta,
+      ':id_producto': producto.producto.id,
+      ':id_precio': producto.precio.id,
+      ':cantidad': producto.cantidad,
+    });
+    // console.log(`changes: ${result.changes}`);
+    // console.log(`lastID: ${result.lastID}`);
+    console.log(`sql: ${result.stmt}`);
+    return result.lastID ?? 0;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return -1;
+  }
+}
+
 
 // export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> => {
 //   try {

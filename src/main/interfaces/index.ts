@@ -14,10 +14,18 @@ export interface IClient {
   direcciones: IDirection[];
 }
 
+export interface IPriceProduct {
+  id: number;
+  id_producto: number;
+  id_client: number;
+  precio: number;
+}
+
 export interface IProducto {
   id: number;
   concepto: string;
   precio: number;
+  list_prices: Array<IPriceProduct>
 }
 
 export interface IPago {
@@ -38,7 +46,7 @@ export interface IVentasProductos {
 export interface IVenta {
   id: number;
   id_client: number;
-  id_direccion: string;
+  id_direccion: number;
   fecha: string;
   total: number;
   por_pagar: number;

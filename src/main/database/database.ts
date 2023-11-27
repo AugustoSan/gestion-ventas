@@ -29,8 +29,8 @@ export const createTables = async(): Promise<boolean> => {
     await db.exec('CREATE TABLE IF NOT EXISTS ventas ( id INTEGER PRIMARY KEY, id_client INTEGER, id_direccion INTEGER, fecha TEXT, total REAL, por_pagar REAL, status INTEGER )')
     await db.exec('CREATE TABLE IF NOT EXISTS venta_productos ( id INTEGER PRIMARY KEY, id_venta INTEGER, id_producto INTEGER, id_precio INTEGER, cantidad REAL)')
     // await db.exec('CREATE TABLE IF NOT EXISTS pagos ( id INTEGER PRIMARY KEY, id_client INTEGER, fecha TEXT, monto REAL )');
-    // await db.exec('CREATE TABLE IF NOT EXISTS tiempo_pago ( id INTEGER PRIMARY KEY, porcentaje REAL, dias INTEGER )');
-    // await db.exec('CREATE TABLE IF NOT EXISTS precio_producto_cliente ( id INTEGER PRIMARY KEY, id_producto INTEGER, id_client INTEGER, precio REAL)');
+    await db.exec('CREATE TABLE IF NOT EXISTS tiempo_pago ( id INTEGER PRIMARY KEY, porcentaje REAL, dias INTEGER )');
+    await db.exec('CREATE TABLE IF NOT EXISTS precio_producto_cliente ( id INTEGER PRIMARY KEY, id_producto INTEGER, id_client INTEGER, precio REAL)');
     return true;
   } catch (error) {
     console.log('ERROR: ', error);

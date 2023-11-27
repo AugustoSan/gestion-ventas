@@ -1,8 +1,9 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IProducto } from '../../../../main/interfaces';
+import { IPriceProduct, IProducto } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
-import { IDataAddProduct, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
+import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
+import { setAddListPricesProductArray } from '../ventas';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IProductSlice {
@@ -107,6 +108,15 @@ export const FindProduct = (concepto: string): Thunk => async (dispatch): Promis
   return product;
 }
 
+export const FindPricesProduct = (data: IDataFindPricesProduct): Thunk => async (dispatch): Promise<Array<IPriceProduct>> => {
+  // const filePath = await window.electron.getAllProducts();
+  const prices = await window.electron.ipcRenderer.FindPricesProducto(data);
+  console.log('FindProduct: ', prices);
+  // dispatch(setSearchProducto(product));
+  dispatch(setAddListPricesProductArray(prices));
+  return prices;
+}
+
 export const AddProduct = (product: IDataAddProduct): Thunk => async (dispatch): Promise<number> => {
   // const filePath = await window.electron.getAllProducts();
   const result = await window.electron.ipcRenderer.AddProduct(product);
@@ -115,7 +125,8 @@ export const AddProduct = (product: IDataAddProduct): Thunk => async (dispatch):
     const newProduct:IProducto = {
       id: result,
       concepto: product.concepto,
-      precio: product.precio
+      precio: product.precio,
+      list_prices: []
     }
     dispatch(setAddProductoArray(newProduct));
     dispatch(setHandleAddProduct(false));

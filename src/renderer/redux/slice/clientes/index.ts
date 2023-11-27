@@ -114,6 +114,15 @@ export const GetAllClients = (): Thunk => async (dispatch): Promise<Array<IClien
   return clients;
 }
 
+// const AddClient = async(): Promise<>
+// export const GetAllAddressFromClient = (id: number): Thunk => async (dispatch): Promise<Array<IDirection>> => {
+//   // const filePath = await window.electron.getAllClients();
+//   const address = await window.electron.ipcRenderer.FindAllAddressByClient(id);
+//   console.log('GetAlladdress: ', address);
+//   dispatch(setClientesArray(address));
+//   return address;
+// }
+
 export const FindClient = (texto: string): Thunk => async (dispatch): Promise<Array<IClient>> => {
   // const filePath = await window.electron.getAllProducts();
   const cliente = await window.electron.ipcRenderer.FindCliente(texto);

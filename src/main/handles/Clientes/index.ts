@@ -1,6 +1,6 @@
-import { IClient } from '../../interfaces';
+import { IClient, IDirection } from '../../interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from '../../interfaces/IClients';
-import { addAddress, addCliente, deleteAddress, deleteCliente, findAllClients, findCliente, updateAddress, updateCliente } from './../../database/clientes';
+import { addAddress, addCliente, deleteAddress, deleteCliente, findAddressByIDClient, findAllAddress, findAllClients, findCliente, updateAddress, updateCliente } from './../../database/clientes';
 
 export const findAllClientsHandler = async (event: Electron.IpcMainInvokeEvent):Promise<Array<IClient>> => {
   return await findAllClients();
@@ -23,6 +23,14 @@ export const deleteClienteHandler = async (event: Electron.IpcMainInvokeEvent, d
 }
 
 // Direcciones
+export const getAllAddressHandler = async (event: Electron.IpcMainInvokeEvent):Promise<Array<IDirection>> => {
+  return await findAllAddress();
+}
+
+export const findAllAddressByClientHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<Array<IDirection>> => {
+  return await findAddressByIDClient(id);
+}
+
 export const addAddressHandler = async (event: Electron.IpcMainInvokeEvent, data:IDataAddAddress):Promise<number> => {
   return await addAddress(data);
 }

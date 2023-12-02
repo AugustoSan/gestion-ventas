@@ -1,8 +1,12 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
+import { FaHome } from "react-icons/fa";
+import { MenuItem } from './MenuItem';
+import { menuItems } from '../utils/menuItems';
 
 export const Menu = ():JSX.Element => {
+  const {home, clientes, ingresos, ventas, productos} = menuItems;
   return (
     <div className="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
       <div className="offcanvas-md offcanvas-end bg-body-tertiary" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
@@ -12,36 +16,11 @@ export const Menu = ():JSX.Element => {
         </div>
         <div className="offcanvas-body d-flex flex-column p-0 pt-lg-3 overflow-y-auto">
           <ul className="nav flex-column">
-            <li className="nav-item">
-              <a className="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="/home">
-                <svg className="bi"><use href="#house-fill"/></svg>
-                Inicio
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link d-flex align-items-center gap-2" href="/order">
-                <svg className="bi"><use href="#file-earmark"/></svg>
-                Ventas
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link d-flex align-items-center gap-2" href="/ingresos">
-                <svg className="bi"><use href="#puzzle"/></svg>
-                Ingresos
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link d-flex align-items-center gap-2" href="/producto">
-                <svg className="bi"><use href="#cart"/></svg>
-                Productos
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link d-flex align-items-center gap-2" href="/clientes">
-                <svg className="bi"><use href="/clientes"/></svg>
-                Clientes
-              </a>
-            </li>
+            <MenuItem item={home} />
+            <MenuItem item={ventas} />
+            <MenuItem item={ingresos} />
+            <MenuItem item={productos} />
+            <MenuItem item={clientes} />
           </ul>
 
           <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">

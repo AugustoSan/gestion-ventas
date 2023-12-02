@@ -60,3 +60,9 @@ export interface IPrecioProductoCliente {
   id_client: number;
   precio: number;
 }
+
+export interface IItemMenu {
+  title: string;
+  href: string;
+  icon: JSX.Element;
+}

@@ -15,6 +15,9 @@ interface IDataProps {
 
 export const InputFormSelectAddress = ({cliente, onChange, isEnabled = false}:IDataProps):JSX.Element => {
 
+  console.log('cliente:', cliente);
+
+
   return (
     <InputGroup className="mb-3">
           <Container>
@@ -22,11 +25,19 @@ export const InputFormSelectAddress = ({cliente, onChange, isEnabled = false}:ID
               <Col xs={4}><InputGroup.Text>{"Seleccionar dirección"}</InputGroup.Text></Col>
               <Col xs={8}>
                 <Form.Select aria-label="Seleccionar dirección" onChange={(event) => {
-                  const direction:IDirection = JSON.parse(event.target.value);
-                  onChange(direction);
+                  try {
+                    if( event.target.value === "-1"){
+                      return;
+                    }
+                    const direction:IDirection = JSON.parse(event.target.value);
+                    onChange(direction);
+                  } catch (error) {
+                    console.log('Error: ', error);
+                    return;
+                  }
                 }} disabled={isEnabled}>
                   {
-                    cliente.direcciones.length === 0 && isEnabled === true
+                    cliente.direcciones.length === 0
                     ? <option value={-1}>{`Sin direcciones registradas`}</option>
                     : cliente.direcciones.map((address, index) => {
                       return (<option key={`${index}-${address.id}-item-address`} value={address.id}>{`${address.direccion}`}</option>)

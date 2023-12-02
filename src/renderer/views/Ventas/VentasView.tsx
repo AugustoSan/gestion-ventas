@@ -7,6 +7,7 @@ import { TablaVentasByCliente } from './TablaVentasByCliente';
 import { TablaVentas } from './TablaVentas';
 import { AddVentaCard } from './AddVentaCard';
 import { setHandleAddVenta } from '../../redux/slice/ventas';
+import { AddVentaClienteCard } from './AddVentaClienteCard';
 
 export const VentasView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
@@ -65,7 +66,8 @@ export const VentasView = ():JSX.Element => {
               {'Agregar nueva venta'}
             </Button>
           </div>
-        : <AddVentaCard />
+        // : <AddVentaCard />
+        : <AddVentaClienteCard />
       }
       {
         client !== null && handleAddVenta === false

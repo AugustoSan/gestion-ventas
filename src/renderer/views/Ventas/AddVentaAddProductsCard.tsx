@@ -21,27 +21,19 @@ import { InputDateCard } from '../../components/InputDateCard';
 import { InputProductItem } from '../../components/InputProductItem';
 import { TablaProductosAddVenta } from './TablaProductosAddVenta';
 import { InputFormSelectProduct } from '../../components/InputFormSelectProduct';
-// import { appendLogFile } from '../../main/util';
 
-export const AddVentaCard = ():JSX.Element => {
-  const {clientesArray} = useCustomSelector((state) => state.clientSlice);
+
+interface IDataProps {
+  cliente: IClient;
+  address: IDirection;
+}
+
+export const AddVentaAddProductsCard = ({cliente, address}:IDataProps):JSX.Element => {
   const {productosArray} = useCustomSelector((state) => state.productSlice);
   const {handleAddVenta} = useCustomSelector((state) => state.ventaSlice);
-  const [cliente, setCliente] = useState<IClient>({
-    id: 0,
-    name: "",
-    app: "",
-    apm: "",
-    saldo: 0,
-    tel: "",
-    direcciones: [],
-  });
+
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const [address, setAddress] = useState<IDirection>({
-    id: 0,
-    id_client: 0,
-    direccion: "",
-  });
+
   const [product, setProduct] = useState<IProducto | null>(null);
   const [inputDate, setInputDate] = useState<Date>(new Date(Date.now()));
   const [total, setTotal] = useState<number>(0);
@@ -61,20 +53,7 @@ export const AddVentaCard = ():JSX.Element => {
     <Card className="mb-2">
       <Card.Header>Crear nueva venta</Card.Header>
       <Card.Body>
-        <InputFormSelectClientes  onChange={setCliente} isEnabled={setIsEnabled}/>
-        {
-          cliente === null
-          ? <></>
-          : (
-            <>
-              <InputFormSelectAddress cliente={cliente}  onChange={setAddress} isEnabled={!isEnabled}/>
-              <InputDateCard value={inputDate} onChange={setInputDate} disabled={!isEnabled} />
-              <InputFormSelectProduct onChange={setProduct} disabled={!isEnabled} />
-              {/* <InputProductItem producto={product} cliente={cliente} onChangeProduct={setProduct} disabled={!isEnabled}/> */}
-              {/* <InputPriceCard title={'Total'} value={total} onChange={setTotal} disabled={true} /> */}
-            </>
-          )
-        }
+        {/* Aqui va la info del cliente */}
 
         {
           error.length !== 0

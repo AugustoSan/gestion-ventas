@@ -4,69 +4,79 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useCustomSelector } from '../hooks/redux';
-import { IProducto } from '../../main/interfaces';
+import { IClient, IPriceProduct, IProducto } from '../../main/interfaces';
+import { SetStateAction, useState, useEffect } from 'react';
+import { InputNumberCard } from './InputNumberCard';
+import { InputFormSelectProduct } from './InputFormSelectProduct';
+import { InputFormSelectPriceProduct } from './InputFormSelectPriceProduct';
 
 interface IDataProps {
-  onChange: React.Dispatch<React.SetStateAction<number>>;
+  producto: IProducto | null;
+  cliente: IClient;
+  onChangeProduct: React.Dispatch<React.SetStateAction<IProducto | null>>;
   disabled: boolean;
 }
 
-export const InputProductItem = ({onChange, disabled = false}:IDataProps):JSX.Element => {
+export const InputProductItem = ({producto, cliente, onChangeProduct, disabled = false}:IDataProps):JSX.Element => {
   const {productosArray} = useCustomSelector((state) => state.productSlice);
+  const {addVentaListPricesProduct} = useCustomSelector((state) => state.ventaSlice);
+  const [inputCantidad, setInputCantidad] = useState<number>(0);
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [price, setPrice] = useState<IPriceProduct>({
+    id: 0,
+    id_producto: 0,
+    id_client: 0,
+    precio: 0,
+  });
+  const productDefault: IProducto = {
+    id: 0,
+    concepto: '',
+    precio: 0,
+    list_prices: []
+  };
+
+  const [inputProduct, setInputProduct] = useState<IProducto>(productDefault);
+
+  useEffect(() => {
+    if(producto === null) {
+      setInputProduct(productDefault);
+      setIsEnabled(false);
+    }
+    else {
+      setInputProduct(producto)
+      setIsEnabled(true);
+    }
+  }, [producto])
+
   return (
-    <InputGroup className="mb-3">
-      <Container>
-        <Row>
-          <Col xs={4}><InputGroup.Text>{"Seleccionar producto"}</InputGroup.Text></Col>
-          <Col xs={8}>
-            <Form.Select aria-label="Seleccionar producto" onChange={(event) => {
-              if(event.target.value === "-1") return;
-              const producto:IProducto = JSON.parse(event.target.value);
-              // onChange(cliente);
-            }}
-            disabled={disabled}
-            >
-              <option key={`default-item-producto`} value={"-1"}>{`Selecciona un producto`}</option>
-              {
-                productosArray.map((producto, index) => {
-                  return (<option key={`${index}-${producto.id}-item-producto`} value={JSON.stringify(producto)}>{`${producto.concepto}`}</option>)
-                })
-              }
-            </Form.Select>
-          </Col>
-        </Row>
-      </Container>
-      {/* <Container>
-        <Row>
-          <Col xs={4}><InputGroup.Text>Cantidad</InputGroup.Text></Col>
-          <Col xs={8}>
-            <Form.Control
-              aria-label="Default"
-              aria-describedby="inputGroup-sizing-default"
-              value={0}
-              type={'number'}
-              min={0}
-              step={0.01}
-              // onChange={(event) => onChange(Number(event.target.value))}
-              disabled={disabled}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={4}><InputGroup.Text>Precio</InputGroup.Text></Col>
-          <Col xs={8}>
-            <Form.Control
-              aria-label="Default"
-              aria-describedby="inputGroup-sizing-default"
-              value={0}
-              type={'number'}
-              // onChange={(event) => onChange(Number(event.target.value))}
-              disabled={disabled}
-              placeholder={'Concepto'}
-            />
-          </Col>
-        </Row>
-      </Container> */}
+    <>
+      <InputFormSelectProduct onChange={onChangeProduct} disabled={disabled} />
+      <InputFormSelectPriceProduct producto={inputProduct} cliente={cliente} onChange={setPrice} disabled={!isEnabled} />
+      {/* <InputNumberCard title={'Cantidad'} value={inputCantidad} onChange={setInputCantidad} disabled={disabled} /> */}
+      <InputGroup className="mb-3">
+        <Container>
+          <Row>
+            <Col xs={4}><InputGroup.Text>{'Cantidad'}</InputGroup.Text></Col>
+            <Col xs={4}>
+              <Form.Control
+                aria-label="Default"
+                aria-describedby="inputGroup-sizing-default"
+                value={inputCantidad}
+                onChange={(event) => {
+                  try {
+                    setInputCantidad(Number(event.target.value))
+                  } catch (error) {
+                    alert('La entrada del dato deben ser números')
+                  }
+                }}
+                disabled={disabled}
+                placeholder={'Cantidad'}
+              />
+            </Col>
+            <Col xs={4}><InputGroup.Text>{'Button'}</InputGroup.Text></Col>
+          </Row>
+        </Container>
       </InputGroup>
+    </>
   );
 }

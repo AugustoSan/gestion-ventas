@@ -11,16 +11,18 @@ import { FindPricesProduct } from '../redux/slice/productos';
 interface IDataProps {
   cliente: IClient;
   producto: IProducto;
-  onChange: React.Dispatch<React.SetStateAction<IDirection>>;
+  onChange: React.Dispatch<React.SetStateAction<IPriceProduct>>;
+  disabled: boolean;
 }
 
-export const InputFormSelectPriceProduct = ({cliente, producto, onChange}:IDataProps):JSX.Element => {
+export const InputFormSelectPriceProduct = ({cliente, producto, onChange, disabled}:IDataProps):JSX.Element => {
   const {addVentaListPricesProduct} = useCustomSelector((state) => state.ventaSlice);
-  const [listPrices, setListPrices] = useState<Array<IPriceProduct>>(addVentaListPricesProduct);
   const dispatch = useCustomDispatch();
 
   useEffect(() => {
-    dispatch(FindPricesProduct({id_cliente: cliente.id, id_product: producto.id}));
+    if(producto !== null && producto.id !== 0 && producto.concepto.length > 2){
+      dispatch(FindPricesProduct({id_cliente: cliente.id, id_product: producto.id}));
+    }
   }, [cliente, producto]);
 
 
@@ -30,14 +32,18 @@ export const InputFormSelectPriceProduct = ({cliente, producto, onChange}:IDataP
             <Row>
               <Col xs={4}><InputGroup.Text>{"Seleccionar precio"}</InputGroup.Text></Col>
               <Col xs={8}>
-                <Form.Select aria-label="Seleccionar precio" onChange={(event) => {
-                  const direction:IDirection = JSON.parse(event.target.value);
-                  onChange(direction);
-                }}>
-                  <option value={-1}>{`${producto.precio}`}</option>
+                <Form.Select
+                  aria-label="Seleccionar precio"
+                  onChange={(event) => {
+                    const direction:IPriceProduct = JSON.parse(event.target.value);
+                    onChange(direction);
+                  }}
+                  disabled={disabled}
+                >
+                  <option value={-1}>{`$ ${producto.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}</option>
                   {
-                    listPrices.map((price, index) => {
-                      return (<option key={`${index}-${price.id}-item-price`} value={price.id}>{`${price.precio}`}</option>)
+                    addVentaListPricesProduct.map((price, index) => {
+                      return (<option key={`${index}-${price.id}-item-price`} value={price.id}>{`$ ${price.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}</option>)
                     })
                   }
                 </Form.Select>

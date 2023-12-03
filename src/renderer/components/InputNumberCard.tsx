@@ -22,9 +22,15 @@ export const InputNumberCard = ({title, value, onChange, disabled = false}:IData
               aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               value={value}
+              type='number'
+              min={0}
               onChange={(event) => {
                 try {
-                  onChange(Number(event.target.value))
+                  console.log(event.target.value);
+                  const newNumber = Number(event.target.value) * 1;
+                  console.log('newNumber', newNumber);
+                  console.log('valueOf', newNumber.valueOf());
+                  onChange(newNumber.valueOf())
                 } catch (error) {
                   alert('La entrada del dato deben ser números')
                 }

@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { IClient } from '../../../main/interfaces';
 import { TablaVentasByCliente } from './TablaVentasByCliente';
 import { TablaVentas } from './TablaVentas';
-import { AddVentaCard } from './AddVentaCard';
-import { setHandleAddVenta } from '../../redux/slice/ventas';
+import { GetAllVentas, setHandleAddVenta, setSelectClienteSearch, setSelectView } from '../../redux/slice/ventas';
 import { AddVentaClienteCard } from './AddVentaClienteCard';
+import { AddVentaAddProductsCard } from './AddVentaAddProductsCard';
 
 export const VentasView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
-  const {handleAddVenta} = useCustomSelector((state) => state.ventaSlice);
+  const {handleAddVenta, selectView, addVenta} = useCustomSelector((state) => state.ventaSlice);
   const [client, setClient] = useState<IClient | null>(null);
   const [dropdownSelect, setDropdownSelect] = useState<string>(client === null ? 'Seleccionar cliente' : `${client.name} ${client.app}`);
 
   const dispatch = useCustomDispatch();
+
+  useEffect(() => {
+    dispatch(GetAllVentas());
+  }, []);
+
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -33,6 +38,7 @@ export const VentasView = ():JSX.Element => {
                     console.log(`control`);
                     setDropdownSelect('Ver todo');
                     setClient(null);
+                    dispatch(setSelectClienteSearch(null));
                   }
                 }
               >
@@ -45,8 +51,9 @@ export const VentasView = ():JSX.Element => {
                             onClick={
                               () => {
                                 console.log(`id: ${cliente.id}`);
-                                setDropdownSelect(`${cliente.name} ${cliente.app}`);
                                 setClient(cliente);
+                                dispatch(setSelectClienteSearch(cliente.id));
+                                setDropdownSelect(`${cliente.name} ${cliente.app}`);
                               }
                             }
                           >
@@ -62,20 +69,34 @@ export const VentasView = ():JSX.Element => {
       {
         !handleAddVenta
         ? <div className="card mb-2">
-            <Button variant="outline-primary" size="lg" onClick={() => dispatch(setHandleAddVenta(!handleAddVenta))}>
+            <Button variant="outline-primary" size="lg" onClick={() => {
+              dispatch(setHandleAddVenta(!handleAddVenta));
+              dispatch(setSelectView("addCliente"))
+            }}>
               {'Agregar nueva venta'}
             </Button>
           </div>
         // : <AddVentaCard />
-        : <AddVentaClienteCard />
+        : <></>
       }
       {
-        client !== null && handleAddVenta === false
+        selectView === "all"
+        ? <TablaVentas />
+        : selectView === "infoVenta"
+          ? <></>
+          : selectView === "addCliente"
+            ? <AddVentaClienteCard />
+            : selectView === "addProducts"
+              ? <AddVentaAddProductsCard />
+              : <></>
+      }
+      {/* {
+        client !== null
         ? <TablaVentasByCliente cliente={client}/>
-        : client === null && handleAddVenta === false
+        : client === null
           ? <TablaVentas />
           : <></>
-      }
+      } */}
     </main>
   );
 }

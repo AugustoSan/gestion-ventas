@@ -8,7 +8,7 @@ import { ItemVentaTabla } from '../../components/ItemVentaTabla';
 import { ItemAddVentaTabla } from '../../components/ItemAddVentaTabla';
 
 export const TablaProductosAddVenta = ():JSX.Element => {
-  const { addVenta } = useCustomSelector((state) => state.ventaSlice)
+  const { selectProductos, totalAddVenta } = useCustomSelector((state) => state.ventaSlice)
   const dispatch = useCustomDispatch();
 
   return (
@@ -28,18 +28,16 @@ export const TablaProductosAddVenta = ():JSX.Element => {
             </thead>
             <tbody>
               {
-                addVenta !== null
-                ? addVenta.productos.map( (item, index) => {
+                selectProductos.map( (item, index) => {
                   return <ItemAddVentaTabla key={`${index}-${item.producto.id}-item-add-producto-tabla`} data={item}  />
                 })
-                :<></>
               }
               <tr>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>$ {( addVenta!== null ? addVenta.total : 0).toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
+                <td>$ {totalAddVenta.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
                 <td></td>
               </tr>
             </tbody>

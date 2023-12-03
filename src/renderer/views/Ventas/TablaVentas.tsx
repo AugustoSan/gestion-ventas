@@ -5,12 +5,23 @@ import { ItemClientTabla } from '../../components/ItemClientTabla';
 import { IClient } from '../../../main/interfaces';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { ItemVentaTabla } from '../../components/ItemVentaTabla';
+import { GetAllVentas, GetAllVentasByClient } from '../../redux/slice/ventas';
 
 export const TablaVentas = ():JSX.Element => {
-  const { ventasArray } = useCustomSelector((state) => state.ventaSlice)
+  const { ventasArray, ventasArrayByClient, selectClientSearchVentas } = useCustomSelector((state) => state.ventaSlice)
   const dispatch = useCustomDispatch();
 
   console.log('ventasArray: ', ventasArray)
+
+  useEffect(() => {
+    if(selectClientSearchVentas === null){
+      dispatch(GetAllVentas());
+    }
+    else{
+      dispatch(GetAllVentasByClient(selectClientSearchVentas));
+    }
+  }, [selectClientSearchVentas]);
+
 
   return (
       <div className="card">
@@ -31,8 +42,12 @@ export const TablaVentas = ():JSX.Element => {
             </thead>
             <tbody>
               {
-                ventasArray.map( (venta, index) => {
+                selectClientSearchVentas === null
+                ? ventasArray.map( (venta, index) => {
                   return <ItemVentaTabla key={`${index}-${venta.id}-item-venta-tabla`} venta={venta} />
+                })
+                : ventasArrayByClient.map( (venta, index) => {
+                  return <ItemVentaTabla key={`${index}-${venta.id}-client-item-venta-tabla`} venta={venta} />
                 })
               }
             </tbody>

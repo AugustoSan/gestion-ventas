@@ -2,48 +2,53 @@ import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { ItemClientTabla } from '../../components/ItemClientTabla';
-import { IClient } from '../../../main/interfaces';
+import { IClient, IVenta } from '../../../main/interfaces';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
+import { GetAllVentasByClient, setVentasArrayByClient } from '../../redux/slice/ventas';
+import { ItemVentaTabla } from '../../components/ItemVentaTabla';
 
 interface IDataProps {
   cliente: IClient;
 }
 
 export const TablaVentasByCliente = ({cliente}:IDataProps):JSX.Element => {
-
+  const {ventasArrayByClient} = useCustomSelector((state) => state.ventaSlice);
   const dispatch = useCustomDispatch();
 
   useEffect(() => {
     // Cargar los datos de las ventas
+    dispatch(setVentasArrayByClient([]));
+    dispatch(GetAllVentasByClient(cliente.id));
   }, []);
+
+  console.log(`cliente:`, cliente);
 
 
   return (
-      <div className="card">
+    <div className="card">
         <div className="card-body">
           <div className="table-responsive small">
-          {/* <Table striped bordered hover size="sm">
+          <Table striped bordered hover size="sm">
             <thead>
               <tr>
-                <th scope="col">id</th>
-                <th scope="col">Apellido paterno</th>
-                <th scope="col">Apellido materno</th>
-                <th scope="col">Telefono</th>
+                <th scope="col">ID</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Dirección</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Total</th>
+                <th scope="col">Para liquidar</th>
+                <th scope="col">Estatus</th>
                 <th scope="col">Acción</th>
               </tr>
             </thead>
             <tbody>
               {
-                searchCliente.length > 0
-                ? searchCliente.map( (cliente, index) => {
-                  return <ItemClientTabla key={`${index}-${cliente.id}-item-cliente-search`} cliente={cliente} />
-                })
-                : clientesArray.map( (cliente, index) => {
-                  return <ItemClientTabla key={`${index}-${cliente.id}-item-cliente`} cliente={cliente} />
+                ventasArrayByClient.map( (venta, index) => {
+                  return <ItemVentaTabla key={`${index}-${venta.id}-${cliente.id}-item-venta-by-client-tabla`} venta={venta} />
                 })
               }
             </tbody>
-          </Table> */}
+          </Table>
           </div>
         </div>
       </div>

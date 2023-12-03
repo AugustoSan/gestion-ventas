@@ -8,11 +8,10 @@ import { useCustomSelector } from '../hooks/redux';
 import { useState } from 'react';
 
 interface IDataProps {
-  onChange: React.Dispatch<React.SetStateAction<IClient>>;
-  isEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  onChange: React.Dispatch<React.SetStateAction<IClient | null>>;
 }
 
-export const InputFormSelectClientes = ({onChange, isEnabled}:IDataProps):JSX.Element => {
+export const InputFormSelectClientes = ({onChange}:IDataProps):JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
 
   return (
@@ -23,11 +22,9 @@ export const InputFormSelectClientes = ({onChange, isEnabled}:IDataProps):JSX.El
               <Col xs={8}>
                 <Form.Select aria-label="Seleccionar cliente" onChange={(event) => {
                   if(event.target.value === "-1") {
-                    isEnabled(false);
+                    onChange(null);
                     return ;
                   }
-                  console.log('Paso');
-                  isEnabled(true);
                   const cliente:IClient = JSON.parse(event.target.value);
                   onChange(cliente);
                 }}>

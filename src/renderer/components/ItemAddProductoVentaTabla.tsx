@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { IClient, IPrecioProductoCliente, IProducto } from "../../main/interfaces";
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { IDataAddVentaProductos } from "../../main/interfaces/IVentas";
-import { FindPricesProduct } from "../redux/slice/productos";
+// import { FindPricesProduct } from "../redux/slice/productos";
 
 interface IDataProps {
   producto: IProducto;
@@ -17,11 +17,11 @@ export const ItemAddProductoVentaTabla = ({ producto, cliente}: IDataProps):JSX.
   const dispatch = useCustomDispatch();
   const [inputCantidad, setInputCantidad] = useState<number>(0);
 
-  useEffect(() => {
-    if(producto !== null && producto.id !== 0 && producto.concepto.length > 2){
-      dispatch(FindPricesProduct({id_cliente: cliente.id, id_product: producto.id}));
-    }
-  }, [cliente, producto]);
+  // useEffect(() => {
+  //   if(producto !== null && producto.id !== 0 && producto.concepto.length > 2){
+  //     dispatch(FindPricesProduct({id_cliente: cliente.id, id_product: producto.id}));
+  //   }
+  // }, [cliente, producto]);
 
 
   return (

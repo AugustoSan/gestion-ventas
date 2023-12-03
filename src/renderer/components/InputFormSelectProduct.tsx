@@ -7,12 +7,12 @@ import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { IClient, IProducto } from '../../main/interfaces';
 import { SetStateAction, useState, useEffect } from 'react';
 import { InputNumberCard } from './InputNumberCard';
-import { FindPricesProduct } from '../redux/slice/productos';
-import { IDataFindPricesProduct } from '../../main/interfaces/IProducts';
+// import { FindPricesProduct } from '../redux/slice/productos';
+// import { IDataFindPricesProduct } from '../../main/interfaces/IProducts';
 
 interface IDataProps {
   onChange: React.Dispatch<React.SetStateAction<IProducto | null>>;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):JSX.Element => {

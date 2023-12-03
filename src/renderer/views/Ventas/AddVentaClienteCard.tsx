@@ -7,57 +7,41 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { IClient, IDirection, IProducto } from '../../../main/interfaces';
-import { setHandleAddVenta } from '../../redux/slice/ventas';
+import { setAddAddressInAddVenta, setAddClienteInAddVenta, setAddDateInAddVenta, setAddVenta, setHandleAddVenta, setSelectView } from '../../redux/slice/ventas';
 import { InputFormSelectClientes } from '../../components/InputFormSelectClientes';
 import { InputFormSelectAddress } from '../../components/InputFormSelectAddress';
 import { InputDateCard } from '../../components/InputDateCard';
+import { IDataAddVenta } from '../../../main/interfaces/IVentas';
 // import { appendLogFile } from '../../main/util';
 
 export const AddVentaClienteCard = ():JSX.Element => {
-  const [cliente, setCliente] = useState<IClient>({
-    id: 0,
-    name: "",
-    app: "",
-    apm: "",
-    saldo: 0,
-    tel: "",
-    direcciones: [],
-  });
+  const [cliente, setCliente] = useState<IClient | null>(null);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const [address, setAddress] = useState<IDirection>({
-    id: 0,
-    id_client: 0,
-    direccion: "",
-  });
+  const [address, setAddress] = useState<IDirection | null>(null);
   const [inputDate, setInputDate] = useState<Date>(new Date(Date.now()));
   const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
 
   useEffect(() => {
-    if(cliente.direcciones.length > 0){
+    dispatch(setAddClienteInAddVenta(cliente));
+    if(cliente !== null && cliente.direcciones.length > 0) {
       setAddress(cliente.direcciones[0]);
-      setError('');
+      dispatch(setAddAddressInAddVenta(cliente.direcciones[0]));
     }
-    else{
-      setError('Debe de registrar una dirección para continuar');
-      setAddress({
-        id: 0,
-        id_client: 0,
-        direccion: "",
-      });
-    }
-  }, [cliente])
+    else dispatch(setAddAddressInAddVenta(address));
+
+    dispatch(setAddDateInAddVenta(inputDate.toDateString()));
+  }, [cliente, address, inputDate]);
 
 
   const validate = (): boolean => {
 
-    if(cliente.id === 0 && cliente.name.length <= 2 ){
+    if(cliente === null ){
       setError('Por favor seleccione un cliente');
       return false;
     }
-    if(address.id === 0 && address.direccion.length <= 2 ){
-      if(cliente.direcciones.length === 0) setError('Debe de registrar una dirección para continuar');
-      else setError('Por favor seleccione una dirección');
+    if(address === null ){
+      setError('Por favor seleccione una dirección');
       return false;
     }
     if(inputDate === null || inputDate === undefined ){
@@ -72,9 +56,9 @@ export const AddVentaClienteCard = ():JSX.Element => {
     <Card className="mb-2">
       <Card.Header>Crear nueva venta</Card.Header>
       <Card.Body>
-        <InputFormSelectClientes  onChange={setCliente} isEnabled={setIsEnabled}/>
-        <InputFormSelectAddress cliente={cliente}  onChange={setAddress} isEnabled={!isEnabled}/>
-        <InputDateCard value={inputDate} onChange={setInputDate} disabled={!isEnabled} />
+        <InputFormSelectClientes  onChange={setCliente}/>
+        <InputFormSelectAddress cliente={cliente}  onChange={setAddress} />
+        <InputDateCard value={inputDate} onChange={setInputDate} disabled={cliente === null ? true : false} />
 
         {
           error.length !== 0
@@ -88,7 +72,9 @@ export const AddVentaClienteCard = ():JSX.Element => {
             <Col xs={6}>
               <Button
                 variant='outline-secondary'
-                onClick={() => dispatch(setHandleAddVenta(false))}
+                onClick={() => {
+                  dispatch(setSelectView("all"));
+                }}
               >
                 Cancelar
               </Button>
@@ -98,7 +84,25 @@ export const AddVentaClienteCard = ():JSX.Element => {
                 variant='outline-primary'
                 onClick={() => {
                   if(validate()){
-                    console.log('Se procedera con el proceso de agregar una nueva venta.')
+                    if(cliente !== null && address !== null){
+                      // const newVenta:IDataAddVenta = {
+                      //   client: cliente,
+                      //   direccion: address,
+                      //   fecha: inputDate,
+                      //   total: 0,
+                      //   por_pagar: 0,
+                      //   status: 0,
+                      //   productos: []
+                      // };
+                      // console.log('newVenta', newVenta);
+
+                      // dispatch(setAddVenta(newVenta));
+                      dispatch(setSelectView("addProducts"));
+                      console.log('Se procedera con el proceso de agregar una nueva venta.')
+                    }
+                    else{
+                      dispatch(setAddVenta(null));
+                    }
                   }
                 }}
               >

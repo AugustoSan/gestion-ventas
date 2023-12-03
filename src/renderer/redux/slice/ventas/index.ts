@@ -2,33 +2,62 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Thunk } from '../../store';
 import { IClient, IDirection, IPrecioProductoCliente, IVenta } from '../../../../main/interfaces';
-import { IDataAddVenta } from '../../../../main/interfaces/IVentas';
+import { IDataAddVenta, IDataAddVentaProductos } from '../../../../main/interfaces/IVentas';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IVentaSlice {
   selectVenta: IVenta | null;
+  selectClientSearchVentas: number | null;
   ventasArray: Array<IVenta>;
   ventasArrayByClient: Array<IVenta>;
   handleAddVenta: boolean;
   addVenta: IDataAddVenta | null;
-  addVentaListPricesProduct: Array<IPrecioProductoCliente>
+  addVentaListPricesProduct: Array<IPrecioProductoCliente>;
+  selectClient: IClient | null;
+  selectAddress: IDirection | null;
+  selectFecha: string | null;
+  selectProductos: Array<IDataAddVentaProductos>;
+  totalAddVenta: number;
+  selectView: "all"  | "addCliente" | "addProducts" | "infoVenta";
 }
 
 const initialState: IVentaSlice =
 {
   selectVenta: null,
+  selectClientSearchVentas: null,
   ventasArray: [],
   ventasArrayByClient: [],
   handleAddVenta: false,
   addVenta: null,
-  addVentaListPricesProduct: []
+  addVentaListPricesProduct: [],
+  selectView: "all",
+  selectClient: null,
+  selectAddress: null,
+  selectFecha: null,
+  totalAddVenta: 0,
+  selectProductos: []
 }
 
 const ventaSlice = createSlice({
     name: 'ventas',
     initialState,
     reducers: {
-      setAddVenta: (state, action: PayloadAction<IDataAddVenta>) =>{
+      setSelectClienteSearch: (state, action: PayloadAction<number | null>) =>{
+        state.selectClientSearchVentas = action.payload;
+      },
+      setSelectView: (state, action: PayloadAction<"all"  | "addCliente" | "addProducts" | "infoVenta">) =>{
+        if(action.payload === "all"){
+          state.addVenta = null;
+          state.handleAddVenta = false;
+          state.selectAddress = null;
+          state.selectClient = null;
+          state.selectFecha = null;
+          state.selectProductos = [];
+          state.selectVenta = null;
+        }
+        state.selectView = action.payload;
+      },
+      setAddVenta: (state, action: PayloadAction<IDataAddVenta | null>) =>{
         state.addVenta = action.payload;
       },
       setHandleAddVenta: (state, action: PayloadAction<boolean>) =>{
@@ -53,10 +82,32 @@ const ventaSlice = createSlice({
         console.log('Entro en setVentasArrayByClient: ', action.payload);
         state.ventasArrayByClient = action.payload;
       },
+      setAddClienteInAddVenta: (state, action: PayloadAction<IClient | null>) => {
+        state.selectClient = action.payload;
+      },
+      setAddAddressInAddVenta: (state, action: PayloadAction<IDirection | null>) => {
+        state.selectAddress = action.payload;
+      },
+      setAddDateInAddVenta: (state, action: PayloadAction<string | null>) => {
+        state.selectFecha = action.payload;
+      },
+      setAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
+        state.selectProductos = [action.payload, ...state.selectProductos];
+        state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.producto.precio);
+      },
+      deleteAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
+        const products = state.selectProductos.filter((producto) => producto.producto.id !== action.payload.producto.id);
+        if(products.length !== state.selectProductos.length) {
+          state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.producto.precio);
+        }
+        state.selectProductos = products;
+      },
     }
 });
 
 export const {
+  setSelectClienteSearch,
+  setSelectView,
   setAddVenta,
   setHandleAddVenta,
   setSelectVenta,
@@ -64,6 +115,11 @@ export const {
   setAddItemVentasArray,
   setAddListPricesProductArray,
   setVentasArrayByClient,
+  setAddClienteInAddVenta,
+  setAddAddressInAddVenta,
+  setAddDateInAddVenta,
+  setAddProductAddVenta,
+  deleteAddProductAddVenta,
 } = ventaSlice.actions;
 
 export default ventaSlice.reducer;

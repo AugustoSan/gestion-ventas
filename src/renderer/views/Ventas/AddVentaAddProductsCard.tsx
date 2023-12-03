@@ -6,7 +6,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import InputGroup from 'react-bootstrap/InputGroup';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { InputCard } from '../../components/InputCard';
 import { AddProduct, setHandleAddProduct } from '../../redux/slice/productos';
@@ -14,7 +13,7 @@ import { IDataAddProduct } from '../../../main/interfaces/IProducts';
 import { InputPriceCard } from '../../components/InputPriceCard';
 import { IClient, IDirection, IProducto } from '../../../main/interfaces';
 import { IDataAddVenta } from '../../../main/interfaces/IVentas';
-import { setHandleAddVenta } from '../../redux/slice/ventas';
+import { AddVenta, setHandleAddVenta, setSelectView } from '../../redux/slice/ventas';
 import { InputFormSelectClientes } from '../../components/InputFormSelectClientes';
 import { InputFormSelectAddress } from '../../components/InputFormSelectAddress';
 import { InputDateCard } from '../../components/InputDateCard';
@@ -22,15 +21,9 @@ import { InputProductItem } from '../../components/InputProductItem';
 import { TablaProductosAddVenta } from './TablaProductosAddVenta';
 import { InputFormSelectProduct } from '../../components/InputFormSelectProduct';
 
-
-interface IDataProps {
-  cliente: IClient;
-  address: IDirection;
-}
-
-export const AddVentaAddProductsCard = ({cliente, address}:IDataProps):JSX.Element => {
+export const AddVentaAddProductsCard = ():JSX.Element => {
   const {productosArray} = useCustomSelector((state) => state.productSlice);
-  const {handleAddVenta} = useCustomSelector((state) => state.ventaSlice);
+  const {selectClient, selectAddress, selectFecha, selectProductos, totalAddVenta} = useCustomSelector((state) => state.ventaSlice);
 
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
@@ -49,12 +42,13 @@ export const AddVentaAddProductsCard = ({cliente, address}:IDataProps):JSX.Eleme
   console.log('producto: ', product);
 
 
-  return (
+  return selectClient === null ? <></>
+  : (
     <Card className="mb-2">
       <Card.Header>Crear nueva venta</Card.Header>
       <Card.Body>
         {/* Aqui va la info del cliente */}
-
+        <InputProductItem producto={product} cliente={selectClient} onChangeProduct={setProduct}/>
         {
           error.length !== 0
           ? (<Alert variant={'danger'}>{error}</Alert>)
@@ -68,7 +62,9 @@ export const AddVentaAddProductsCard = ({cliente, address}:IDataProps):JSX.Eleme
             <Col xs={6}>
               <Button
                 variant='outline-secondary'
-                onClick={() => dispatch(setHandleAddVenta(false))}
+                onClick={() => {
+                  dispatch(setSelectView("all"));
+                }}
               >
                 Cancelar
               </Button>
@@ -78,16 +74,21 @@ export const AddVentaAddProductsCard = ({cliente, address}:IDataProps):JSX.Eleme
                 variant='outline-primary'
                 onClick={() => {
                   if(validateInputs()){
-                    console.log('Se va a guardar el nuevo producto');
-                    // const newVenta:IDataAddVenta = {
-                    //   id_client: 0,
-                    //   id_direccion: 0,
-                    //   fecha: new Date(),
-                    //   total: 0,
-                    //   por_pagar: 0,
-                    //   status: 0,
-                    //   productos: []
-                    // }
+                    if(selectAddress !== null && selectFecha !== null && totalAddVenta > 0 && selectProductos.length > 0){
+                      console.log('Se va a guardar el nuevo producto');
+                      const newVenta:IDataAddVenta = {
+                        client: selectClient,
+                        direccion: selectAddress,
+                        fecha: selectFecha,
+                        total: totalAddVenta,
+                        por_pagar: totalAddVenta,
+                        status: 0,
+                        productos: selectProductos
+                      };
+
+                      dispatch(AddVenta(newVenta));
+                      dispatch(setSelectView('all'))
+                    }
                   }
                 }}
               >

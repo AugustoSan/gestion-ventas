@@ -1,16 +1,15 @@
 import { IClient, IDirection, IPrecioProductoCliente, IProducto } from ".";
 
 export interface IDataAddVentaProductos {
-  id_venta: number;
   producto: IProducto;
-  precio: IPrecioProductoCliente;
+  // precio: IPrecioProductoCliente;
   cantidad: number;
 }
 
 export interface IDataAddVenta {
   client: IClient;
   direccion: IDirection;
-  fecha: Date;
+  fecha: string;
   total: number;
   por_pagar: number;
   status: number;

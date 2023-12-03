@@ -8,13 +8,19 @@ import { graphicDataIngresos, graphicDataPedidos, graphicLabelsDays } from '../u
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { GetAllClients } from '../redux/slice/clientes';
 import { IClient } from '../../main/interfaces';
+import { GetAllVentas, setSelectClienteSearch } from '../redux/slice/ventas';
+import { GetAllProducts } from '../redux/slice/productos';
+import { TablaVentas } from './Ventas/TablaVentas';
 
 export const HomeView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
   const [clientSelected, setClientSelected] = useState<IClient | null>(null);
+  const [dropdownSelect, setDropdownSelect] = useState<string>('Seleccionar cliente');
   const dispatch = useCustomDispatch();
   useEffect(() => {
     dispatch(GetAllClients());
+    dispatch(GetAllVentas());
+    dispatch(GetAllProducts());
   }, []);
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -27,14 +33,27 @@ export const HomeView = ():JSX.Element => {
           </div> */}
           <Dropdown>
             <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-              { clientSelected === null ? 'Seleccionar cliente' : `${clientSelected.name} ${clientSelected.app}`}
+              { dropdownSelect }
             </Dropdown.Toggle>
             <Dropdown.Menu>
+              <Dropdown.Item
+                  key={`control-dropdown-ventas`}
+                  onClick={
+                    () => {
+                      console.log(`control`);
+                      setDropdownSelect('Ver todo');
+                      dispatch(setSelectClienteSearch(null));
+                    }
+                  }
+                >
+                  {'Ver todo'}
+              </Dropdown.Item>
               {
                 clientesArray.map((cliente, index) => {
                   return (<Dropdown.Item key={`${cliente.id}-${index}-dropdown-dashboard`} onClick={() => {
-                    console.log('Se selecciono el cliente: ', cliente.name);
-                    setClientSelected(cliente);
+                    console.log('Se selecciono el cliente ', cliente.name);
+                    setDropdownSelect(`${cliente.name} ${cliente.app}`);
+                    dispatch(setSelectClienteSearch(cliente.id));
                   }}>{`${cliente.name} ${cliente.app}`}</Dropdown.Item>);
                 })
               }
@@ -48,7 +67,7 @@ export const HomeView = ():JSX.Element => {
       </div>
 
       <Graphic dataIngresos={graphicDataIngresos} dataPedidos={graphicDataPedidos} labels={graphicLabelsDays}/>
-      <Tabla />
+      <TablaVentas />
 
     </main>
   );

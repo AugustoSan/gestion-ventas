@@ -40,7 +40,7 @@ const electronHandler = {
     // Products
     GetAllProducts:():Promise<Array<IProducto>> => ipcRenderer.invoke('products:getAllProducts', []),
     FindProducto:(concepto: string):Promise<Array<IProducto>> => ipcRenderer.invoke('products:findProduct', concepto),
-    FindPricesProducto:(data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => ipcRenderer.invoke('products:findPricesProduct', data),
+    // FindPricesProducto:(data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => ipcRenderer.invoke('products:findPricesProduct', data),
     AddProduct:(data: IDataAddProduct):Promise<number> => ipcRenderer.invoke('products:addlProduct', data),
     UpdateProduct:(data: IDataUpdateProduct):Promise<number> => ipcRenderer.invoke('products:updateProduct', data),
     DeleteProduct:(data: number):Promise<number> => ipcRenderer.invoke('products:deleteProduct', data),

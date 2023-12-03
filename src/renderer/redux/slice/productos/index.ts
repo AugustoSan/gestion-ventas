@@ -108,14 +108,14 @@ export const FindProduct = (concepto: string): Thunk => async (dispatch): Promis
   return product;
 }
 
-export const FindPricesProduct = (data: IDataFindPricesProduct): Thunk => async (dispatch): Promise<Array<IPriceProduct>> => {
-  // const filePath = await window.electron.getAllProducts();
-  const prices = await window.electron.ipcRenderer.FindPricesProducto(data);
-  console.log('FindProduct: ', prices);
-  // dispatch(setSearchProducto(product));
-  dispatch(setAddListPricesProductArray(prices));
-  return prices;
-}
+// export const FindPricesProduct = (data: IDataFindPricesProduct): Thunk => async (dispatch): Promise<Array<IPriceProduct>> => {
+//   // const filePath = await window.electron.getAllProducts();
+//   const prices = await window.electron.ipcRenderer.FindPricesProducto(data);
+//   console.log('FindProduct: ', prices);
+//   // dispatch(setSearchProducto(product));
+//   dispatch(setAddListPricesProductArray(prices));
+//   return prices;
+// }
 
 export const AddProduct = (product: IDataAddProduct): Thunk => async (dispatch): Promise<number> => {
   // const filePath = await window.electron.getAllProducts();

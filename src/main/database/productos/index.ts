@@ -88,17 +88,17 @@ export const deleteProducto = async (id: number):Promise<number> => {
 }
 
 // Precios Producto
-export const getAllPricesProduct = async (data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => {
-  try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const query = `SELECT * FROM precio_producto_cliente WHERE id_producto=${data.id_product} AND id_client=${data.id_cliente}`;
-    const result:Array<IPriceProduct> = await db.all(query);
-    return result;
-  } catch (error) {
-    console.log('ERROR:', error);
-    return [];
-  }
-}
+// export const getAllPricesProduct = async (data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => {
+//   try {
+//     if(!(await createTables())){
+//       return [];
+//     }
+//     const db = await openDb();
+//     const query = `SELECT * FROM precio_producto_cliente WHERE id_producto=${data.id_product} AND id_client=${data.id_cliente}`;
+//     const result:Array<IPriceProduct> = await db.all(query);
+//     return result;
+//   } catch (error) {
+//     console.log('ERROR:', error);
+//     return [];
+//   }
+// }

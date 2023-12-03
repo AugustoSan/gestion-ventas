@@ -8,12 +8,11 @@ import { useCustomSelector } from '../hooks/redux';
 import { useEffect, useState } from 'react';
 
 interface IDataProps {
-  cliente: IClient;
-  onChange: React.Dispatch<React.SetStateAction<IDirection>>;
-  isEnabled: boolean;
+  cliente: IClient | null;
+  onChange: React.Dispatch<React.SetStateAction<IDirection | null>>;
 }
 
-export const InputFormSelectAddress = ({cliente, onChange, isEnabled = false}:IDataProps):JSX.Element => {
+export const InputFormSelectAddress = ({cliente, onChange}:IDataProps):JSX.Element => {
 
   console.log('cliente:', cliente);
 
@@ -35,9 +34,9 @@ export const InputFormSelectAddress = ({cliente, onChange, isEnabled = false}:ID
                     console.log('Error: ', error);
                     return;
                   }
-                }} disabled={isEnabled}>
+                }} disabled={cliente === null ? true : false}>
                   {
-                    cliente.direcciones.length === 0
+                    cliente === null
                     ? <option value={-1}>{`Sin direcciones registradas`}</option>
                     : cliente.direcciones.map((address, index) => {
                       return (<option key={`${index}-${address.id}-item-address`} value={address.id}>{`${address.direccion}`}</option>)

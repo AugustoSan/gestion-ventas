@@ -1,33 +1,33 @@
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useCustomSelector } from '../hooks/redux';
-import { IClient, IPriceProduct, IProducto } from '../../main/interfaces';
 import { SetStateAction, useState, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
+import { IClient, IPriceProduct, IProducto } from '../../main/interfaces';
 import { InputNumberCard } from './InputNumberCard';
 import { InputFormSelectProduct } from './InputFormSelectProduct';
 import { InputFormSelectPriceProduct } from './InputFormSelectPriceProduct';
+import { setAddProductAddVenta } from '../redux/slice/ventas';
+import { IDataAddVentaProductos } from '../../main/interfaces/IVentas';
+import { LabelInfoCard } from './LabelInfoCard';
+import { InputCard } from './InputCard';
 
 interface IDataProps {
   producto: IProducto | null;
   cliente: IClient;
   onChangeProduct: React.Dispatch<React.SetStateAction<IProducto | null>>;
-  disabled: boolean;
 }
 
-export const InputProductItem = ({producto, cliente, onChangeProduct, disabled = false}:IDataProps):JSX.Element => {
-  const {productosArray} = useCustomSelector((state) => state.productSlice);
-  const {addVentaListPricesProduct} = useCustomSelector((state) => state.ventaSlice);
+export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps):JSX.Element => {
+  const dispatch = useCustomDispatch();
   const [inputCantidad, setInputCantidad] = useState<number>(0);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const [price, setPrice] = useState<IPriceProduct>({
-    id: 0,
-    id_producto: 0,
-    id_client: 0,
-    precio: 0,
-  });
+  const [error, setError] = useState<string>('');
+  // const [price, setPrice] = useState<IPriceProduct>({
+  //   id: 0,
+  //   id_producto: 0,
+  //   id_client: 0,
+  //   precio: 0,
+  // });
   const productDefault: IProducto = {
     id: 0,
     concepto: '',
@@ -46,37 +46,57 @@ export const InputProductItem = ({producto, cliente, onChangeProduct, disabled =
       setInputProduct(producto)
       setIsEnabled(true);
     }
-  }, [producto])
+  }, [producto]);
+
+  const validate = (): boolean => {
+    if(inputProduct === productDefault){
+      setError('Seleccione un producto');
+      return false;
+    }
+    // if(price.id === 0 && price.precio){
+    //   setError('Seleccione un precio de la lista de precios.');
+    //   return false;
+    // }
+    if(inputCantidad === 0){
+      setError('Ingrese una cantidad mayor a cero.');
+      return false;
+    }
+    setError('');
+    return true;
+  }
 
   return (
     <>
-      <InputFormSelectProduct onChange={onChangeProduct} disabled={disabled} />
-      <InputFormSelectPriceProduct producto={inputProduct} cliente={cliente} onChange={setPrice} disabled={!isEnabled} />
-      {/* <InputNumberCard title={'Cantidad'} value={inputCantidad} onChange={setInputCantidad} disabled={disabled} /> */}
-      <InputGroup className="mb-3">
-        <Container>
-          <Row>
-            <Col xs={4}><InputGroup.Text>{'Cantidad'}</InputGroup.Text></Col>
-            <Col xs={4}>
-              <Form.Control
-                aria-label="Default"
-                aria-describedby="inputGroup-sizing-default"
-                value={inputCantidad}
-                onChange={(event) => {
-                  try {
-                    setInputCantidad(Number(event.target.value))
-                  } catch (error) {
-                    alert('La entrada del dato deben ser números')
-                  }
-                }}
-                disabled={disabled}
-                placeholder={'Cantidad'}
-              />
-            </Col>
-            <Col xs={4}><InputGroup.Text>{'Button'}</InputGroup.Text></Col>
-          </Row>
-        </Container>
-      </InputGroup>
+      <InputFormSelectProduct onChange={onChangeProduct} />
+      {/* <InputFormSelectPriceProduct producto={inputProduct} cliente={cliente} onChange={setPrice} disabled={!isEnabled} /> */}
+      <InputCard
+          title={'Precio'}
+          value={`$ ${inputProduct.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}
+          onChange={() =>{}}
+          disabled={true}
+        />
+      {/* <LabelInfoCard title={'Precio'} value={inputProduct.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})} /> */}
+      <InputNumberCard title={'Cantidad'} value={inputCantidad} onChange={setInputCantidad} />
+      <div className="card mb-2">
+        <Button variant="outline-primary" size="lg" onClick={() => {
+          if(validate()){
+            const newProduct: IDataAddVentaProductos = {
+              producto: inputProduct,
+              cantidad: inputCantidad
+            }
+            dispatch(setAddProductAddVenta(newProduct));
+            setInputProduct(productDefault);
+            setInputCantidad(0);
+          }
+        }}>
+          {'Agregar producto'}
+        </Button>
+      </div>
+      {
+        error.length !== 0
+        ? (<Alert variant={'danger'}>{error}</Alert>)
+        : <></>
+      }
     </>
   );
 }

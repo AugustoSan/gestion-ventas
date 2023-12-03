@@ -1,1 +1,1 @@
-INSERT INTO productos(concepto, precio) VALUES (pruebas de bakcup en sql, 25)
+INSERT INTO productos(concepto, precio) VALUES ('Lata de chiles San Marcos', 0)

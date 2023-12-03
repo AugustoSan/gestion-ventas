@@ -71,6 +71,8 @@ export const findAllVentas = async ():Promise<Array<IVenta>> => {
     }
     const db = await openDb();
     const result:Array<IVenta> = await db.all('SELECT * FROM ventas');
+    console.log('result ventas:', result);
+
     return result;
   } catch (error) {
     console.log('ERROR:', error);
@@ -117,15 +119,13 @@ export const addVenta = async (venta: IDataAddVenta):Promise<number> => {
     });
     console.log(`changes: ${result.changes}`);
     console.log(`lastID: ${result.lastID}`);
-    console.log(`sql: ${result.stmt}`);
-    if(result.lastID !== undefined){
-      await Promise.all(
-        venta.productos.map(async (producto) => {
-          producto.id_venta = result.lastID ?? 0;
-          return await addVentaProducto(producto);
-        })
-      )
-    }
+    console.log(`addVenta: ${result.stmt}`);
+    await Promise.all(
+      venta.productos.map(async (producto) => {
+        const id_venta = result.lastID ?? 0;
+        return await addVentaProducto(producto, id_venta);
+      })
+    )
     return result.lastID ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
@@ -133,21 +133,21 @@ export const addVenta = async (venta: IDataAddVenta):Promise<number> => {
   }
 }
 
-export const addVentaProducto = async (producto: IDataAddVentaProductos):Promise<number> => {
+export const addVentaProducto = async (producto: IDataAddVentaProductos, id_venta: number):Promise<number> => {
   try {
     if(!(await createTables())){
       return -2;
     }
     const db = await openDb();
-    const result = await db.run('INSERT INTO venta_productos(id_venta, id_producto, id_precio, cantidad) VALUES (:id_venta, :id_producto, :id_precio, :cantidad)', {
-      ':id_venta': producto.id_venta,
+    const result = await db.run('INSERT INTO venta_productos(id_venta, id_producto, precio, cantidad) VALUES (:id_venta, :id_producto, :precio, :cantidad)', {
+      ':id_venta': id_venta,
       ':id_producto': producto.producto.id,
-      ':id_precio': producto.precio.id,
+      ':precio': producto.producto.precio,
       ':cantidad': producto.cantidad,
     });
     // console.log(`changes: ${result.changes}`);
     // console.log(`lastID: ${result.lastID}`);
-    console.log(`sql: ${result.stmt}`);
+    console.log(`addVentaProducto: ${result.lastID}`);
     return result.lastID ?? 0;
   } catch (error) {
     console.log('ERROR:', error);

@@ -17,9 +17,9 @@ export const VentasView = ():JSX.Element => {
 
   const dispatch = useCustomDispatch();
 
-  useEffect(() => {
-    dispatch(GetAllVentas());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(GetAllVentas());
+  // }, []);
 
 
   return (

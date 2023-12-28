@@ -8,7 +8,9 @@ import { menuItems } from '../utils/menuItems';
 export const Menu = ():JSX.Element => {
   const {home, clientes, ingresos, ventas, productos} = menuItems;
   return (
-    <div className="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+    <div className="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary" style={{
+      height: '100vh'
+    }}>
       <div className="offcanvas-md offcanvas-end bg-body-tertiary" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         <div className="offcanvas-header">
           {/* <h5 className="offcanvas-title" id="sidebarMenuLabel">Gestión de ventas</h5> */}

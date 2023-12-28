@@ -14,6 +14,11 @@ export const TablaVentas = ():JSX.Element => {
   console.log('ventasArray: ', ventasArray)
 
   useEffect(() => {
+    dispatch(GetAllVentas());
+  }, []);
+
+
+  useEffect(() => {
     if(selectClientSearchVentas === null){
       dispatch(GetAllVentas());
     }
@@ -44,9 +49,13 @@ export const TablaVentas = ():JSX.Element => {
               {
                 selectClientSearchVentas === null
                 ? ventasArray.map( (venta, index) => {
+                  console.log('item: ', venta);
+
                   return <ItemVentaTabla key={`${index}-${venta.id}-item-venta-tabla`} venta={venta} />
                 })
                 : ventasArrayByClient.map( (venta, index) => {
+                  console.log('Entro en itemventabyclient');
+
                   return <ItemVentaTabla key={`${index}-${venta.id}-client-item-venta-tabla`} venta={venta} />
                 })
               }

@@ -19,6 +19,8 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
 
   useEffect(() => {
     clientesArray.map((cliente) => {
+      console.log('id_client: ', id_client, '   client id: ', cliente.id);
+
       if(cliente.id === id_client){
         setClient(cliente);
       }
@@ -30,7 +32,7 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
         }
       })
     }
-  }, [client])
+  }, []);
 
 
   return client === null

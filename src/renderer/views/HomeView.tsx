@@ -19,8 +19,9 @@ export const HomeView = ():JSX.Element => {
   const dispatch = useCustomDispatch();
   useEffect(() => {
     dispatch(GetAllClients());
-    dispatch(GetAllVentas());
+    // dispatch(GetAllVentas());
     dispatch(GetAllProducts());
+    dispatch(setSelectClienteSearch(null));
   }, []);
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">

@@ -5,10 +5,15 @@ import fs from 'fs';
 import { IClient, IDirection, IProducto } from '../interfaces';
 import { findAllAddress, findAllClients } from './clientes';
 import { findAllProductos } from './productos';
+import { openDBPostgres } from './database-pg';
 // import { appendLogFile } from '../../main/util'
 
 // you would have to import / invoke this in another file
 export const openDb = async() => {
+  const temp = await openDBPostgres();
+  // console.log('temp: ', temp);
+  const test = await temp`select * from tblClientes`;
+  console.log('test: ', test);
   return open({
     filename: 'database.db',
     driver: sqlite3.Database

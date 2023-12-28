@@ -10,10 +10,6 @@ import { openDBPostgres } from './database-pg';
 
 // you would have to import / invoke this in another file
 export const openDb = async() => {
-  const temp = await openDBPostgres();
-  // console.log('temp: ', temp);
-  const test = await temp`select * from tblClientes`;
-  console.log('test: ', test);
   return open({
     filename: 'database.db',
     driver: sqlite3.Database

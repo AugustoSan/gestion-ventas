@@ -1,89 +1,90 @@
 import { WriteFileSQLBackup } from "../../files/log";
 import { IPriceProduct, IProducto } from "../../interfaces";
 import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from "../../interfaces/IProducts";
-import { createTables, openDb } from "../database";
+import { openDBPostgres } from "../database-pg";
 
 export const findAllProductos = async ():Promise<Array<IProducto>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IProducto> = await db.all('SELECT * FROM productos');
+    const temp = await client.query('SELECT * FROM tblProductos');
+    const result:Array<IProducto> = temp.rows;
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const findProducto = async (concepto: string):Promise<Array<IProducto>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const query = `SELECT * FROM productos WHERE concepto LIKE '%${concepto}%'`;
-    const result:Array<IProducto> = await db.all(query);
+    const query = `SELECT * FROM tblProductos WHERE concepto LIKE '%${concepto}%'`;
+    const temp = await client.query(query);
+    const result:Array<IProducto> = temp.rows;
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 
 export const addProducto = async ({concepto, precio}: IDataAddProduct):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const query = `INSERT INTO productos(concepto, precio) VALUES ('${concepto}', ${precio})`;
-    const result = await db.run('INSERT INTO productos(concepto, precio) VALUES (:concepto, :precio)', {
-      ':concepto': concepto,
-      ':precio': precio
-    });
-    WriteFileSQLBackup(query);
-    return result.lastID ?? 0;
+    const query = `INSERT INTO tblProductos(concepto, precio) VALUES ($1, $2) RETURNING *`;
+    const values = [concepto, precio];
+    const result = await client.query(query, values);
+    // WriteFileSQLBackup(query);
+    console.log(result, result);
+    
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 export const updateProducto = async (producto: IDataUpdateProduct):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('UPDATE productos SET concepto=:concepto, precio=:precio WHERE id=:id', {
-      ':id': producto.id,
-      ':concepto': producto.product.concepto,
-      ':precio': producto.product.precio,
-    });
-    return result.changes ?? 0;
+    const {concepto, precio} = producto.product;
+    const query = `UPDATE tblProductos SET concepto=$1, precio=$2 WHERE id=$3`;
+    const values = [concepto, precio, producto.id]
+    const result = await client.query(query, values);
+    console.log('result: ', result);
+    
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 
 export const deleteProducto = async (id: number):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('DELETE FROM productos WHERE id=:id', {
-      ':id': id
-    });
-    return result.changes ?? 0;
+    const result = await client.query('DELETE FROM tblProductos WHERE id=$1', [id]);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 

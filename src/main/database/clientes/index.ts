@@ -1,28 +1,32 @@
 import { IClient, IDirection } from "../../interfaces";
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from "../../interfaces/IClients";
-import { createTables, openDb } from "../database";
+// import { createTables, openDb } from "../database";
+import { openDBPostgres } from "../database-pg";
 
 export const findAddressByIDClient = async (id: number): Promise<Array<IDirection>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IDirection> = await db.all(`SELECT * FROM direcciones WHERE id_client=${id}`);
+    const temp = await client.query(`SELECT * FROM tblDirecciones WHERE id_client=${id}`);
+    const result:Array<IDirection> = temp.rows;
+    // const result:Array<IDirection> = await db.all(`SELECT * FROM direcciones WHERE id_client=${id}`);
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const findAllClients = async ():Promise<Array<IClient>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IClient> = await db.all('SELECT * FROM clientes');
+    console.log('entro en findAllClients');
+    
+    const temp = await client.query(`SELECT * FROM tblClientes`);
+    const result:Array<IClient> = temp.rows;
     const allClients:Array<IClient> = await Promise.all(
       result.map(async (cliente) => {
         cliente.direcciones = await findAddressByIDClient(cliente.id);
@@ -33,17 +37,18 @@ export const findAllClients = async ():Promise<Array<IClient>> => {
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const findCliente = async (texto: string):Promise<Array<IClient>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const query = `SELECT * FROM clientes WHERE name LIKE '%${texto}%' OR app LIKE '%${texto}%' OR apm LIKE '%${texto}%' OR tel LIKE '%${texto}%'`;
-    const result:Array<IClient> = await db.all(query);
+    const query = `SELECT * FROM tblClientes WHERE name LIKE ${texto + '%'} OR app LIKE ${texto + '%'} OR apm LIKE ${texto + '%'} OR tel LIKE ${texto + '%'}`;
+    const temp = await client.query(`${query}`);
+    const result:Array<IClient> = temp.rows;
     const allClients:Array<IClient> = await Promise.all(
       result.map(async (cliente) => {
         cliente.direcciones = await findAddressByIDClient(cliente.id);
@@ -54,141 +59,135 @@ export const findCliente = async (texto: string):Promise<Array<IClient>> => {
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('INSERT INTO clientes(name, app, apm, tel) VALUES (:name, :app, :apm, :tel)', {
-      ':name': cliente.name,
-      ':app': cliente.app,
-      ':apm': cliente.apm,
-      ':tel': cliente.tel
-    });
-    return result.lastID ?? 0;
+    const {name, app, apm, tel} = cliente;
+    const query = `INSERT INTO tblClientes(name, app, apm, tel) VALUES ($1, $2, $3, $4) RETURNING *`;
+    const values = [name, app, apm, tel];
+    const result = await client.query(query, values);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('UPDATE clientes SET name=:name, app=:app, apm=:apm, tel=:tel WHERE id=:id', {
-      ':id': cliente.id,
-      ':name': cliente.client.name,
-      ':app': cliente.client.app,
-      ':apm': cliente.client.apm,
-      ':tel': cliente.client.tel
-    });
-    return result.changes ?? 0;
+    const { name, app, apm, tel} = cliente.client;
+    const query = `UPDATE tblClientes SET name=$1, app=$2, apm=$3, tel=$4 WHERE id=$5`;
+    const values = [name, app, apm, tel, cliente.id];
+    const result = await client.query(query, values);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 
 export const deleteCliente = async (id: number):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('DELETE FROM clientes WHERE id=:id', {
-      ':id': id
-    });
-    return result.changes ?? 0;
+    const result = await client.query(`DELETE FROM tblClientes WHERE id=${id}`);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 // Direcciones
 export const findAllAddress = async ():Promise<Array<IDirection>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IDirection> = await db.all('SELECT * FROM direcciones');
+    const temp = await client.query(`SELECT * FROM tblDirecciones`);
+    const result:Array<IDirection> = temp.rows;
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const findAllAddressByClient = async (id: number):Promise<Array<IDirection>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IDirection> = await db.all(`SELECT * FROM direcciones WHERE id_client=${id}`);
+    const temp = await client.query(`SELECT * FROM tblDirecciones WHERE id_client=${id}`);
+    const result:Array<IDirection> = temp.rows;
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const addAddress = async (direccion: IDataAddAddress):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('INSERT INTO direcciones(id_client, direccion) VALUES (:cliente, :direccion)', {
-      ':cliente': direccion.id_client,
-      ':direccion': direccion.direccion,
-    });
-    return result.lastID ?? 0;
+    const {id_client, direccion:dir } = direccion;
+    const query = `INSERT INTO tblDirecciones(id_client, direccion) VALUES ($1, $2) RETURNING *`;
+    const values = [id_client, dir];
+    const result = await client.query(query, values);
+    // const result = await client.query(`INSERT INTO tblDirecciones(id_client, direccion) VALUES (${direccion.id_client}, ${ direccion.direccion})`);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 export const updateAddress = async (direccion: IDataUpdateAddress):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('UPDATE direcciones SET direccion=:direccion WHERE id=:id', {
-      ':id': direccion.id,
-      ':direccion': direccion.direccion.direccion
-    });
-
-    return result.changes ?? 0;
+    const query = `UPDATE tblDirecciones SET direccion=$1 WHERE id=$2 RETURNING *`;
+    const values = [direccion.direccion, direccion.id];
+    const result = await client.query(query, values);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
 export const deleteAddress = async (id: number):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('DELETE FROM direcciones WHERE id=:id', {
-      ':id': id
-    });
-    return result.changes ?? 0;
+    const result = await client.query(`DELETE FROM tblDirecciones WHERE id=${id}`);
+    return result.rowCount ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }

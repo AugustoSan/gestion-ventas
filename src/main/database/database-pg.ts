@@ -1,16 +1,16 @@
-import postgres from 'postgres';
+import {Pool, Client} from 'pg';
 
 // import { appendLogFile } from '../../main/util'
 
 // you would have to import / invoke this in another file
 export const openDBPostgres = async() => {
-  return postgres({
+  return new Client({
     host: 'localhost',
     port: 2345,
     database: 'gestion-ventas',
     user: 'postgres',
-    pass: 'mysecretpassword'
-  })
+    password: 'mysecretpassword',
+  });
 }
 
 // export const createTables = async(): Promise<boolean> => {

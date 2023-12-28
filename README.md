@@ -168,3 +168,7 @@ crear la carpeta de los DLL:
 ```bash
 yarn build:dll
 ```
+Crear contenedor docker de postgres
+```bash
+docker run --name some-postgres -p 2345:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+```

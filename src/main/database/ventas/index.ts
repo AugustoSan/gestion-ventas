@@ -1,28 +1,28 @@
 import { IVenta, IVentasProductos } from "../../interfaces";
 import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas";
-import { createTables, openDb } from "../database";
+import { openDBPostgres } from "../database-pg";
 
 export const findProductFromVenta = async (id: number): Promise<Array<IVentasProductos>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IVentasProductos> = await db.all(`SELECT * FROM venta_productos WHERE id_venta=${id}`);
+    const temp= await client.query(`SELECT * FROM tblVentaProductos WHERE id_venta=${id}`);
+    const result:Array<IVentasProductos> = temp.rows;
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const findVentasByIDClient = async (id: number): Promise<Array<IVenta>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IVenta> = await db.all(`SELECT * FROM ventas WHERE id_client=${id}`);
+    const temp = await client.query(`SELECT * FROM tblVentas WHERE id_client=${id}`);
+    const result:Array<IVenta> = temp.rows;
     const arrayVentas:Array<IVenta> = await Promise.all(
       result.map(async (venta) => {
         venta.productos = await findProductFromVenta(venta.id);
@@ -34,10 +34,14 @@ export const findVentasByIDClient = async (id: number): Promise<Array<IVenta>> =
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
 export const findVentaByID = async (id: number): Promise<IVenta> => {
+  const client = await openDBPostgres();
+  await client.connect();
   const _response:IVenta = {
     id: 0,
     id_client: 0,
@@ -49,34 +53,33 @@ export const findVentaByID = async (id: number): Promise<IVenta> => {
     productos: []
   }
   try {
-    if(!(await createTables())){
-      throw Error("Ocurrio un error al crear las tablas de la Base de datos");
-      // return _response;
-    }
-    const db = await openDb();
-    const result: IVenta | undefined = await db.get(`SELECT * FROM ventas WHERE id_client=${id}`);
+    const temp = await client.query(`SELECT * FROM tblVentas WHERE id_client=${id}`);
+    const result: IVenta | undefined = temp.rows[0];
     if(result === undefined) return _response;
     result.productos = await findProductFromVenta(result.id);
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     throw Error("Ocurrio un error en la sentencia SQL");
+  } finally {
+    await client.end();
   }
 }
 
 export const findAllVentas = async ():Promise<Array<IVenta>> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return [];
-    }
-    const db = await openDb();
-    const result:Array<IVenta> = await db.all('SELECT * FROM ventas');
+    const temp = await client.query('SELECT * FROM tblVentas');
+    const result:Array<IVenta> = temp.rows;
     console.log('result ventas:', result);
 
     return result;
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
   }
 }
 
@@ -104,54 +107,47 @@ export const findAllVentas = async ():Promise<Array<IVenta>> => {
 // }
 
 export const addVenta = async (venta: IDataAddVenta):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('INSERT INTO ventas(id_client, id_direccion, fecha, total, por_pagar, status) VALUES (:id_client, :id_direccion, :fecha, :total, :por_pagar, :status)', {
-      ':id_client': venta.client.id,
-      ':id_direccion': venta.direccion.id,
-      ':fecha': venta.fecha,
-      ':total': venta.total,
-      ':por_pagar': venta.por_pagar,
-      ':status': venta.status,
-    });
-    console.log(`changes: ${result.changes}`);
-    console.log(`lastID: ${result.lastID}`);
-    console.log(`addVenta: ${result.stmt}`);
+    const query = 'INSERT INTO tblVentas(id_client, id_direccion, fecha, total, por_pagar, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+    const values = [venta.client.id, venta.direccion.id, venta.fecha, venta.total, venta.por_pagar, venta.status];
+    const result = await client.query(query, values);
+    // console.log(`changes: ${result.changes}`);
+    // console.log(`lastID: ${result.lastID}`);
+    // console.log(`addVenta: ${result.stmt}`);
     await Promise.all(
       venta.productos.map(async (producto) => {
-        const id_venta = result.lastID ?? 0;
+        const id_venta = result.oid ?? 0;
         return await addVentaProducto(producto, id_venta);
       })
     )
-    return result.lastID ?? 0;
+    return result.oid ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 
-export const addVentaProducto = async (producto: IDataAddVentaProductos, id_venta: number):Promise<number> => {
+export const addVentaProducto = async (product: IDataAddVentaProductos, id_venta: number):Promise<number> => {
+  const client = await openDBPostgres();
+  await client.connect();
   try {
-    if(!(await createTables())){
-      return -2;
-    }
-    const db = await openDb();
-    const result = await db.run('INSERT INTO venta_productos(id_venta, id_producto, precio, cantidad) VALUES (:id_venta, :id_producto, :precio, :cantidad)', {
-      ':id_venta': id_venta,
-      ':id_producto': producto.producto.id,
-      ':precio': producto.producto.precio,
-      ':cantidad': producto.cantidad,
-    });
+    const {cantidad, producto} = product;
+    const query = 'INSERT INTO tblVentaProductos(id_venta, id_producto, precio, cantidad) VALUES ($1, $2, $3, $4) RETURNING *';
+    const values = [id_venta, producto.id, producto.precio, cantidad];
+    const result = await client.query(query,values);
     // console.log(`changes: ${result.changes}`);
     // console.log(`lastID: ${result.lastID}`);
-    console.log(`addVentaProducto: ${result.lastID}`);
-    return result.lastID ?? 0;
+    console.log(`addVentaProducto: ${result.oid}`);
+    return result.oid ?? 0;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
+  } finally {
+    await client.end();
   }
 }
 

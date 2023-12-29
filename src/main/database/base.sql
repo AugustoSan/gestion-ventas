@@ -99,7 +99,7 @@ ALTER TABLE IF EXISTS tblTiempoPago
 
 ---------------- Funciones
 
--- CREAMOS UN TIPO DE DATO ESPECIAL PARA NUESTRA CONSULTA
+-- FUNCIONES PARA CLIENTES
 CREATE TYPE typeAddress AS
 (
   id INTEGER,
@@ -109,41 +109,47 @@ CREATE TYPE typeAddress AS
 CREATE TYPE datos_clientes AS
 (
   id INTEGER,
-  nombre            VARCHAR(50),
-  apellidoPaterno   VARCHAR(50),
-  apellidoMaterno   VARCHAR(20),
-  telefono          VARCHAR(20),
-  direcciones   typeAddress[]
+  nombre            TEXT,
+  apellidoPaterno   TEXT,
+  apellidoMaterno   TEXT,
+  telefono          TEXT
 );
 
-CREATE FUNCTION listar_clientes_TYPE()
+CREATE OR REPLACE FUNCTION fn_getAllClients()
 RETURNS SETOF datos_clientes AS -- USAMOS NUESTRO TYPE
 $BODY$
 DECLARE
     reg RECORD;
-    direcciones typeAddress[];
-    count integer;
 BEGIN
-  -- Obtenemos la informacion del cliente
-    FOR REG IN SELECT id, name, app, apm, tel FROM tblClientes LOOP
-      id := reg.id;
-      name := reg.nombre;
-      app := reg.apellidoPaterno;
-      apm := reg.apellidoMaterno;
-      tel := reg.telefono;
-
-       RETURN NEXT;
+	FOR reg IN SELECT *  FROM tblClientes
+    LOOP
+        RETURN NEXT reg;
     END LOOP;
-  -- Obtenemos las direcciones registradas
---   FOR REG IN SELECT id, direccion FROM tblDirecciones WHERE  LOOP
---       id := .id;
---       name := reg.nombre;
---       app := reg.apellidoPaterno;
---       apm := reg.apellidoMaterno;
---       tel := reg.telefono;
---        RETURN NEXT;
---     END LOOP;
 
     RETURN;
 END
-$BODY$ LANGUAGE 'plpgsql'
+$BODY$ LANGUAGE 'plpgsql';
+
+---FUNCIONES PARA PRODUCTOS
+
+CREATE TYPE datos_productos AS
+(
+  id        INTEGER,
+  concepto  TEXT,
+  precio    NUMERIC(15,2)
+);
+
+CREATE OR REPLACE FUNCTION fn_getAllProducts()
+RETURNS SETOF datos_productos AS -- USAMOS NUESTRO TYPE
+$BODY$
+DECLARE
+    reg RECORD;
+BEGIN
+	FOR reg IN SELECT *  FROM tblProductos
+    LOOP
+        RETURN NEXT reg;
+    END LOOP;
+
+    RETURN;
+END
+$BODY$ LANGUAGE 'plpgsql';

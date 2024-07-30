@@ -46,7 +46,8 @@ export const ItemAddressTabla = ({address}: IDataProps):JSX.Element => {
         onClick={
           () => {
             console.log(`se editara el address con id ${address.id}`);
-            setIsEdit(!isEdit)
+            setIsEdit(!isEdit);
+            // dispatch(setUpda)
           }
         }
       >

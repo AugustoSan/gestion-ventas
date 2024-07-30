@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Badge from 'react-bootstrap/Badge';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -16,9 +18,11 @@ export const AddClienteCard = ():JSX.Element => {
   const [inputApp, setInputApp] = useState<string>('');
   const [inputApm, setInputApm] = useState<string>('');
   const [inputTelefono, setInputTelefono] = useState<string>('');
+  const [arrayAddress, setarrayAddress] = useState<Array<string>>([]);
   const [inputAddress, setInputAddress] = useState<string>('');
   const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
+  const [flagAddress, setFlagAddress] = useState<boolean>(false);
 
   const validateInputs = (): boolean => {
     if(inputName.length <= 2) {
@@ -29,10 +33,10 @@ export const AddClienteCard = ():JSX.Element => {
       setError('Por favor introduce un apellido paterno.');
       return false;
     }
-    if(inputAddress.length <= 2) {
-      setError('Por favor introduce una dirección.');
-      return false;
-    }
+    // if(arrayAddress.length <= 2) {
+    //   setError('Por favor introduce una dirección.');
+    //   return false;
+    // }
     setError('');
     return true;
   }
@@ -66,6 +70,44 @@ export const AddClienteCard = ():JSX.Element => {
           value={inputAddress}
           onChange={setInputAddress}
         />
+        <div className="d-grid gap-2 mb-2 mt-2">
+          <Button variant="primary" size="lg" onClick={() => {
+            if(inputAddress.length > 2){
+              setarrayAddress([inputAddress, ...arrayAddress]);
+              setInputAddress('');
+            }
+          }}>
+            Agregar dirección
+          </Button>
+        </div>
+        <div className="d-grid gap-2 mb-2 mt-2">
+          <ListGroup>
+            {
+              arrayAddress.map((address, index) => {
+                    return <ListGroup.Item 
+                              key={`${index}-item-list-address`}
+                              as='li'
+                              className='d-flex justify-content-between align-items-start'
+                            >
+                              <div className='ms-2 me-auto'>
+                                {address}
+                              </div>
+                              <Badge bg='danger' onClick={() => {
+                                const newArray = arrayAddress.filter((add, i) => add != address && i != index);
+                                setarrayAddress(newArray);
+                              }} pill>
+                                x
+                              </Badge>
+                            </ListGroup.Item>
+                  })
+            }
+            {/* <ListGroup.Item>Cras justo odio</ListGroup.Item>
+            <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
+            <ListGroup.Item>Morbi leo risus</ListGroup.Item>
+            <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
+            <ListGroup.Item>Vestibulum at eros</ListGroup.Item> */}
+          </ListGroup>
+        </div>
         {
           error.length !== 0
           ? (<Alert variant={'danger'}>{error}</Alert>)
@@ -90,10 +132,11 @@ export const AddClienteCard = ():JSX.Element => {
                   if(validateInputs()){
                     console.log('Se va a guardar el nuevo cliente');
                     const newClient: IDataAddClient = {
-                      name: inputName,
-                      app: inputApp,
-                      apm: inputApm,
-                      tel: inputTelefono
+                      nombre: inputName,
+                      apellidopaterno: inputApp,
+                      apellidomaterno: inputApm,
+                      telefono: inputTelefono,
+                      direccioness: arrayAddress
                     }
                     dispatch(AddClient(newClient));
                   }

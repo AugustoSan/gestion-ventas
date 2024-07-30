@@ -52,10 +52,10 @@ export const HomeView = ():JSX.Element => {
               {
                 clientesArray.map((cliente, index) => {
                   return (<Dropdown.Item key={`${cliente.id}-${index}-dropdown-dashboard`} onClick={() => {
-                    console.log('Se selecciono el cliente ', cliente.name);
-                    setDropdownSelect(`${cliente.name} ${cliente.app}`);
+                    console.log('Se selecciono el cliente ', cliente.nombre);
+                    setDropdownSelect(`${cliente.nombre} ${cliente.apellidopaterno}`);
                     dispatch(setSelectClienteSearch(cliente.id));
-                  }}>{`${cliente.name} ${cliente.app}`}</Dropdown.Item>);
+                  }}>{`${cliente.nombre} ${cliente.apellidopaterno}`}</Dropdown.Item>);
                 })
               }
             </Dropdown.Menu>

@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { IClient, IProducto } from "../../main/interfaces";
 import { useCustomDispatch } from '../hooks/redux';
 import { DeleteProduct, setSelectProduct } from "../redux/slice/productos";
+import { numberToPrice } from "../utils/price";
 
 interface IDataProps{
   producto: IProducto;
@@ -14,7 +15,7 @@ export const ItemProductoTabla = ({producto}: IDataProps):JSX.Element => {
   <tr>
     <td>{producto.id}</td>
     <td>{producto.concepto}</td>
-    <td>$ {(producto.precio ?? 0).toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
+    <td>{numberToPrice(producto.precio)}</td>
     <td>
       <Button
         variant="primary"

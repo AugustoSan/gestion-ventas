@@ -98,7 +98,7 @@ const ventaSlice = createSlice({
       deleteAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
         const products = state.selectProductos.filter((producto) => producto.producto.id !== action.payload.producto.id);
         if(products.length !== state.selectProductos.length) {
-          state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.producto.precio);
+          state.totalAddVenta = state.totalAddVenta - (action.payload.cantidad * action.payload.producto.precio);
         }
         state.selectProductos = products;
       },

@@ -22,10 +22,21 @@ export const InputPriceCard = ({title, value, onChange, disabled = false}:IDataP
               aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               value={value}
-              type={'number'}
-              min={0.00}
-              step={0.01}
-              onChange={(event) => onChange(Number(event.target.value))}
+              onChange={(event) => {
+                try {
+                  console.log(`nuevo valor: ${event.target.value}`);
+                  const newValue:number = Number(event.target.value);
+                  if (!isNaN(newValue)) { // Ensure newValue is a valid number
+                    onChange(newValue);
+                  } else {
+                    onChange(value);
+                  }
+                } catch (error) {
+                  console.log('Entro en catch', error);
+                  onChange(value);
+                  alert(`Ocurrio un error: ${error}`,)
+                }
+              }}
               disabled={disabled}
               placeholder={title}
             />

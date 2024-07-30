@@ -19,10 +19,10 @@ interface IDataProps {
 
 export const UpdateClienteCard = ({ cliente } : IDataProps):JSX.Element => {
   const { selectClient } = useCustomSelector((state) => state.clientSlice);
-  const [inputName = cliente.name, setInputName] = useState<string>('');
+  const [inputName = cliente.nombre, setInputName] = useState<string>('');
   const dispatch = useCustomDispatch();
   console.log('selectClient', selectClient);
-  const {id = 0, name = '', app = '', apm = '', tel = '', direcciones = [], saldo = 0} = selectClient ?? {};
+  const {id = 0, nombre = '', apellidopaterno = '', apellidomaterno = '', telefono = '', direcciones = [], saldo = 0} = selectClient ?? {};
   console.log('cliente: - ', selectClient);
 
   return selectClient === null ? <></> : (
@@ -30,10 +30,10 @@ export const UpdateClienteCard = ({ cliente } : IDataProps):JSX.Element => {
       <Card.Header>Información del cliente</Card.Header>
       <Card.Body>
         <InputCard title={'Nombre'} value={inputName} onChange={setInputName} />
-        <LabelInfoCard title={'Nombre'} value={name} />
-        <LabelInfoCard title={'Apellido Paterno'} value={app} />
-        <LabelInfoCard title={'Appelido Materno'} value={apm} />
-        <LabelInfoCard title={'Telefono'} value={tel} />
+        <LabelInfoCard title={'Nombre'} value={nombre} />
+        <LabelInfoCard title={'Apellido Paterno'} value={apellidopaterno} />
+        <LabelInfoCard title={'Apellido Materno'} value={apellidomaterno} />
+        <LabelInfoCard title={'Telefono'} value={telefono} />
         <LabelInfoCard title={'Saldo'} value={saldo.toString()} />
         {
           direcciones.map((direccion) => {

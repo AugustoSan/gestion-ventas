@@ -1,8 +1,9 @@
 export interface IDataAddClient {
-  name: string;
-  app: string;
-  apm: string;
-  tel: string;
+  nombre: string;
+  apellidopaterno: string;
+  apellidomaterno: string;
+  telefono: string;
+  direccioness: Array<string>
 }
 
 export interface IDataUpdateClient {
@@ -19,3 +20,4 @@ export interface IDataUpdateAddress {
   id: number;
   direccion: IDataAddAddress;
 }
+

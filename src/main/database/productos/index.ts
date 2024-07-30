@@ -7,7 +7,7 @@ export const findAllProductos = async ():Promise<Array<IProducto>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const temp = await client.query('SELECT * FROM tblProductos');
+    const temp = await client.query('SELECT * FROM fn_getAllProducts()');
     const result:Array<IProducto> = temp.rows;
     return result;
   } catch (error) {
@@ -22,7 +22,7 @@ export const findProducto = async (concepto: string):Promise<Array<IProducto>> =
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const query = `SELECT * FROM tblProductos WHERE concepto LIKE '%${concepto}%'`;
+    const query = `SELECT * FROM fn_findMatchProducts('${concepto}')`;
     const temp = await client.query(query);
     const result:Array<IProducto> = temp.rows;
     return result;
@@ -39,13 +39,12 @@ export const addProducto = async ({concepto, precio}: IDataAddProduct):Promise<n
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const query = `INSERT INTO tblProductos(concepto, precio) VALUES ($1, $2) RETURNING *`;
-    const values = [concepto, precio];
-    const result = await client.query(query, values);
-    // WriteFileSQLBackup(query);
-    console.log(result, result);
-    
-    return result.rowCount ?? 0;
+    const query = `SELECT fn_insertProduct('${concepto}', ${precio}) AS id;`;
+    const temp = await client.query(`${query}`);
+    const result:Array<number> = temp.rows;
+    const _id:number = result.length > 0 ? temp.rows[0].id : -1;
+    console.log(`_id: ${_id}`);
+    return _id;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
@@ -59,12 +58,12 @@ export const updateProducto = async (producto: IDataUpdateProduct):Promise<numbe
   await client.connect();
   try {
     const {concepto, precio} = producto.product;
-    const query = `UPDATE tblProductos SET concepto=$1, precio=$2 WHERE id=$3`;
-    const values = [concepto, precio, producto.id]
-    const result = await client.query(query, values);
-    console.log('result: ', result);
-    
-    return result.rowCount ?? 0;
+    const query = `SELECT fn_updateProduct(${producto.id}, '${concepto}', ${precio}) AS id;`;
+    const temp = await client.query(`${query}`);
+    const result:Array<number> = temp.rows;
+    const _id:number = result.length > 0 ? temp.rows[0].id : -1;
+    console.log(`_id: ${_id}`);
+    return _id;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
@@ -78,8 +77,12 @@ export const deleteProducto = async (id: number):Promise<number> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const result = await client.query('DELETE FROM tblProductos WHERE id=$1', [id]);
-    return result.rowCount ?? 0;
+    const query = `SELECT fn_deleteProduct(${id}) AS id;`;
+    const temp = await client.query(`${query}`);
+    const result:Array<number> = temp.rows;
+    const _id:number = result.length > 0 ? temp.rows[0].id : -1;
+    console.log(`_id: ${_id}`);
+    return _id;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;

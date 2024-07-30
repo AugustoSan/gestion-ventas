@@ -13,10 +13,10 @@ export const ItemClientTabla = ({cliente}: IDataProps):JSX.Element => {
   const dispatch = useCustomDispatch();
   return (
   <tr>
-    <td>{cliente.name}</td>
-    <td>{cliente.app}</td>
-    <td>{cliente.apm}</td>
-    <td>{cliente.tel}</td>
+    <td>{cliente.nombre != null ? cliente.nombre.length != 0 ? cliente.nombre : '-' : '-'}</td>
+    <td>{cliente.apellidopaterno.length != 0 ? cliente.apellidopaterno : '-'}</td>
+    <td>{cliente.apellidomaterno.length != 0 ? cliente.apellidomaterno : '-'}</td>
+    <td>{cliente.telefono.length != 0 ? cliente.telefono : '-'}</td>
     <td>
       <Button
         variant="primary"

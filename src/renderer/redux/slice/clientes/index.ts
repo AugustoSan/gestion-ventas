@@ -60,10 +60,10 @@ const clientSlice = createSlice({
           console.log('Entro en setClientesArray: ', action.payload);
           const newArray = state.clientesArray.map((client, index) => {
             if(client.id === action.payload.id){
-              client.name = action.payload.client.name;
-              client.app = action.payload.client.app;
-              client.apm = action.payload.client.apm;
-              client.tel = action.payload.client.tel;
+              client.nombre = action.payload.client.nombre;
+              client.apellidopaterno = action.payload.client.apellidopaterno;
+              client.apellidomaterno = action.payload.client.apellidomaterno;
+              client.telefono = action.payload.client.telefono;
             }
             return client;
           });
@@ -133,20 +133,22 @@ export const FindClient = (texto: string): Thunk => async (dispatch): Promise<Ar
 
 export const AddClient = (client: IDataAddClient): Thunk => async (dispatch): Promise<number> => {
   // const filePath = await window.electron.getAllClients();
+  console.log(`cliente: `, client);
   const result = await window.electron.ipcRenderer.AddClient(client);
   console.log('result: ', result);
   if(result !== 0){
     const newClient:IClient = {
       id: result,
-      name: client.name,
-      app: client.app,
-      apm: client.apm,
+      nombre: client.nombre,
+      apellidopaterno: client.apellidopaterno,
+      apellidomaterno: client.apellidomaterno,
       saldo: 0,
-      tel: client.tel,
+      telefono: client.telefono,
       direcciones: []
     }
     dispatch(setAddClienteArray(newClient));
     dispatch(setHandleAddClient(false));
+    dispatch(setSelectClient(newClient));
   }
   return 0;
 }

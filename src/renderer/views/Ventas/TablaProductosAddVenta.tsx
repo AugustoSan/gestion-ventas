@@ -36,7 +36,7 @@ export const TablaProductosAddVenta = ():JSX.Element => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                <td>Total: </td>
                 <td>$ {totalAddVenta.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
                 <td></td>
               </tr>

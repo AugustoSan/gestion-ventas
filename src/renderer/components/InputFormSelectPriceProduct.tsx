@@ -6,7 +6,8 @@ import Col from 'react-bootstrap/Col';
 import { IClient, IDirection, IPriceProduct, IProducto } from '../../main/interfaces';
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { useEffect, useState } from 'react';
-import { FindPricesProduct } from '../redux/slice/productos';
+import { numberToPrice } from '../utils/price';
+// import { FindPricesProduct } from '../redux/slice/productos';
 
 interface IDataProps {
   cliente: IClient;
@@ -19,9 +20,11 @@ export const InputFormSelectPriceProduct = ({cliente, producto, onChange, disabl
   const {addVentaListPricesProduct} = useCustomSelector((state) => state.ventaSlice);
   const dispatch = useCustomDispatch();
 
+  console.log(producto)
+
   useEffect(() => {
     if(producto !== null && producto.id !== 0 && producto.concepto.length > 2){
-      dispatch(FindPricesProduct({id_cliente: cliente.id, id_product: producto.id}));
+      // dispatch(FindPricesProduct({id_cliente: cliente.id, id_product: producto.id}));
     }
   }, [cliente, producto]);
 
@@ -40,10 +43,10 @@ export const InputFormSelectPriceProduct = ({cliente, producto, onChange, disabl
                   }}
                   disabled={disabled}
                 >
-                  <option value={-1}>{`$ ${producto.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}</option>
+                  <option value={-1}>{`$ ${numberToPrice(producto.precio)}`}</option>
                   {
                     addVentaListPricesProduct.map((price, index) => {
-                      return (<option key={`${index}-${price.id}-item-price`} value={price.id}>{`$ ${price.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}</option>)
+                      return (<option key={`${index}-${price.id}-item-price`} value={price.id}>{`$ ${numberToPrice(price.precio)}`}</option>)
                     })
                   }
                 </Form.Select>

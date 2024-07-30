@@ -16,7 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllAddressByClientHandler, findAllClientsHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
 import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
-import { migrateDB } from './database/database';
+// import { migrateDB } from './database/database';
 import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
 
 class AppUpdater {
@@ -109,7 +109,7 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 900,
+    width: 1200,
     height: 650,
     icon: getAssetPath('icon.png'),
     center: true,

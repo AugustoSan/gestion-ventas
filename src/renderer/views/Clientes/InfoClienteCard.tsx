@@ -17,11 +17,12 @@ export const InfoClienteCard = ():JSX.Element => {
   const { selectClient, handleUpdateClient } = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
   console.log('selectClient', selectClient);
-  const {id = 0, name = '', app = '', apm = '', tel = '', direcciones = [], saldo = 0} = selectClient ?? {};
-  const [inputName, setInputName] = useState<string>(name ?? '');
-  const [inputAPP, setInputAPP] = useState<string>(app ?? '');
-  const [inputAPM, setInputAPM] = useState<string>(apm ?? '');
-  const [inputTel, setInputTel] = useState<string>(tel ?? '');
+  const {id = 0, nombre = '-', apellidopaterno = '-', apellidomaterno = '-', telefono = '-', direcciones = [], saldo = 0} = selectClient ?? {};
+  const [inputName, setInputName] = useState<string>(nombre);
+  const [inputAPP, setInputAPP] = useState<string>(apellidopaterno);
+  const [inputAPM, setInputAPM] = useState<string>(apellidomaterno);
+  const [inputTel, setInputTel] = useState<string>(telefono);
+  const [arrayAddress, setarrayAddress] = useState<Array<string>>([]);
   const [error, setError] = useState<string | null>(null);
   console.log('cliente: - ', selectClient);
 
@@ -55,7 +56,7 @@ export const InfoClienteCard = ():JSX.Element => {
           disabled={!handleUpdateClient}
         />
         <InputCard
-          title={'Appelido Materno'}
+          title={'Apellido Materno'}
           value={inputAPM}
           onChange={setInputAPM}
           disabled={!handleUpdateClient}
@@ -127,10 +128,11 @@ export const InfoClienteCard = ():JSX.Element => {
                       const temp:IDataUpdateClient = {
                         id: selectClient.id,
                         client: {
-                          name: inputName,
-                          app: inputAPP,
-                          apm: inputAPM,
-                          tel: inputTel
+                          nombre: inputName,
+                          apellidopaterno: inputAPP,
+                          apellidomaterno: inputAPM,
+                          telefono: inputTel,
+                          direccioness: arrayAddress
                         }
                       }
                       dispatch(UpdateClient(temp));

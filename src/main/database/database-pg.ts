@@ -1,21 +1,24 @@
 import {Pool, Client} from 'pg';
+import dotnev from 'dotenv';
+dotnev.config();
 
 // import { appendLogFile } from '../../main/util'
 
 // you would have to import / invoke this in another file
 export const openDBPostgres = async() => {
   return new Client({
-    host: 'localhost',
-    port: 2345,
-    database: 'gestion-ventas',
-    user: 'postgres',
-    password: 'mysecretpassword',
+    host: process.env.DATABASE_HOST,
+    port: parseInt(process.env.DATABASE_PORT ?? '2345'),
+    database: process.env.DATABASE_DATABASE,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
   });
 }
 
 // export const createTables = async(): Promise<boolean> => {
 //   try {
-//     const db = await openDb();
+//     const db = await openDBPostgres();
+//     await db.host('CREATE TABLE IF NOT EXISTS clientes ( id INTEGER PRIMARY KEY, name TEXT, app TEXT, apm TEXT, tel TEXT )');
 //     await db.exec('CREATE TABLE IF NOT EXISTS clientes ( id INTEGER PRIMARY KEY, name TEXT, app TEXT, apm TEXT, tel TEXT )');
 //     await db.exec('CREATE TABLE IF NOT EXISTS direcciones ( id INTEGER PRIMARY KEY, id_client INTEGER, direccion TEXT )');
 //     await db.exec('CREATE TABLE IF NOT EXISTS productos ( id INTEGER PRIMARY KEY, concepto TEXT, precio REAL)')
@@ -39,7 +42,7 @@ export const openDBPostgres = async() => {
 // export const migrateDB = async (): Promise<void> => {
 //   console.log('Entro en migrate');
 
-//   const db = await openDb();
+//   const db = await openDBPostgres();
 //   const fecha = new Date();
 //   const pathBackup = path.join(__dirname, `${fecha.getDay()}-${fecha.getMonth()}-${fecha.getFullYear()}-backup.sql`);
 //   const clientes:Array<IClient> = await findAllClients();

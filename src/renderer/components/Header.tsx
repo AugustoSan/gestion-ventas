@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { useCustomDispatch } from '../hooks/redux';
+import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { GetAllClients } from '../redux/slice/clientes';
 import { GetAllProducts } from '../redux/slice/productos';
 
 export const Header = ():JSX.Element => {
+  const {pagination} = useCustomSelector((state) => state.productSlice);
   const dispatch = useCustomDispatch();
 
   useEffect(() => {
     dispatch(GetAllClients());
-    dispatch(GetAllProducts());
+    dispatch(GetAllProducts(pagination.currentPage, pagination.sizePage));
   }, []);
   return (
   <header className="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">

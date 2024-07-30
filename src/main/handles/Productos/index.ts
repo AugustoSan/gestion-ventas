@@ -1,9 +1,10 @@
 import { addProducto, deleteProducto, findAllProductos, findProducto, updateProducto } from '../../database/productos';
 import { IPriceProduct, IProducto } from '../../interfaces';
-import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from '../../interfaces/IProducts';
+import { IDataAddProduct, IDataFindPricesProduct, IDataGetProducts, IDataUpdateProduct } from '../../interfaces/IProducts';
+import { PagedList } from '../../utils/Pagination';
 
-export const findAllProductosHandler = async (event: Electron.IpcMainInvokeEvent):Promise<Array<IProducto>> => {
-  return await findAllProductos();
+export const findAllProductosHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataGetProducts):Promise<PagedList<IProducto>> => {
+  return await findAllProductos(data);
 }
 
 export const findProductoHandler = async (event: Electron.IpcMainInvokeEvent, concepto: string):Promise<Array<IProducto>> => {

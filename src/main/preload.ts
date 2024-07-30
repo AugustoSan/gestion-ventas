@@ -3,8 +3,9 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { IClient, IDirection, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from './interfaces/IClients';
-import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from './interfaces/IProducts';
+import { IDataAddProduct, IDataFindPricesProduct, IDataGetProducts, IDataUpdateProduct } from './interfaces/IProducts';
 import { IDataAddVenta } from './interfaces/IVentas';
+import { PagedList } from './utils/Pagination';
 
 export type Channels = 'ipc-example';
 
@@ -38,7 +39,7 @@ const electronHandler = {
     UpdateAddress:(data: IDataUpdateAddress):Promise<number> => ipcRenderer.invoke('address:updateAddress', data),
     DeleteAddress:(data: number):Promise<number> => ipcRenderer.invoke('address:deleteAddress', data),
     // Products
-    GetAllProducts:():Promise<Array<IProducto>> => ipcRenderer.invoke('products:getAllProducts', []),
+    GetAllProducts:(data: IDataGetProducts):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:getAllProducts', data),
     FindProducto:(concepto: string):Promise<Array<IProducto>> => ipcRenderer.invoke('products:findProduct', concepto),
     // FindPricesProducto:(data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => ipcRenderer.invoke('products:findPricesProduct', data),
     AddProduct:(data: IDataAddProduct):Promise<number> => ipcRenderer.invoke('products:addlProduct', data),

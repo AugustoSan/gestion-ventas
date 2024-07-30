@@ -3,6 +3,10 @@ export class PagedList<T> {
     public totalPages: number;
     public pageSize: number;
     public totalCount: number;
+    public hasPreviousPage: boolean;
+    public hasNextPage: boolean;
+    public nextPageNumber: number | null;
+    public previousPageNumber: number | null;
     public items: T[];
   
     constructor(items: T[], count: number, pageNumber: number, pageSize: number) {
@@ -10,32 +14,32 @@ export class PagedList<T> {
       this.totalCount = count;
       this.pageSize = pageSize;
       this.currentPage = pageNumber;
+      const currentPageTemp = this.currentPage + 1;
+
       this.totalPages = Math.ceil(count / pageSize);
-    }
-  
-    get hasPreviousPage(): boolean {
-      return this.currentPage > 1;
-    }
-  
-    get hasNextPage(): boolean {
-      return this.currentPage < this.totalPages;
-    }
-  
-    get nextPageNumber(): number | null {
-      return this.hasNextPage ? this.currentPage + 1 : null;
-    }
-  
-    get previousPageNumber(): number | null {
-      return this.hasPreviousPage ? this.currentPage - 1 : null;
+      this.hasPreviousPage = currentPageTemp > 1;
+      this.hasNextPage = currentPageTemp < this.totalPages;
+      this.nextPageNumber = this.hasNextPage ? currentPageTemp + 1 : null;
+      this.previousPageNumber = this.hasPreviousPage ? currentPageTemp - 1 : null;
     }
   
     public static create<T>(source: T[], pageNumber: number, pageSize: number): PagedList<T> {
       const count = source.length;
-      const start = (pageNumber - 1) * pageSize;
+      const start = pageNumber * pageSize;
       const items = source.slice(start, start + pageSize);
   
       return new PagedList<T>(items, count, pageNumber, pageSize);
     }
+
+    toPlainObject() {
+        return {
+          currentPage: this.currentPage,
+          totalPages: this.totalPages,
+          pageSize: this.pageSize,
+          totalCount: this.totalCount,
+          items: this.items,
+        };
+      }
   }
   
 //   // Example usage

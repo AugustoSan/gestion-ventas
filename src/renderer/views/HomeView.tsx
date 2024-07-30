@@ -14,13 +14,14 @@ import { TablaVentas } from './Ventas/TablaVentas';
 
 export const HomeView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
+  const {pagination} = useCustomSelector((state) => state.productSlice);
   const [clientSelected, setClientSelected] = useState<IClient | null>(null);
   const [dropdownSelect, setDropdownSelect] = useState<string>('Seleccionar cliente');
   const dispatch = useCustomDispatch();
   useEffect(() => {
     dispatch(GetAllClients());
     // dispatch(GetAllVentas());
-    dispatch(GetAllProducts());
+    // dispatch(GetAllProducts(pagination.currentPage, pagination.sizePage));
     dispatch(setSelectClienteSearch(null));
   }, []);
   return (

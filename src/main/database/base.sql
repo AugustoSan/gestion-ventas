@@ -267,13 +267,17 @@ CREATE TYPE datos_productos AS
   precio    NUMERIC(15,2)
 );
 
-CREATE OR REPLACE FUNCTION fn_getAllProducts()
+CREATE OR REPLACE FUNCTION fn_getAllProducts(_page INTEGER, _sizePage INTEGER)
 RETURNS SETOF datos_productos AS -- USAMOS NUESTRO TYPE
 $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT *  FROM tblProductos
+	FOR reg IN SELECT *
+                FROM tblProductos
+                ORDER BY concepto ASC
+                LIMIT _page
+                OFFSET _page * _sizePage
     LOOP
         RETURN NEXT reg;
     END LOOP;

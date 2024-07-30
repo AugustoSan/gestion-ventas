@@ -1,9 +1,11 @@
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { IPriceProduct, IProducto } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
-import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
+import { IDataAddProduct, IDataFindPricesProduct, IDataGetProducts, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
 import { setAddListPricesProductArray } from '../ventas';
+import { PagedList } from '../../../../main/utils/Pagination';
+import { setCurrentPage } from '../clientes';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IProductSlice {
@@ -13,6 +15,8 @@ interface IProductSlice {
   handleAddProducto: boolean;
   handleUpdateProducto: boolean;
   handleSearchProducto: boolean;
+  //Pagination
+  pagination: IPaginationForSlides;
 }
 
 const initialState: IProductSlice =
@@ -23,6 +27,18 @@ const initialState: IProductSlice =
     handleAddProducto: false,
     handleUpdateProducto: false,
     handleSearchProducto: false,
+
+    // Pagination
+    pagination: {
+      currentPage: 0,
+      sizePage: 10,
+      totalPages: 0,
+      totalCount: 0,
+      hasPreviousPage: false,
+      hasNextPage: false,
+      nextPageNumber: null,
+      previousPageNumber: null
+    }
 }
 
 const productSlice = createSlice({
@@ -55,23 +71,30 @@ const productSlice = createSlice({
         },
         setAddProductoArray: (state, action: PayloadAction<IProducto>) => {
           console.log('Entro en setAddProducteArray: ', action.payload);
-          state.productosArray = [...state.productosArray,action.payload];
+          const items = [...state.productosArray,action.payload];
+          state.productosArray = items;
         },
         updateProductoArray: (state, action: PayloadAction<IDataUpdateProduct>) => {
           console.log('Entro en updateProductoArray: ', action.payload);
-          const newArray = state.productosArray.map((product, index) => {
+          const items = state.productosArray;
+          const newArray = items.map((product, index) => {
             if(product.id === action.payload.id){
               product.concepto = action.payload.product.concepto;
               product.precio = action.payload.product.precio;
             }
             return product;
           });
-          state.productosArray = newArray;
+          state.productosArray = items;
         },
         deleteProductoArray: (state, action: PayloadAction<number>) => {
           console.log('Entro en deleteProducteArray: ', action.payload);
-          const newArray = state.productosArray.filter((product) => product.id !== action.payload);
-          state.productosArray = newArray;
+          const items = state.productosArray;
+          const newArray = items.filter((product) => product.id !== action.payload);
+          state.productosArray = items;
+        },
+        setPagination: (state, action: PayloadAction<IPaginationForSlides>) => {
+          console.log('Entro en setPagination: ', action.payload);
+          state.pagination = action.payload;
         },
     }
 });
@@ -85,18 +108,30 @@ export const {
   setProductosArray,
   setAddProductoArray,
   updateProductoArray,
-  deleteProductoArray
+  deleteProductoArray,
+  setPagination,
 } = productSlice.actions;
 
 export default productSlice.reducer;
 
 // const AddProduct = async(): Promise<>
-export const GetAllProducts = (): Thunk => async (dispatch): Promise<Array<IProducto>> => {
+export const GetAllProducts = (page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IProducto>> => {
   // const filePath = await window.electron.getAllProducts();
-  const Products = await window.electron.ipcRenderer.GetAllProducts();
+  const Products = await window.electron.ipcRenderer.GetAllProducts({page, sizePage});
   console.log('GetAllProducts: ', Products);
-  dispatch(setProductosArray(Products));
-  return Products;
+  const pagination:IPaginationForSlides = {
+    currentPage: Products.currentPage,
+    sizePage: Products.pageSize,
+    totalPages: Products.totalPages,
+    totalCount: Products.totalCount,
+    hasPreviousPage: Products.hasPreviousPage,
+    hasNextPage: Products.hasNextPage,
+    nextPageNumber: Products.nextPageNumber,
+    previousPageNumber: Products.previousPageNumber
+  }
+  dispatch(setProductosArray(Products.items));
+  dispatch(setPagination(pagination));
+  return Products.items;
 }
 
 export const FindProduct = (concepto: string): Thunk => async (dispatch): Promise<Array<IProducto>> => {

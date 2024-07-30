@@ -1,18 +1,23 @@
+import { PagedList } from "../../utils/Pagination";
 import { WriteFileSQLBackup } from "../../files/log";
 import { IPriceProduct, IProducto } from "../../interfaces";
-import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from "../../interfaces/IProducts";
+import { IDataAddProduct, IDataFindPricesProduct, IDataGetProducts, IDataUpdateProduct } from "../../interfaces/IProducts";
 import { openDBPostgres } from "../database-pg";
 
-export const findAllProductos = async ():Promise<Array<IProducto>> => {
+export const findAllProductos = async ({page, sizePage}: IDataGetProducts):Promise<PagedList<IProducto>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const temp = await client.query('SELECT * FROM fn_getAllProducts()');
+    const temp = await client.query(`SELECT * FROM fn_getAllProducts()`);
     const result:Array<IProducto> = temp.rows;
-    return result;
+    console.log('result: ', result);
+    const pagedList:PagedList<IProducto> = PagedList.create(result, page, sizePage);
+    console.log('pagedList: ', pagedList);
+    console.log('items: ', pagedList.items);
+    return pagedList;
   } catch (error) {
     console.log('ERROR:', error);
-    return [];
+    return PagedList.create([], 1, 10);
   } finally {
     await client.end();
   }

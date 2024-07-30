@@ -1,45 +1,87 @@
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
-import { PagedList } from '../utils/Filters';
+import { useState, useEffect } from 'react';
 
-interface IDataProps<T>
-{
-  data: PagedList<T>;
-  actionNextPage: () => void;
-  actionPreviousPage: () => void;
+interface IPagination {
+  currentPage: number;
+  sizePage: number;
+  totalPages: number;
+  totalCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  nextPageNumber: number | null;
+  previousPageNumber: number | null;
+  actionGoToPage: (page: number) => void;
 }
 
-export const PaginationComponent = <T,>({data}:IDataProps<T>):JSX.Element => {
+export const PaginationComponent = ({
+  currentPage, 
+  sizePage, 
+  totalPages, 
+  totalCount, 
+  hasPreviousPage,
+  hasNextPage,
+  nextPageNumber,
+  previousPageNumber,
+  actionGoToPage,
+}: IPagination): JSX.Element => {
+  
+  const [pagesToShow, setPagesToShow] = useState<Array<number | string>>([]);
+
+  useEffect(() => {
+    const getPagesToShow = (): Array<number | string> => {
+      const totalNumbers = 5;
+      const totalBlocks = totalNumbers + 2;
+      
+      if (totalPages > totalBlocks) {
+        const startPage = Math.max(2, currentPage - 2);
+        const endPage = Math.min(totalPages - 1, currentPage + 2);
+        let pages: Array<number | string> = [];
+
+        for (let i = startPage; i <= endPage; i++) {
+          pages.push(i);
+        }
+
+        if (startPage > 2) {
+          pages.unshift('...');
+        }
+
+        if (endPage < totalPages - 1) {
+          pages.push('...');
+        }
+
+        return [1, ...pages, totalPages];
+      } else {
+        return Array.from({ length: totalPages }, (_, index) => index + 1);
+      }
+    };
+
+    setPagesToShow(getPagesToShow());
+  }, [currentPage, totalPages]);
 
   return (
     <div>
       <Pagination className="justify-content-center">
-        <Pagination.First disabled={!data.hasPreviousPage} />
-        <Pagination.Prev disabled={!data.hasPreviousPage}/>
+        <Pagination.First onClick={() => actionGoToPage(0)} disabled={!hasPreviousPage} />
+        <Pagination.Prev onClick={() => actionGoToPage(currentPage - 1)} disabled={!hasPreviousPage} />
         {
-          data.hasPreviousPage === false 
-            ? null
-            : (
-              <Pagination.Item active={false}>
-                {data.previousPageNumber}
-              </Pagination.Item>)
+          pagesToShow.map((page, index) => 
+            typeof page === 'string' ? (
+              <Pagination.Ellipsis key={`ellipsis-${index}`} />
+            ) : (
+              <Pagination.Item 
+                key={`item-pagination-${index}`} 
+                active={page === (currentPage + 1)}
+                onClick={() => actionGoToPage(page as number)}
+              >
+                {page}
+              </Pagination.Item>
+            )
+          )
         }
-        <Pagination.Item active={true}>
-          {data.currentPage}
-        </Pagination.Item>
-        {
-          data.hasNextPage === false 
-            ? null
-            : (
-              <Pagination.Item onClick={() => {
-                data.currentPage = data.currentPage + 1;
-              }}>
-                {data.nextPageNumber}
-              </Pagination.Item>)
-        }
-        <Pagination.Next disabled={!data.hasNextPage} />
-        <Pagination.Last disabled={!data.hasNextPage} />
+        <Pagination.Next onClick={() => actionGoToPage(currentPage + 1)} disabled={!hasNextPage} />
+        <Pagination.Last onClick={() => actionGoToPage(totalPages - 1)} disabled={!hasNextPage} />
       </Pagination>
     </div>
   );
-}
+};

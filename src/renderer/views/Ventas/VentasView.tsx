@@ -13,7 +13,7 @@ export const VentasView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
   const {handleAddVenta, selectView, addVenta} = useCustomSelector((state) => state.ventaSlice);
   const [client, setClient] = useState<IClient | null>(null);
-  const [dropdownSelect, setDropdownSelect] = useState<string>(client === null ? 'Seleccionar cliente' : `${client.name} ${client.app}`);
+  const [dropdownSelect, setDropdownSelect] = useState<string>(client === null ? 'Seleccionar cliente' : `${client.nombre} ${client.apellidopaterno}`);
 
   const dispatch = useCustomDispatch();
 
@@ -53,11 +53,11 @@ export const VentasView = ():JSX.Element => {
                                 console.log(`id: ${cliente.id}`);
                                 setClient(cliente);
                                 dispatch(setSelectClienteSearch(cliente.id));
-                                setDropdownSelect(`${cliente.name} ${cliente.app}`);
+                                setDropdownSelect(`${cliente.nombre} ${cliente.apellidopaterno}`);
                               }
                             }
                           >
-                            {`${cliente.name} ${cliente.app}`}
+                            {`${cliente.nombre} ${cliente.apellidopaterno}`}
                           </Dropdown.Item>
                 })
               }

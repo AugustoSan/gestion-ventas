@@ -33,7 +33,7 @@ export const TablaVentasByCliente = ({cliente}:IDataProps):JSX.Element => {
               <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Cliente</th>
-                <th scope="col">Dirección</th>
+                {/* <th scope="col">Dirección</th> */}
                 <th scope="col">Fecha</th>
                 <th scope="col">Total</th>
                 <th scope="col">Para liquidar</th>

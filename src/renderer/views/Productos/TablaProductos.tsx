@@ -11,7 +11,7 @@ export const TablaProductos = ():JSX.Element => {
       <div className="card">
         <div className="card-body">
         <div className="table-responsive small">
-        <Table striped bordered hover size="sm">
+        <Table striped bordered hover size="sm" responsive>
           <thead>
             <tr>
               <th scope="col">ID</th>

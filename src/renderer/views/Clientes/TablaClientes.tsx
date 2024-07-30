@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { ItemClientTabla } from '../../components/ItemClientTabla';
-import { IClient } from '../../../main/interfaces';
-import { useCustomSelector } from '../../hooks/redux';
+import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
+import { PaginationComponent } from '../../components/PaginationComponent';
+import { setCurrentPage } from '../../redux/slice/clientes';
 
 export const TablaClienteCard = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes
-  const {clientesArray, searchCliente} = useCustomSelector((state) => state.clientSlice);
+  const {clientesArray, searchCliente, currentPage, sizePage} = useCustomSelector((state) => state.clientSlice);
+  const dispatch = useCustomDispatch();
 
   console.log('clientesArray: ', clientesArray);
 
@@ -15,7 +16,7 @@ export const TablaClienteCard = ():JSX.Element => {
       <div className="card">
         <div className="card-body">
         <div className="table-responsive small">
-        <Table striped bordered hover size="sm">
+        <Table responsive striped bordered hover size="sm">
           <thead>
             <tr>
               <th scope="col">Nombre</th>
@@ -37,6 +38,7 @@ export const TablaClienteCard = ():JSX.Element => {
             }
           </tbody>
         </Table>
+        {/* <PaginationComponent data={clientesArray} actionNextPage={() => { dispatch(setCurrentPage(currentPage+1))}} actionPreviousPage={() => { dispatch(setCurrentPage(currentPage-1))}}/> */}
       </div>
         </div>
       </div>

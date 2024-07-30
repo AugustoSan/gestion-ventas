@@ -31,7 +31,7 @@ export const InputFormSelectClientes = ({onChange}:IDataProps):JSX.Element => {
                   <option key={`default-item-cliente`} value={"-1"}>{`Selecciona un cliente`}</option>
                   {
                     clientesArray.map((cliente, index) => {
-                      return (<option key={`${index}-${cliente.id}-item-cliente-${cliente.name}`} value={JSON.stringify(cliente)}>{`${cliente.name} ${cliente.app}`}</option>)
+                      return (<option key={`${index}-${cliente.id}-item-cliente-${cliente.nombre}`} value={JSON.stringify(cliente)}>{`${cliente.nombre} ${cliente.apellidopaterno}`}</option>)
                     })
                   }
                 </Form.Select>

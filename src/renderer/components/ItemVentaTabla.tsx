@@ -40,8 +40,8 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
   : (
   <tr>
     <td>{id}</td>
-    <td>{`${client.name} ${client.app}`}</td>
-    <td>{address}</td>
+    <td>{`${client.nombre} ${client.apellidopaterno}`}</td>
+    {/* <td>{address}</td> */}
     <td>{`${itemDate.getDay()}/${itemDate.getMonth()}/${itemDate.getFullYear()}`}</td>
     <td>$ {(total ?? 0).toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
     <td>$ {(por_pagar ?? 0).toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>

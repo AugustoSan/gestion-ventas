@@ -3,12 +3,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IClient, IDirection } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
 import { IDataAddAddress, IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/IClients';
+
+// import {PagedList} from './../../../utils/Filters';
 // import { findAllClients } from '../../../../main/database/database';
 
 interface IClientSlice {
   searchCliente: Array<IClient>;
   selectClient: IClient | null;
   clientesArray: Array<IClient>;
+  sizePage: number;
+  currentPage: number;
   handleAddClient: boolean;
   handleWatchAddress: boolean;
   handleUpdateClient: boolean;
@@ -19,6 +23,8 @@ const initialState: IClientSlice =
   searchCliente: [],
   selectClient: null,
   clientesArray: [],
+  sizePage: 10,
+  currentPage: 1, 
   handleAddClient: false,
   handleWatchAddress: false,
   handleUpdateClient: false
@@ -55,10 +61,13 @@ const clientSlice = createSlice({
         setAddClienteArray: (state, action: PayloadAction<IClient>) => {
           console.log('Entro en setAddClienteArray: ', action.payload);
           state.clientesArray = [...state.clientesArray,action.payload];
+          // const clients = state.clientesArray.items;
+          // state.clientesArray = PagedList.create([...clients,action.payload], state.currentPage, state.sizePage);
         },
         updateClienteArray: (state, action: PayloadAction<IDataUpdateClient>) => {
           console.log('Entro en setClientesArray: ', action.payload);
-          const newArray = state.clientesArray.map((client, index) => {
+          const items = state.clientesArray;
+          const newArray = items.map((client, index) => {
             if(client.id === action.payload.id){
               client.nombre = action.payload.client.nombre;
               client.apellidopaterno = action.payload.client.apellidopaterno;
@@ -67,26 +76,34 @@ const clientSlice = createSlice({
             }
             return client;
           });
+          // state.clientesArray = PagedList.create(newArray, state.currentPage, state.sizePage);
           state.clientesArray = newArray;
         },
         deleteClienteArray: (state, action: PayloadAction<number>) => {
           console.log('Entro en setClientesArray: ', action.payload);
-          const newArray = state.clientesArray.filter((client) => client.id !== action.payload);
-          state.clientesArray = newArray;
+          const items = state.clientesArray;
+          const newArray = items.filter((client) => client.id !== action.payload);
+
+          state.clientesArray = newArray
         },
         setAddAddressToClient: (state, action: PayloadAction<IDirection>) => {
           console.log('Entro en setAddAddressToClient: ', action.payload);
-          const newArray = state.clientesArray.map((client) => {
+          const items = state.clientesArray;
+          const newArray = items.map((client) => {
             if(client.id === action.payload.id_client){
               client.direcciones = [...client.direcciones, action.payload];
             }
             return client;
           });
-          state.clientesArray = newArray;
+          state.clientesArray = newArray
           if(state.selectClient !== null){
             state.selectClient.direcciones = [...state.selectClient.direcciones, action.payload]
           }
         },
+        setCurrentPage: (state, action: PayloadAction<number>) => {
+          console.log('Entro en setCurrentPage: ', action.payload);
+          state.currentPage = action.payload;
+      },
     }
 });
 
@@ -101,6 +118,7 @@ export const {
     updateClienteArray,
     deleteClienteArray,
     setAddAddressToClient,
+    setCurrentPage,
 } = clientSlice.actions;
 
 export default clientSlice.reducer;
@@ -110,6 +128,8 @@ export const GetAllClients = (): Thunk => async (dispatch): Promise<Array<IClien
   // const filePath = await window.electron.getAllClients();
   const clients = await window.electron.ipcRenderer.GetAllClients();
   console.log('GetAllClients: ', clients);
+  // const temp = PagedList.create(clients, 1, 4);
+  // console.log('temp: ', temp);
   dispatch(setClientesArray(clients));
   return clients;
 }

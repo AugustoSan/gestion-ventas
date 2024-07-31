@@ -42,6 +42,7 @@ const electronHandler = {
     // Products
     GetAllProducts:(data: IDataPagination):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:getAllProducts', data),
     FindProducto:(concepto: string, data: IDataPagination):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:findProduct', concepto, data),
+    FindProductoById:(id: number):Promise<IProducto | null> => ipcRenderer.invoke('products:findProductById', id),
     // FindPricesProducto:(data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => ipcRenderer.invoke('products:findPricesProduct', data),
     AddProduct:(data: IDataAddProduct):Promise<number> => ipcRenderer.invoke('products:addlProduct', data),
     UpdateProduct:(data: IDataUpdateProduct):Promise<number> => ipcRenderer.invoke('products:updateProduct', data),

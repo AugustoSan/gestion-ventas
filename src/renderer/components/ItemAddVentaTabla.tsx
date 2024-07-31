@@ -4,24 +4,29 @@ import { IPrecioProductoCliente, IProducto } from "../../main/interfaces";
 import { useCustomDispatch } from '../hooks/redux';
 import { IDataAddVentaProductos } from "../../main/interfaces/IVentas";
 import { deleteAddProductAddVenta } from "../redux/slice/ventas";
+import { getProductHook } from "../hooks/database/Product.hook";
+import { numberToPrice } from "../utils/price";
 
 interface IDataProps{
   data: IDataAddVentaProductos;
 }
 
 export const ItemAddVentaTabla = ({data}: IDataProps):JSX.Element => {
-  const {producto, cantidad} = data;
-  const {id, concepto} = producto;
-  const total = cantidad * producto.precio;
+  const [isValid, setIsValid] = useState<boolean>(true);
+  const {id_producto, precio, cantidad} = data;
+  const total = cantidad * precio;
+
+  const {result, isLoading, isSuccess, status, error} = getProductHook(isValid, id_producto);
 
   const dispatch = useCustomDispatch();
-  return (
+  return result === null ? <></> 
+  : (
   <tr>
-    <td>{id}</td>
-    <td>{concepto}</td>
+    <td>{result.id}</td>
+    <td>{result.concepto}</td>
     <td>{cantidad}</td>
-    <td>$ {producto.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
-    <td>$ {(total ?? 0).toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
+    <td>{numberToPrice(precio)}</td>
+    <td>{numberToPrice(total)}</td>
     <td>
       <Button
         variant="danger"

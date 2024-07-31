@@ -22,17 +22,19 @@ export const InputNumberCard = ({title, value, onChange, disabled = false}:IData
               aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               value={value}
-              type='number'
-              min={0}
               onChange={(event) => {
                 try {
-                  console.log(event.target.value);
-                  const newNumber = Number(event.target.value) * 1;
-                  console.log('newNumber', newNumber);
-                  console.log('valueOf', newNumber.valueOf());
-                  onChange(newNumber.valueOf())
+                  console.log(`nuevo valor: ${event.target.value}`);
+                  const newValue:number = Number(event.target.value);
+                  if (!isNaN(newValue)) { // Ensure newValue is a valid number
+                    onChange(newValue);
+                  } else {
+                    onChange(value);
+                  }
                 } catch (error) {
-                  alert('La entrada del dato deben ser números')
+                  console.log('Entro en catch', error);
+                  onChange(value);
+                  alert(`Ocurrio un error: ${error}`,)
                 }
               }}
               disabled={disabled}

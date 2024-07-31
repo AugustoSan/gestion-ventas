@@ -107,6 +107,7 @@ const ventaSlice = createSlice({
       setAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
         state.selectProductos = [action.payload, ...state.selectProductos];
         state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.precio);
+        console.log('totalAddVenta: ', state.totalAddVenta);
       },
       deleteAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
         const products = state.selectProductos.filter((producto) => producto.id_producto !== action.payload.id_producto);
@@ -114,6 +115,7 @@ const ventaSlice = createSlice({
           state.totalAddVenta = state.totalAddVenta - (action.payload.cantidad * action.payload.precio);
         }
         state.selectProductos = products;
+        console.log('totalAddVenta: ', state.totalAddVenta);
       },
       setPagination: (state, action: PayloadAction<IPaginationForSlides>) => {
         console.log('Entro en setPagination: ', action.payload);
@@ -165,6 +167,7 @@ export const GetAllVentasByClient = (id: number): Thunk => async (dispatch): Pro
 
 export const AddVenta = (venta: IDataAddVenta): Thunk => async (dispatch): Promise<void> => {
   const id = await window.electron.ipcRenderer.AddVenta(venta);
+  console.log('id: ', id);
   const productos = await window.electron.ipcRenderer.GetProductosFromVenta(id);
   // const newVenta:IVenta = {
   //   ...venta,

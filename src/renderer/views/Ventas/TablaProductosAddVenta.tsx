@@ -6,6 +6,7 @@ import { IClient } from '../../../main/interfaces';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { ItemVentaTabla } from '../../components/ItemVentaTabla';
 import { ItemAddVentaTabla } from '../../components/ItemAddVentaTabla';
+import { numberToPrice } from '../../utils/price';
 
 export const TablaProductosAddVenta = ():JSX.Element => {
   const { selectProductos, totalAddVenta } = useCustomSelector((state) => state.ventaSlice)
@@ -37,7 +38,7 @@ export const TablaProductosAddVenta = ():JSX.Element => {
                 <td></td>
                 <td></td>
                 <td>Total: </td>
-                <td>$ {totalAddVenta.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}</td>
+                <td>{numberToPrice(totalAddVenta)}</td>
                 <td></td>
               </tr>
             </tbody>

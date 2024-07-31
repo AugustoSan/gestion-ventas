@@ -42,6 +42,22 @@ export const findProducto = async (concepto: string, {page, sizePage}: IDataPagi
   }
 }
 
+export const findProductoById = async (id: number):Promise<IProducto | null> => {
+  const client = await openDBPostgres();
+  await client.connect();
+  try {
+    const query = `SELECT * FROM fn_FindProductById(${id})`;
+    const temp = await client.query(query);
+    const result:Array<IProducto> = temp.rows;
+    return result[0] ?? null;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return null;
+  } finally {
+    await client.end();
+  }
+}
+
 
 export const addProducto = async ({concepto, precio}: IDataAddProduct):Promise<number> => {
   const client = await openDBPostgres();

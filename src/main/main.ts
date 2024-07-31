@@ -15,7 +15,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllAddressByClientHandler, findAllClientsHandler, findClienteByIdHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
-import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
+import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoByIdHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
 // import { migrateDB } from './database/database';
 import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentasByClienteHandler } from './handles/Ventas';
 
@@ -57,6 +57,7 @@ ipcMain.handle('address:deleteAddress', deleteAddressHandler);
 // Productos
 ipcMain.handle('products:getAllProducts', findAllProductosHandler);
 ipcMain.handle('products:findProduct', findProductoHandler);
+ipcMain.handle('products:findProductById', findProductoByIdHandler);
 // ipcMain.handle('products:findPricesProduct', findPricesProductoHandler);
 ipcMain.handle('products:addlProduct', addProductoHandler);
 ipcMain.handle('products:updateProduct', updateProductoHandler);

@@ -81,7 +81,8 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
         <Button variant="outline-primary" size="lg" onClick={() => {
           if(validate()){
             const newProduct: IDataAddVentaProductos = {
-              producto: inputProduct,
+              id_producto: inputProduct.id,
+              precio: inputProduct.precio,
               cantidad: inputCantidad
             }
             dispatch(setAddProductAddVenta(newProduct));

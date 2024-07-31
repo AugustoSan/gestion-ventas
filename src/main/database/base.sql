@@ -319,6 +319,23 @@ BEGIN
 END
 $BODY$ LANGUAGE 'plpgsql';
 
+CREATE OR REPLACE FUNCTION fn_FindProductById( _id INTEGER)
+RETURNS SETOF datos_productos AS -- USAMOS NUESTRO TYPE
+$BODY$
+DECLARE
+    reg RECORD;
+BEGIN
+	FOR reg IN SELECT * FROM tblProductos 
+                WHERE 
+                id = _id
+    LOOP
+        RETURN NEXT reg;
+    END LOOP;
+
+    RETURN;
+END
+$BODY$ LANGUAGE 'plpgsql';
+
 -- Insertar un producto
 CREATE OR REPLACE FUNCTION fn_insertProduct( _concepto TEXT, _precio NUMERIC)
 RETURNS INTEGER AS $BODY$

@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { useCustomDispatch } from '../hooks/redux';
-import { AddAddres, FindClient } from '../redux/slice/clientes';
+import { AddAddres } from '../redux/slice/clientes';
 import { IDataAddAddress } from '../../main/interfaces/IClients';
 
 interface IDataProps {

@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IClient, IDirection } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
 import { IDataAddAddress, IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/IClients';
+import { createPaginationForSlides } from '../../../utils/pagination';
 
 // import {PagedList} from './../../../utils/Filters';
 // import { findAllClients } from '../../../../main/database/database';
@@ -11,11 +12,10 @@ interface IClientSlice {
   searchCliente: Array<IClient>;
   selectClient: IClient | null;
   clientesArray: Array<IClient>;
-  sizePage: number;
-  currentPage: number;
   handleAddClient: boolean;
   handleWatchAddress: boolean;
   handleUpdateClient: boolean;
+  pagination: IPaginationForSlides;
 }
 
 const initialState: IClientSlice =
@@ -23,11 +23,21 @@ const initialState: IClientSlice =
   searchCliente: [],
   selectClient: null,
   clientesArray: [],
-  sizePage: 10,
-  currentPage: 1, 
   handleAddClient: false,
   handleWatchAddress: false,
-  handleUpdateClient: false
+  handleUpdateClient: false,
+
+  // Pagination
+  pagination: {
+    currentPage: 0,
+    sizePage: 10,
+    totalPages: 0,
+    totalCount: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    nextPageNumber: null,
+    previousPageNumber: null
+  },
 }
 
 const clientSlice = createSlice({
@@ -49,10 +59,6 @@ const clientSlice = createSlice({
         setHandleWatchAddress: (state, action: PayloadAction<boolean>) => {
           console.log('Entro en setHandleWatchAddress: ', action.payload);
           state.handleWatchAddress = action.payload;
-        },
-        setSearchClientes: (state, action: PayloadAction<Array<IClient>>) => {
-          console.log('Entro en setSearchClientes: ', action.payload);
-          state.searchCliente = action.payload;
         },
         setClientesArray: (state, action: PayloadAction<Array<IClient>>) => {
           console.log('Entro en setClientesArray: ', action.payload);
@@ -100,10 +106,10 @@ const clientSlice = createSlice({
             state.selectClient.direcciones = [...state.selectClient.direcciones, action.payload]
           }
         },
-        setCurrentPage: (state, action: PayloadAction<number>) => {
-          console.log('Entro en setCurrentPage: ', action.payload);
-          state.currentPage = action.payload;
-      },
+        setPagination: (state, action: PayloadAction<IPaginationForSlides>) => {
+          console.log('Entro en setPagination: ', action.payload);
+          state.pagination = action.payload;
+        },
     }
 });
 
@@ -113,25 +119,26 @@ export const {
     setHandleWatchAddress,
     setHandleUpdateClient,
     setClientesArray,
-    setSearchClientes,
     setAddClienteArray,
     updateClienteArray,
     deleteClienteArray,
     setAddAddressToClient,
-    setCurrentPage,
+    setPagination,
 } = clientSlice.actions;
 
 export default clientSlice.reducer;
 
 // const AddClient = async(): Promise<>
-export const GetAllClients = (): Thunk => async (dispatch): Promise<Array<IClient>> => {
+export const GetAllClients = (page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IClient>> => {
   // const filePath = await window.electron.getAllClients();
-  const clients = await window.electron.ipcRenderer.GetAllClients();
+  const clients = await window.electron.ipcRenderer.GetAllClients({page, sizePage});
   console.log('GetAllClients: ', clients);
   // const temp = PagedList.create(clients, 1, 4);
   // console.log('temp: ', temp);
-  dispatch(setClientesArray(clients));
-  return clients;
+  const pagination:IPaginationForSlides = createPaginationForSlides(clients);
+  dispatch(setClientesArray(clients.items));
+  dispatch(setPagination(pagination));
+  return clients.items;
 }
 
 // const AddClient = async(): Promise<>
@@ -143,12 +150,14 @@ export const GetAllClients = (): Thunk => async (dispatch): Promise<Array<IClien
 //   return address;
 // }
 
-export const FindClient = (texto: string): Thunk => async (dispatch): Promise<Array<IClient>> => {
+export const FindClient = (texto: string, page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IClient>> => {
   // const filePath = await window.electron.getAllProducts();
-  const cliente = await window.electron.ipcRenderer.FindCliente(texto);
-  console.log('FindCliente: ', cliente);
-  dispatch(setSearchClientes(cliente));
-  return cliente;
+  const clientes = await window.electron.ipcRenderer.FindCliente(texto, {page, sizePage});
+  console.log('FindCliente: ', clientes);
+  const pagination:IPaginationForSlides = createPaginationForSlides(clientes);
+  dispatch(setClientesArray(clientes.items));
+  dispatch(setPagination(pagination));
+  return clientes.items;
 }
 
 export const AddClient = (client: IDataAddClient): Thunk => async (dispatch): Promise<number> => {

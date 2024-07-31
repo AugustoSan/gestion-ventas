@@ -2,13 +2,15 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
-import { useCustomDispatch } from '../hooks/redux';
+import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { FindClient } from '../redux/slice/clientes';
 
 export const InputSearchCliente = ():JSX.Element => {
+  const {pagination} = useCustomSelector((state) => state.clientSlice);
   const [inputSearch, setInputSearch] = useState<string>('');
 
   const dispatch = useCustomDispatch();
+  const {currentPage, sizePage} = pagination;
 
   return (
     <div className="col-9 row">
@@ -20,11 +22,11 @@ export const InputSearchCliente = ():JSX.Element => {
           value={inputSearch}
           onChange={(event) => {
             setInputSearch(event.target.value);
-            dispatch(FindClient(event.target.value));
+            dispatch(FindClient(event.target.value, currentPage, sizePage));
           }}
         />
         <Button variant="outline-primary" onClick={() => {
-          dispatch(FindClient(inputSearch));
+          dispatch(FindClient(inputSearch, currentPage, sizePage));
         }}>
           Buscar
         </Button>

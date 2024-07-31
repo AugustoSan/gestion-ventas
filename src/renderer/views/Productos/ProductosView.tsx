@@ -13,11 +13,13 @@ import { FindProduct, setHandleAddProduct, setHandleSearchProduct } from '../../
 
 
 export const ProductosView = ():JSX.Element => {
-  const { selectProducto, handleAddProducto, searchProducto, handleSearchProducto } = useCustomSelector((state) => state.productSlice);
+  const { selectProducto, handleAddProducto, searchProducto, handleSearchProducto, pagination } = useCustomSelector((state) => state.productSlice);
 
   const [inputSearch, setInputSearch] = useState<string>('');
 
   const dispatch = useCustomDispatch();
+
+  const {currentPage, sizePage} = pagination;
 
   console.log('searchProducto: ', searchProducto);
   console.log('handleSearchProducto: ', handleSearchProducto);
@@ -34,13 +36,13 @@ export const ProductosView = ():JSX.Element => {
               value={inputSearch}
               onChange={(event) => {
                 setInputSearch(event.target.value);
-                dispatch(FindProduct(event.target.value));
+                dispatch(FindProduct(event.target.value, currentPage, sizePage));
               }}
             />
             <Button variant="outline-primary" onClick={() => {
               console.log('Se va a buscar el producto con coincidencias de ', inputSearch);
               // dispatch(setHandleSearchProduct(true));
-              dispatch(FindProduct(inputSearch));
+              dispatch(FindProduct(inputSearch, currentPage, sizePage));
             }}>
               Buscar
             </Button>

@@ -1,5 +1,7 @@
 import { IClient, IDirection } from "../../interfaces";
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from "../../interfaces/IClients";
+import { IDataPagination } from "../../interfaces/IProducts";
+import { PagedList } from "../../utils/Pagination";
 // import { createTables, openDb } from "../database";
 import { openDBPostgres } from "../database-pg";
 
@@ -19,7 +21,7 @@ export const findAddressByIDClient = async (id: number): Promise<Array<IDirectio
   }
 }
 
-export const findAllClients = async ():Promise<Array<IClient>> => {
+export const findAllClients = async ({page, sizePage}: IDataPagination):Promise<PagedList<IClient>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
@@ -35,16 +37,17 @@ export const findAllClients = async ():Promise<Array<IClient>> => {
         return cliente;
       })
     );
-    return allClients;
+    const pagedList:PagedList<IClient> = PagedList.create(allClients, page, sizePage);
+    return pagedList;
   } catch (error) {
     console.log('ERROR:', error);
-    return [];
+    return PagedList.create([], 1, 10);
   } finally {
     await client.end();
   }
 }
 
-export const findCliente = async (texto: string):Promise<Array<IClient>> => {
+export const findCliente = async (texto: string, {page, sizePage}: IDataPagination):Promise<PagedList<IClient>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
@@ -57,10 +60,11 @@ export const findCliente = async (texto: string):Promise<Array<IClient>> => {
         return cliente;
       })
     );
-    return allClients;
+    const pagedList:PagedList<IClient> = PagedList.create(allClients, page, sizePage);
+    return pagedList;
   } catch (error) {
     console.log('ERROR:', error);
-    return [];
+    return PagedList.create([], 1, 10);
   } finally {
     await client.end();
   }

@@ -8,9 +8,7 @@ import { AddClienteCard } from './AddClienteCard';
 import { TablaClienteCard } from './TablaClientes';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 
-// import { appendLogFile } from '../../main/util';
-import { useEffect } from 'react';
-import { FindClient, GetAllClients, setHandleAddClient } from '../../redux/slice/clientes';
+import { setHandleAddClient } from '../../redux/slice/clientes';
 import { TablaAddressByCliente } from './TablaAddressByCliente';
 import { InputSearchCliente } from '../../components/InputSearchCliente';
 import { ButtonAddNewAddress } from '../../components/ButtonAddNewAddress';
@@ -20,11 +18,6 @@ export const ClientesView = ():JSX.Element => {
   const [inputSearch, setInputSearch] = useState<string>('');
 
   const dispatch = useCustomDispatch();
-
-  // useEffect(() => {
-  //   dispatch(GetAllClients());
-  // }, []);
-
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 overflow-y-auto">

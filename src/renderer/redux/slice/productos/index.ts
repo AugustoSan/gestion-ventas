@@ -2,10 +2,7 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { IPriceProduct, IProducto } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
-import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
-import { setAddListPricesProductArray } from '../ventas';
-import { PagedList } from '../../../../main/utils/Pagination';
-import { setCurrentPage } from '../clientes';
+import { IDataAddProduct, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
 import { createPaginationForSlides } from '../../../utils/pagination';
 // import { findAllProducts } from '../../../../main/database/database';
 
@@ -18,6 +15,7 @@ interface IProductSlice {
   handleSearchProducto: boolean;
   //Pagination
   pagination: IPaginationForSlides;
+  paginationSearch: IPaginationForSlides;
 }
 
 const initialState: IProductSlice =
@@ -31,6 +29,16 @@ const initialState: IProductSlice =
 
     // Pagination
     pagination: {
+      currentPage: 0,
+      sizePage: 10,
+      totalPages: 0,
+      totalCount: 0,
+      hasPreviousPage: false,
+      hasNextPage: false,
+      nextPageNumber: null,
+      previousPageNumber: null
+    },
+    paginationSearch: {
       currentPage: 0,
       sizePage: 10,
       totalPages: 0,
@@ -97,6 +105,10 @@ const productSlice = createSlice({
           console.log('Entro en setPagination: ', action.payload);
           state.pagination = action.payload;
         },
+        setPaginationSearch: (state, action: PayloadAction<IPaginationForSlides>) => {
+          console.log('Entro en setPagination: ', action.payload);
+          state.paginationSearch = action.payload;
+        },
     }
 });
 
@@ -111,6 +123,7 @@ export const {
   updateProductoArray,
   deleteProductoArray,
   setPagination,
+  setPaginationSearch,
 } = productSlice.actions;
 
 export default productSlice.reducer;
@@ -126,13 +139,15 @@ export const GetAllProducts = (page: number, sizePage: number): Thunk => async (
   return Products.items;
 }
 
-export const FindProduct = (concepto: string): Thunk => async (dispatch): Promise<Array<IProducto>> => {
+export const FindProduct = (concepto: string, page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IProducto>> => {
   // const filePath = await window.electron.getAllProducts();
-  const product = await window.electron.ipcRenderer.FindProducto(concepto);
-  console.log('FindProduct: ', product);
-  dispatch(setSearchProducto(product));
+  const products = await window.electron.ipcRenderer.FindProducto(concepto, {page, sizePage});
+  console.log('FindProduct: ', products);
+  const pagination:IPaginationForSlides = createPaginationForSlides(products);
+  dispatch(setSearchProducto(products.items));
+  dispatch(setPaginationSearch(pagination));
   dispatch(setHandleSearchProduct(false));
-  return product;
+  return products.items;
 }
 
 // export const FindPricesProduct = (data: IDataFindPricesProduct): Thunk => async (dispatch): Promise<Array<IPriceProduct>> => {

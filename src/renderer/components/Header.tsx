@@ -4,12 +4,13 @@ import { GetAllClients } from '../redux/slice/clientes';
 import { GetAllProducts } from '../redux/slice/productos';
 
 export const Header = ():JSX.Element => {
-  const {pagination} = useCustomSelector((state) => state.productSlice);
+  const {pagination: paginationProduct} = useCustomSelector((state) => state.productSlice);
+  const {pagination: paginationClient} = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
 
   useEffect(() => {
-    dispatch(GetAllClients());
-    dispatch(GetAllProducts(pagination.currentPage, pagination.sizePage));
+    dispatch(GetAllClients(paginationClient.currentPage, paginationClient.sizePage));
+    dispatch(GetAllProducts(paginationProduct.currentPage, paginationProduct.sizePage));
   }, []);
   return (
   <header className="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">

@@ -1,13 +1,15 @@
 import { IClient, IDirection } from '../../interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from '../../interfaces/IClients';
 import { addAddress, addCliente, deleteAddress, deleteCliente, findAddressByIDClient, findAllAddress, findAllClients, findCliente, findClienteById, updateAddress, updateCliente } from '../../database/clientes/';
+import { PagedList } from '../../utils/Pagination';
+import { IDataPagination } from '../../interfaces/IProducts';
 
-export const findAllClientsHandler = async (event: Electron.IpcMainInvokeEvent):Promise<Array<IClient>> => {
-  return await findAllClients();
+export const findAllClientsHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<PagedList<IClient>> => {
+  return await findAllClients(data);
 }
 
-export const findClienteHandler = async (event: Electron.IpcMainInvokeEvent, texto: string):Promise<Array<IClient>> => {
-  return await findCliente(texto);
+export const findClienteHandler = async (event: Electron.IpcMainInvokeEvent, texto: string, data: IDataPagination):Promise<PagedList<IClient>> => {
+  return await findCliente(texto, data);
 }
 
 export const findClienteByIdHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<IClient | null> => {

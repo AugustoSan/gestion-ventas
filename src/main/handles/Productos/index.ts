@@ -7,8 +7,8 @@ export const findAllProductosHandler = async (event: Electron.IpcMainInvokeEvent
   return await findAllProductos(data);
 }
 
-export const findProductoHandler = async (event: Electron.IpcMainInvokeEvent, concepto: string):Promise<Array<IProducto>> => {
-  return await findProducto(concepto);
+export const findProductoHandler = async (event: Electron.IpcMainInvokeEvent, concepto: string, data: IDataPagination):Promise<PagedList<IProducto>> => {
+  return await findProducto(concepto, data);
 }
 
 export const addProductoHandler = async (event: Electron.IpcMainInvokeEvent, data:IDataAddProduct):Promise<number> => {

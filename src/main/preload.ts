@@ -27,8 +27,8 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
     // Clients
-    GetAllClients:():Promise<Array<IClient>> => ipcRenderer.invoke('clients:getAllClients', []),
-    FindCliente:(texto: string):Promise<Array<IClient>> => ipcRenderer.invoke('clients:findClient', texto),
+    GetAllClients:(data: IDataPagination):Promise<PagedList<IClient>> => ipcRenderer.invoke('clients:getAllClients', data),
+    FindCliente:(texto: string, data: IDataPagination):Promise<PagedList<IClient>> => ipcRenderer.invoke('clients:findClient', texto, data),
     FindClienteById:(id: number):Promise<IClient | null> => ipcRenderer.invoke('clients:findClientById', id),
     AddClient:(data: IDataAddClient):Promise<number> => ipcRenderer.invoke('clients:addlClient', data),
     UpdateClient:(data: IDataUpdateClient):Promise<number> => ipcRenderer.invoke('clients:updateClient', data),
@@ -41,7 +41,7 @@ const electronHandler = {
     DeleteAddress:(data: number):Promise<number> => ipcRenderer.invoke('address:deleteAddress', data),
     // Products
     GetAllProducts:(data: IDataPagination):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:getAllProducts', data),
-    FindProducto:(concepto: string):Promise<Array<IProducto>> => ipcRenderer.invoke('products:findProduct', concepto),
+    FindProducto:(concepto: string, data: IDataPagination):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:findProduct', concepto, data),
     // FindPricesProducto:(data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => ipcRenderer.invoke('products:findPricesProduct', data),
     AddProduct:(data: IDataAddProduct):Promise<number> => ipcRenderer.invoke('products:addlProduct', data),
     UpdateProduct:(data: IDataUpdateProduct):Promise<number> => ipcRenderer.invoke('products:updateProduct', data),

@@ -3,12 +3,17 @@ import Table from 'react-bootstrap/Table';
 import { ItemClientTabla } from '../../components/ItemClientTabla';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { PaginationComponent } from '../../components/PaginationComponent';
-import { setCurrentPage } from '../../redux/slice/clientes';
+import { GetAllClients } from '../../redux/slice/clientes';
 
 export const TablaClienteCard = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes
-  const {clientesArray, searchCliente, currentPage, sizePage} = useCustomSelector((state) => state.clientSlice);
+  const {clientesArray, searchCliente, pagination} = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
+  const {
+    currentPage, sizePage, totalPages, totalCount, 
+    hasPreviousPage, hasNextPage, nextPageNumber, 
+    previousPageNumber
+  } = pagination;
 
   console.log('clientesArray: ', clientesArray);
 
@@ -16,6 +21,17 @@ export const TablaClienteCard = ():JSX.Element => {
       <div className="card">
         <div className="card-body">
         <div className="table-responsive small">
+        <PaginationComponent 
+            currentPage={currentPage} 
+            sizePage={sizePage}
+            totalPages={totalPages} 
+            totalCount={totalCount} 
+            hasPreviousPage={hasPreviousPage} 
+            hasNextPage={hasNextPage} 
+            nextPageNumber={nextPageNumber} 
+            previousPageNumber={previousPageNumber}
+            actionGoToPage={(page: number) => { dispatch(GetAllClients(currentPage, sizePage));}} 
+        />
         <Table responsive striped bordered hover size="sm">
           <thead>
             <tr>

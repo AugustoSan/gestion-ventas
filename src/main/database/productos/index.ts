@@ -23,17 +23,20 @@ export const findAllProductos = async ({page, sizePage}: IDataPagination):Promis
   }
 }
 
-export const findProducto = async (concepto: string):Promise<Array<IProducto>> => {
+export const findProducto = async (concepto: string, {page, sizePage}: IDataPagination):Promise<PagedList<IProducto>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
     const query = `SELECT * FROM fn_findMatchProducts('${concepto}')`;
     const temp = await client.query(query);
     const result:Array<IProducto> = temp.rows;
-    return result;
+    const pagedList:PagedList<IProducto> = PagedList.create(result, page, sizePage);
+    console.log('pagedList: ', pagedList);
+    console.log('items: ', pagedList.items);
+    return pagedList;
   } catch (error) {
     console.log('ERROR:', error);
-    return [];
+    return PagedList.create([], 1, 10);
   } finally {
     await client.end();
   }

@@ -7,23 +7,15 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
-import { InputCard } from '../../components/InputCard';
-import { AddProduct, setHandleAddProduct } from '../../redux/slice/productos';
-import { IDataAddProduct } from '../../../main/interfaces/IProducts';
-import { InputPriceCard } from '../../components/InputPriceCard';
-import { IClient, IDirection, IProducto } from '../../../main/interfaces';
+import { IProducto } from '../../../main/interfaces';
 import { IDataAddVenta } from '../../../main/interfaces/IVentas';
-import { AddVenta, setHandleAddVenta, setSelectView } from '../../redux/slice/ventas';
-import { InputFormSelectClientes } from '../../components/InputFormSelectClientes';
-import { InputFormSelectAddress } from '../../components/InputFormSelectAddress';
-import { InputDateCard } from '../../components/InputDateCard';
+import { AddVenta, setAddVenta, setSelectView } from '../../redux/slice/ventas';
 import { InputProductItem } from '../../components/InputProductItem';
 import { TablaProductosAddVenta } from './TablaProductosAddVenta';
-import { InputFormSelectProduct } from '../../components/InputFormSelectProduct';
 
 export const AddVentaAddProductsCard = ():JSX.Element => {
   const {productosArray} = useCustomSelector((state) => state.productSlice);
-  const {selectClient, selectAddress, selectFecha, selectProductos, totalAddVenta} = useCustomSelector((state) => state.ventaSlice);
+  const {selectClient, addVenta} = useCustomSelector((state) => state.ventaSlice);
 
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
@@ -42,8 +34,8 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
   console.log('producto: ', product);
 
 
-  return selectClient === null ? <></>
-  : (
+  return addVenta !== null && selectClient !== null 
+  ? (
     <Card className="mb-2">
       <Card.Header>Crear nueva venta</Card.Header>
       <Card.Body>
@@ -64,6 +56,7 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
                 variant='outline-secondary'
                 onClick={() => {
                   dispatch(setSelectView("all"));
+                  dispatch(setAddVenta(null));
                 }}
               >
                 Cancelar
@@ -74,29 +67,22 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
                 variant='outline-primary'
                 onClick={() => {
                   if(validateInputs()){
-                    if(selectAddress !== null && selectFecha !== null && totalAddVenta > 0 && selectProductos.length > 0){
+                    const {id_client, id_direccion, fecha, productos, total: totalAddVenta, pagado } = addVenta;
+                    if(id_client !== null && id_direccion !== null  && fecha !== null && total > 0 && productos.length > 0){
                       console.log('Se va a guardar el nuevo producto');
-                      const newVenta:IDataAddVenta = {
-                        id_client: selectClient.id,
-                        id_direccion: selectAddress.id,
-                        fecha: selectFecha,
-                        total: totalAddVenta,
-                        pagado: 0,
-                        productos: selectProductos
-                      };
-
-                      dispatch(AddVenta(newVenta));
+                      dispatch(AddVenta(addVenta));
                       dispatch(setSelectView('all'))
                     }
                   }
                 }}
               >
-                Guardar
+                Crear venta
               </Button>
             </Col>
           </Row>
         </Container>
       </Card.Footer>
     </Card>
-  );
+  )
+  : <></> ;
 }

@@ -16,7 +16,6 @@ import { IDataAddVenta } from '../../../main/interfaces/IVentas';
 
 export const AddVentaClienteCard = ():JSX.Element => {
   const [cliente, setCliente] = useState<IClient | null>(null);
-  const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [address, setAddress] = useState<IDirection | null>(null);
   const [inputDate, setInputDate] = useState<Date>(new Date(Date.now()));
   const [error, setError] = useState<string>('');
@@ -85,18 +84,17 @@ export const AddVentaClienteCard = ():JSX.Element => {
                 onClick={() => {
                   if(validate()){
                     if(cliente !== null && address !== null){
-                      // const newVenta:IDataAddVenta = {
-                      //   client: cliente,
-                      //   direccion: address,
-                      //   fecha: inputDate,
-                      //   total: 0,
-                      //   por_pagar: 0,
-                      //   status: 0,
-                      //   productos: []
-                      // };
-                      // console.log('newVenta', newVenta);
+                      const newVenta:IDataAddVenta = {
+                        id_client: cliente.id,
+                        id_direccion: address.id,
+                        fecha: inputDate.toDateString(),
+                        total: 0,
+                        pagado: 0,
+                        productos: []
+                      };
+                      console.log('newVenta', newVenta);
 
-                      // dispatch(setAddVenta(newVenta));
+                      dispatch(setAddVenta(newVenta));
                       dispatch(setSelectView("addProducts"));
                       console.log('Se procedera con el proceso de agregar una nueva venta.')
                     }

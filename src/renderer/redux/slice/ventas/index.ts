@@ -106,7 +106,11 @@ const ventaSlice = createSlice({
       },
       setAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
         state.selectProductos = [action.payload, ...state.selectProductos];
-        state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.precio);
+        let total = 0;
+        state.selectProductos.map((producto) => {
+          total = total + (producto.precio * producto.cantidad);
+        })
+        state.totalAddVenta = total;
         console.log('totalAddVenta: ', state.totalAddVenta);
       },
       deleteAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {

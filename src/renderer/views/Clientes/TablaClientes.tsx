@@ -7,7 +7,7 @@ import { GetAllClients } from '../../redux/slice/clientes';
 
 export const TablaClienteCard = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes
-  const {clientesArray, searchCliente, pagination} = useCustomSelector((state) => state.clientSlice);
+  const {clientesArray, pagination} = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
   const {
     currentPage, sizePage, totalPages, totalCount, 
@@ -44,11 +44,7 @@ export const TablaClienteCard = ():JSX.Element => {
           </thead>
           <tbody>
             {
-              searchCliente.length > 0
-              ? searchCliente.map( (cliente, index) => {
-                return <ItemClientTabla key={`${index}-${cliente.id}-item-cliente-search`} cliente={cliente} />
-              })
-              : clientesArray.map( (cliente, index) => {
+              clientesArray.map( (cliente, index) => {
                 return <ItemClientTabla key={`${index}-${cliente.id}-item-cliente`} cliente={cliente} />
               })
             }

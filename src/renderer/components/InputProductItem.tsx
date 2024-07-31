@@ -22,12 +22,6 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
   const [inputCantidad, setInputCantidad] = useState<number>(0);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  // const [price, setPrice] = useState<IPriceProduct>({
-  //   id: 0,
-  //   id_producto: 0,
-  //   id_client: 0,
-  //   precio: 0,
-  // });
   const productDefault: IProducto = {
     id: 0,
     concepto: '',
@@ -53,10 +47,6 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
       setError('Seleccione un producto');
       return false;
     }
-    // if(price.id === 0 && price.precio){
-    //   setError('Seleccione un precio de la lista de precios.');
-    //   return false;
-    // }
     if(inputCantidad === 0){
       setError('Ingrese una cantidad mayor a cero.');
       return false;
@@ -68,14 +58,12 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
   return (
     <>
       <InputFormSelectProduct onChange={onChangeProduct} />
-      {/* <InputFormSelectPriceProduct producto={inputProduct} cliente={cliente} onChange={setPrice} disabled={!isEnabled} /> */}
       <InputCard
           title={'Precio'}
           value={`$ ${inputProduct.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}
           onChange={() =>{}}
           disabled={true}
         />
-      {/* <LabelInfoCard title={'Precio'} value={inputProduct.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})} /> */}
       <InputNumberCard title={'Cantidad'} value={inputCantidad} onChange={setInputCantidad} />
       <div className="card mb-2">
         <Button variant="outline-primary" size="lg" onClick={() => {

@@ -22,11 +22,11 @@ export const InputSearchCliente = ():JSX.Element => {
           value={inputSearch}
           onChange={(event) => {
             setInputSearch(event.target.value);
-            dispatch(FindClient(event.target.value, currentPage, sizePage));
+            dispatch(FindClient(event.target.value, 0, sizePage));
           }}
         />
         <Button variant="outline-primary" onClick={() => {
-          dispatch(FindClient(inputSearch, currentPage, sizePage));
+          dispatch(FindClient(inputSearch, 0, sizePage));
         }}>
           Buscar
         </Button>

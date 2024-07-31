@@ -7,7 +7,6 @@ import { createPaginationForSlides } from '../../../utils/pagination';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IProductSlice {
-  searchProducto: Array<IProducto> | null;
   selectProducto: IProducto | null;
   productosArray: Array<IProducto>;
   handleAddProducto: boolean;
@@ -15,12 +14,10 @@ interface IProductSlice {
   handleSearchProducto: boolean;
   //Pagination
   pagination: IPaginationForSlides;
-  paginationSearch: IPaginationForSlides;
 }
 
 const initialState: IProductSlice =
 {
-    searchProducto: null,
     selectProducto: null,
     productosArray: [],
     handleAddProducto: false,
@@ -38,26 +35,16 @@ const initialState: IProductSlice =
       nextPageNumber: null,
       previousPageNumber: null
     },
-    paginationSearch: {
-      currentPage: 0,
-      sizePage: 10,
-      totalPages: 0,
-      totalCount: 0,
-      hasPreviousPage: false,
-      hasNextPage: false,
-      nextPageNumber: null,
-      previousPageNumber: null
-    }
 }
 
 const productSlice = createSlice({
     name: 'producto',
     initialState,
     reducers: {
-        setSearchProducto: (state, action: PayloadAction<Array<IProducto> | null>) => {
-          console.log('Entro en setSearchProducto: ', action.payload);
-          state.searchProducto = action.payload;
-        },
+        // setSearchProducto: (state, action: PayloadAction<Array<IProducto> | null>) => {
+        //   console.log('Entro en setSearchProducto: ', action.payload);
+        //   state.searchProducto = action.payload;
+        // },
         setSelectProduct: (state, action: PayloadAction<IProducto | null>) => {
             console.log('Entro en setSelectProduct: ', action.payload);
             state.selectProducto = action.payload;
@@ -105,15 +92,15 @@ const productSlice = createSlice({
           console.log('Entro en setPagination: ', action.payload);
           state.pagination = action.payload;
         },
-        setPaginationSearch: (state, action: PayloadAction<IPaginationForSlides>) => {
-          console.log('Entro en setPagination: ', action.payload);
-          state.paginationSearch = action.payload;
-        },
+        // setPaginationSearch: (state, action: PayloadAction<IPaginationForSlides>) => {
+        //   console.log('Entro en setPagination: ', action.payload);
+        //   state.paginationSearch = action.payload;
+        // },
     }
 });
 
 export const {
-  setSearchProducto,
+  // setSearchProducto,
   setSelectProduct,
   setHandleAddProduct,
   setHandleUpdateProduct,
@@ -123,7 +110,7 @@ export const {
   updateProductoArray,
   deleteProductoArray,
   setPagination,
-  setPaginationSearch,
+  // setPaginationSearch,
 } = productSlice.actions;
 
 export default productSlice.reducer;
@@ -145,8 +132,8 @@ export const FindProduct = (concepto: string, page: number, sizePage: number): T
   const products = await window.electron.ipcRenderer.FindProducto(concepto, {page, sizePage});
   console.log('FindProduct: ', products);
   const pagination:IPaginationForSlides = createPaginationForSlides(products);
-  dispatch(setSearchProducto(products.items));
-  dispatch(setPaginationSearch(pagination));
+  dispatch(setProductosArray(products.items));
+  dispatch(setPagination(pagination));
   dispatch(setHandleSearchProduct(false));
   return products.items;
 }

@@ -9,7 +9,6 @@ import { createPaginationForSlides } from '../../../utils/pagination';
 // import { findAllClients } from '../../../../main/database/database';
 
 interface IClientSlice {
-  searchCliente: Array<IClient>;
   selectClient: IClient | null;
   clientesArray: Array<IClient>;
   handleAddClient: boolean;
@@ -20,7 +19,6 @@ interface IClientSlice {
 
 const initialState: IClientSlice =
 {
-  searchCliente: [],
   selectClient: null,
   clientesArray: [],
   handleAddClient: false,

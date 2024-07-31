@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 export const TablaProductos = ():JSX.Element => {
   // Aqui hay que obtener todos los clientes
-  const {productosArray, searchProducto, pagination} = useCustomSelector((state) => state.productSlice);
+  const {productosArray, pagination} = useCustomSelector((state) => state.productSlice);
   const dispatch = useCustomDispatch();
   const {
     currentPage, sizePage, totalPages, totalCount, 
@@ -45,11 +45,7 @@ export const TablaProductos = ():JSX.Element => {
           </thead>
           <tbody>
             {
-              searchProducto !== null && searchProducto.length > 0
-              ? searchProducto.map((producto, index) => {
-                return <ItemProductoTabla key={`${index}-${producto.id}-item-producto-search`} producto={producto} />
-              })
-              : productosArray.map( (producto, index) => {
+              productosArray.map( (producto, index) => {
                 return <ItemProductoTabla key={`${index}-${producto.id}-item-producto`} producto={producto} />
               })
             }

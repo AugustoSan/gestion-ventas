@@ -77,12 +77,11 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
                     if(selectAddress !== null && selectFecha !== null && totalAddVenta > 0 && selectProductos.length > 0){
                       console.log('Se va a guardar el nuevo producto');
                       const newVenta:IDataAddVenta = {
-                        client: selectClient,
-                        direccion: selectAddress,
+                        id_client: selectClient.id,
+                        id_direccion: selectAddress.id,
                         fecha: selectFecha,
                         total: totalAddVenta,
-                        por_pagar: totalAddVenta,
-                        status: 0,
+                        pagado: 0,
                         productos: selectProductos
                       };
 

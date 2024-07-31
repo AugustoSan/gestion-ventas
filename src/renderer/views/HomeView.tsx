@@ -8,7 +8,7 @@ import { graphicDataIngresos, graphicDataPedidos, graphicLabelsDays } from '../u
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { GetAllClients } from '../redux/slice/clientes';
 import { IClient } from '../../main/interfaces';
-import { GetAllVentas, setSelectClienteSearch } from '../redux/slice/ventas';
+import { setSelectClienteSearch } from '../redux/slice/ventas';
 import { GetAllProducts } from '../redux/slice/productos';
 import { TablaVentas } from './Ventas/TablaVentas';
 

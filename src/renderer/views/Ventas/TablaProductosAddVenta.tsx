@@ -29,7 +29,7 @@ export const TablaProductosAddVenta = ():JSX.Element => {
             <tbody>
               {
                 selectProductos.map( (item, index) => {
-                  return <ItemAddVentaTabla key={`${index}-${item.producto.id}-item-add-producto-tabla`} data={item}  />
+                  return <ItemAddVentaTabla key={`${index}-${item.id_producto}-item-add-producto-tabla`} data={item}  />
                 })
               }
               <tr>

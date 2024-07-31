@@ -66,6 +66,28 @@ export const findCliente = async (texto: string):Promise<Array<IClient>> => {
   }
 }
 
+export const findClienteById = async (id: number):Promise<IClient | null> => {
+  const client = await openDBPostgres();
+  await client.connect();
+  try {
+    const query = `SELECT * FROM fn_FindClientById(${id});`;
+    const temp = await client.query(`${query}`);
+    const result:Array<IClient> = temp.rows;
+    const allClients:Array<IClient> = await Promise.all(
+      result.map(async (cliente) => {
+        cliente.direcciones = await findAddressByIDClient(cliente.id);
+        return cliente;
+      })
+    );
+    return allClients[0] ?? null;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return null;
+  } finally {
+    await client.end();
+  }
+}
+
 export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
   const client = await openDBPostgres();
   await client.connect();

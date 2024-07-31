@@ -3,7 +3,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { IClient } from '../../../main/interfaces';
-import { TablaVentasByCliente } from './TablaVentasByCliente';
 import { TablaVentas } from './TablaVentas';
 import { GetAllVentas, setHandleAddVenta, setSelectClienteSearch, setSelectView } from '../../redux/slice/ventas';
 import { AddVentaClienteCard } from './AddVentaClienteCard';
@@ -11,15 +10,19 @@ import { AddVentaAddProductsCard } from './AddVentaAddProductsCard';
 
 export const VentasView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
-  const {handleAddVenta, selectView, addVenta} = useCustomSelector((state) => state.ventaSlice);
+  const {handleAddVenta, selectView, addVenta, pagination} = useCustomSelector((state) => state.ventaSlice);
   const [client, setClient] = useState<IClient | null>(null);
   const [dropdownSelect, setDropdownSelect] = useState<string>(client === null ? 'Seleccionar cliente' : `${client.nombre} ${client.apellidopaterno}`);
+  const {
+    currentPage, sizePage, totalPages, totalCount, 
+    hasPreviousPage, hasNextPage, nextPageNumber, previousPageNumber
+  } = pagination;
 
   const dispatch = useCustomDispatch();
 
-  // useEffect(() => {
-  //   dispatch(GetAllVentas());
-  // }, []);
+  useEffect(() => {
+    dispatch(GetAllVentas(currentPage, sizePage));
+  }, []);
 
 
   return (

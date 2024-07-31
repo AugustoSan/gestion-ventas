@@ -14,10 +14,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllAddressByClientHandler, findAllClientsHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
+import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllAddressByClientHandler, findAllClientsHandler, findClienteByIdHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
 import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoHandler, updateProductoHandler } from './handles/Productos';
 // import { migrateDB } from './database/database';
-import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
+import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentasByClienteHandler } from './handles/Ventas';
 
 class AppUpdater {
   constructor() {
@@ -42,6 +42,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
 // Clientes
 ipcMain.handle('clients:getAllClients', findAllClientsHandler);
 ipcMain.handle('clients:findClient', findClienteHandler);
+ipcMain.handle('clients:findClientById', findClienteByIdHandler);
 ipcMain.handle('clients:addlClient', addClienteHandler);
 ipcMain.handle('clients:updateClient', updateClienteHandler);
 ipcMain.handle('clients:deleteClient', deleteClienteHandler);
@@ -64,7 +65,7 @@ ipcMain.handle('products:deleteProduct', deleteProductoHandler);
 // Ventas
 ipcMain.handle('ventas:getAllVentas', findAllVentasHandler);
 ipcMain.handle('ventas:getVentaByCliente', findVentasByClienteHandler);
-ipcMain.handle('ventas:getVentaByID', findVentaByIDHandler);
+// ipcMain.handle('ventas:getVentaByID', findVentaByIDHandler);
 ipcMain.handle('ventas:getProductosFromVenta', findProductoFromVentaHandler);
 ipcMain.handle('ventas:addVenta', addVentaHandler);
 

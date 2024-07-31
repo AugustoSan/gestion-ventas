@@ -1,7 +1,7 @@
 // import { IProducto } from ".";
 // import { PagedList } from "../utils/Filters";
 
-export interface IDataGetProducts {
+export interface IDataPagination {
   page: number;
   sizePage: number;
 }

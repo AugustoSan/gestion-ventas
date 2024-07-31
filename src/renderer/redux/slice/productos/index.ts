@@ -2,10 +2,11 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { IPriceProduct, IProducto } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
-import { IDataAddProduct, IDataFindPricesProduct, IDataGetProducts, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
+import { IDataAddProduct, IDataFindPricesProduct, IDataUpdateProduct } from '../../../../main/interfaces/IProducts';
 import { setAddListPricesProductArray } from '../ventas';
 import { PagedList } from '../../../../main/utils/Pagination';
 import { setCurrentPage } from '../clientes';
+import { createPaginationForSlides } from '../../../utils/pagination';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IProductSlice {
@@ -119,16 +120,7 @@ export const GetAllProducts = (page: number, sizePage: number): Thunk => async (
   // const filePath = await window.electron.getAllProducts();
   const Products = await window.electron.ipcRenderer.GetAllProducts({page, sizePage});
   console.log('GetAllProducts: ', Products);
-  const pagination:IPaginationForSlides = {
-    currentPage: Products.currentPage,
-    sizePage: Products.pageSize,
-    totalPages: Products.totalPages,
-    totalCount: Products.totalCount,
-    hasPreviousPage: Products.hasPreviousPage,
-    hasNextPage: Products.hasNextPage,
-    nextPageNumber: Products.nextPageNumber,
-    previousPageNumber: Products.previousPageNumber
-  }
+  const pagination:IPaginationForSlides = createPaginationForSlides(Products);
   dispatch(setProductosArray(Products.items));
   dispatch(setPagination(pagination));
   return Products.items;

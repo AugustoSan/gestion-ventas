@@ -43,6 +43,17 @@ export interface IVentasProductos {
   cantidad: number;
 }
 
+export interface ITypeVenta {
+  id: number;
+  id_client: number;
+  id_direccion: number;
+  fecha: Date;
+  total: number;
+  por_pagar: number;
+  status: number;
+  productos: Array<IVentasProductos>
+}
+
 export interface IVenta {
   id: number;
   id_client: number;

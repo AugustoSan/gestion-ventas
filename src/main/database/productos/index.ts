@@ -1,10 +1,10 @@
 import { PagedList } from "../../utils/Pagination";
 import { WriteFileSQLBackup } from "../../files/log";
 import { IPriceProduct, IProducto } from "../../interfaces";
-import { IDataAddProduct, IDataFindPricesProduct, IDataGetProducts, IDataUpdateProduct } from "../../interfaces/IProducts";
+import { IDataAddProduct, IDataFindPricesProduct, IDataPagination, IDataUpdateProduct } from "../../interfaces/IProducts";
 import { openDBPostgres } from "../database-pg";
 
-export const findAllProductos = async ({page, sizePage}: IDataGetProducts):Promise<PagedList<IProducto>> => {
+export const findAllProductos = async ({page, sizePage}: IDataPagination):Promise<PagedList<IProducto>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {

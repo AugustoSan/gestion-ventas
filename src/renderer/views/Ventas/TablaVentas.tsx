@@ -5,33 +5,39 @@ import { ItemClientTabla } from '../../components/ItemClientTabla';
 import { IClient } from '../../../main/interfaces';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { ItemVentaTabla } from '../../components/ItemVentaTabla';
-import { GetAllVentas, GetAllVentasByClient } from '../../redux/slice/ventas';
+import { PaginationComponent } from '../../components/PaginationComponent';
+import { GetAllProducts } from '../../redux/slice/productos';
 
 export const TablaVentas = ():JSX.Element => {
-  const { ventasArray, ventasArrayByClient, selectClientSearchVentas } = useCustomSelector((state) => state.ventaSlice)
+  const { ventasArray, pagination } = useCustomSelector((state) => state.ventaSlice)
   const dispatch = useCustomDispatch();
 
-  console.log('ventasArray: ', ventasArray)
+  const {
+    currentPage, sizePage, totalPages, totalCount, 
+    hasPreviousPage, hasNextPage, nextPageNumber, previousPageNumber
+  } = pagination;
 
   useEffect(() => {
-    dispatch(GetAllVentas());
+    dispatch(GetAllProducts(currentPage, sizePage));
   }, []);
 
-
-  useEffect(() => {
-    if(selectClientSearchVentas === null){
-      dispatch(GetAllVentas());
-    }
-    else{
-      dispatch(GetAllVentasByClient(selectClientSearchVentas));
-    }
-  }, [selectClientSearchVentas]);
-
+  console.log('ventasArray: ', ventasArray);
 
   return (
       <div className="card">
         <div className="card-body">
           <div className="table-responsive small">
+          <PaginationComponent 
+            currentPage={currentPage} 
+            sizePage={sizePage}
+            totalPages={totalPages} 
+            totalCount={totalCount} 
+            hasPreviousPage={hasPreviousPage} 
+            hasNextPage={hasNextPage} 
+            nextPageNumber={nextPageNumber} 
+            previousPageNumber={previousPageNumber}
+            actionGoToPage={(page: number) => { dispatch(GetAllProducts(page, sizePage));}} 
+          />
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
@@ -47,16 +53,10 @@ export const TablaVentas = ():JSX.Element => {
             </thead>
             <tbody>
               {
-                selectClientSearchVentas === null
-                ? ventasArray.map( (venta, index) => {
+                ventasArray.map( (venta, index) => {
                   console.log('item: ', venta);
 
                   return <ItemVentaTabla key={`${index}-${venta.id}-item-venta-tabla`} venta={venta} />
-                })
-                : ventasArrayByClient.map( (venta, index) => {
-                  console.log('Entro en itemventabyclient');
-
-                  return <ItemVentaTabla key={`${index}-${venta.id}-client-item-venta-tabla`} venta={venta} />
                 })
               }
             </tbody>

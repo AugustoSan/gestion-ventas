@@ -3,13 +3,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Thunk } from '../../store';
 import { IClient, IDirection, IPrecioProductoCliente, IVenta } from '../../../../main/interfaces';
 import { IDataAddVenta, IDataAddVentaProductos } from '../../../../main/interfaces/IVentas';
+import { IDataPagination } from '../../../../main/interfaces/IProducts';
+import { createPaginationForSlides } from '../../../utils/pagination';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IVentaSlice {
   selectVenta: IVenta | null;
   selectClientSearchVentas: number | null;
   ventasArray: Array<IVenta>;
-  ventasArrayByClient: Array<IVenta>;
   handleAddVenta: boolean;
   addVenta: IDataAddVenta | null;
   addVentaListPricesProduct: Array<IPrecioProductoCliente>;
@@ -19,6 +20,7 @@ interface IVentaSlice {
   selectProductos: Array<IDataAddVentaProductos>;
   totalAddVenta: number;
   selectView: "all"  | "addCliente" | "addProducts" | "infoVenta";
+  pagination: IPaginationForSlides;
 }
 
 const initialState: IVentaSlice =
@@ -26,7 +28,6 @@ const initialState: IVentaSlice =
   selectVenta: null,
   selectClientSearchVentas: null,
   ventasArray: [],
-  ventasArrayByClient: [],
   handleAddVenta: false,
   addVenta: null,
   addVentaListPricesProduct: [],
@@ -35,7 +36,19 @@ const initialState: IVentaSlice =
   selectAddress: null,
   selectFecha: null,
   totalAddVenta: 0,
-  selectProductos: []
+  selectProductos: [],
+
+  // Pagination
+  pagination: {
+    currentPage: 0,
+    sizePage: 10,
+    totalPages: 0,
+    totalCount: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    nextPageNumber: null,
+    previousPageNumber: null
+  }
 }
 
 const ventaSlice = createSlice({
@@ -69,6 +82,10 @@ const ventaSlice = createSlice({
       setVentasArray: (state, action: PayloadAction<Array<IVenta>>) => {
         console.log('Entro en setVentasArray: ', action.payload);
         state.ventasArray = action.payload;
+        // state.ventasArray = action.payload.map(venta => ({
+        //   ...venta,
+        //   fecha: new Date(venta.fecha), // Convertir la fecha a una cadena ISO
+        // }));      
       },
       setAddListPricesProductArray: (state, action: PayloadAction<Array<IPrecioProductoCliente>>) => {
         console.log('Entro en setAddListPricesProductArray: ', action.payload);
@@ -77,10 +94,6 @@ const ventaSlice = createSlice({
       setAddItemVentasArray: (state, action: PayloadAction<IVenta>) => {
         console.log('Entro en setAddItemVentasArray: ', action.payload);
         state.ventasArray = [...state.ventasArray, action.payload];
-      },
-      setVentasArrayByClient: (state, action: PayloadAction<Array<IVenta>>) => {
-        console.log('Entro en setVentasArrayByClient: ', action.payload);
-        state.ventasArrayByClient = action.payload;
       },
       setAddClienteInAddVenta: (state, action: PayloadAction<IClient | null>) => {
         state.selectClient = action.payload;
@@ -93,14 +106,18 @@ const ventaSlice = createSlice({
       },
       setAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
         state.selectProductos = [action.payload, ...state.selectProductos];
-        state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.producto.precio);
+        state.totalAddVenta = state.totalAddVenta + (action.payload.cantidad * action.payload.precio);
       },
       deleteAddProductAddVenta: (state, action: PayloadAction<IDataAddVentaProductos>) => {
-        const products = state.selectProductos.filter((producto) => producto.producto.id !== action.payload.producto.id);
+        const products = state.selectProductos.filter((producto) => producto.id_producto !== action.payload.id_producto);
         if(products.length !== state.selectProductos.length) {
-          state.totalAddVenta = state.totalAddVenta - (action.payload.cantidad * action.payload.producto.precio);
+          state.totalAddVenta = state.totalAddVenta - (action.payload.cantidad * action.payload.precio);
         }
         state.selectProductos = products;
+      },
+      setPagination: (state, action: PayloadAction<IPaginationForSlides>) => {
+        console.log('Entro en setPagination: ', action.payload);
+        state.pagination = action.payload;
       },
     }
 });
@@ -114,35 +131,37 @@ export const {
   setVentasArray,
   setAddItemVentasArray,
   setAddListPricesProductArray,
-  setVentasArrayByClient,
   setAddClienteInAddVenta,
   setAddAddressInAddVenta,
   setAddDateInAddVenta,
   setAddProductAddVenta,
   deleteAddProductAddVenta,
+  setPagination,
 } = ventaSlice.actions;
 
 export default ventaSlice.reducer;
 
-export const GetAllVentas = (): Thunk => async (dispatch): Promise<Array<IVenta>> => {
-  const ventas = await window.electron.ipcRenderer.GetAllVentas();
+export const GetAllVentas = (page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IVenta>> => {
+  const ventas = await window.electron.ipcRenderer.GetAllVentas({page, sizePage});
   console.log('ventas: ', ventas);
-  dispatch(setVentasArray(ventas));
+  const pagination:IPaginationForSlides = createPaginationForSlides(ventas);
+  dispatch(setVentasArray(ventas.items));
+  dispatch(setPagination(pagination));
   return [];
 }
 
 export const GetAllVentasByClient = (id: number): Thunk => async (dispatch): Promise<Array<IVenta>> => {
   const ventas = await window.electron.ipcRenderer.GetAllVentasByCliente(id);
   console.log('ventas del cliente: ', ventas);
-  dispatch(setVentasArrayByClient(ventas));
+  dispatch(setVentasArray(ventas));
   return [];
 }
 
-export const GetVentaByID = (id: number): Thunk => async (dispatch): Promise<void> => {
-  const venta = await window.electron.ipcRenderer.GetVentaByID(id);
-  console.log('venta: ', venta);
-  dispatch(setSelectVenta(venta));
-}
+// export const GetVentaByID = (id: number): Thunk => async (dispatch): Promise<void> => {
+//   const venta = await window.electron.ipcRenderer.GetVentaByID(id);
+//   console.log('venta: ', venta);
+//   dispatch(setSelectVenta(venta));
+// }
 
 export const AddVenta = (venta: IDataAddVenta): Thunk => async (dispatch): Promise<void> => {
   const id = await window.electron.ipcRenderer.AddVenta(venta);

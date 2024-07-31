@@ -1,12 +1,14 @@
-import { IVenta, IVentasProductos } from "../../interfaces";
+import { ITypeVenta, IVenta, IVentasProductos } from "../../interfaces";
+import { IDataPagination } from "../../interfaces/IProducts";
 import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas";
+import { PagedList } from "../../utils/Pagination";
 import { openDBPostgres } from "../database-pg";
 
 export const findProductFromVenta = async (id: number): Promise<Array<IVentasProductos>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const temp= await client.query(`SELECT * FROM tblVentaProductos WHERE id_venta=${id}`);
+    const temp= await client.query(`SELECT * FROM fn_getAllProductsByVenta(${id}) AS id;`);
     const result:Array<IVentasProductos> = temp.rows;
     return result;
   } catch (error) {
@@ -21,7 +23,7 @@ export const findVentasByIDClient = async (id: number): Promise<Array<IVenta>> =
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const temp = await client.query(`SELECT * FROM tblVentas WHERE id_client=${id}`);
+    const temp = await client.query(`SELECT * FROM fn_getAllVentasByClient(${id}) AS id`);
     const result:Array<IVenta> = temp.rows;
     const arrayVentas:Array<IVenta> = await Promise.all(
       result.map(async (venta) => {
@@ -39,90 +41,48 @@ export const findVentasByIDClient = async (id: number): Promise<Array<IVenta>> =
   }
 }
 
-export const findVentaByID = async (id: number): Promise<IVenta> => {
-  const client = await openDBPostgres();
-  await client.connect();
-  const _response:IVenta = {
-    id: 0,
-    id_client: 0,
-    id_direccion: 0,
-    fecha: "",
-    total: 0,
-    por_pagar: 0,
-    status: 0,
-    productos: []
-  }
-  try {
-    const temp = await client.query(`SELECT * FROM tblVentas WHERE id_client=${id}`);
-    const result: IVenta | undefined = temp.rows[0];
-    if(result === undefined) return _response;
-    result.productos = await findProductFromVenta(result.id);
-    return result;
-  } catch (error) {
-    console.log('ERROR:', error);
-    throw Error("Ocurrio un error en la sentencia SQL");
-  } finally {
-    await client.end();
-  }
-}
-
-export const findAllVentas = async ():Promise<Array<IVenta>> => {
+export const findAllVentas = async ({page, sizePage}: IDataPagination):Promise<PagedList<IVenta>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const temp = await client.query('SELECT * FROM tblVentas');
-    const result:Array<IVenta> = temp.rows;
+    const temp = await client.query('SELECT * FROM fn_getAllVentas()');
+    const result:Array<ITypeVenta> = temp.rows;
     console.log('result ventas:', result);
-
-    return result;
+    let response:Array<IVenta> = [];
+    for (let i = 0; i < result.length; i++) {
+      const element:IVenta = {
+        id: result[i].id,
+        id_client: result[i].id_client,
+        id_direccion: result[i].id_direccion,
+        fecha: result[i].fecha.toISOString(),
+        total: result[i].total,
+        por_pagar: result[i].por_pagar,
+        status: result[i].status,
+        productos: []
+      };
+      response = [element, ...response];
+    }
+    const pagedList:PagedList<IVenta> = PagedList.create(response, page, sizePage);
+    return pagedList;
   } catch (error) {
     console.log('ERROR:', error);
-    return [];
+    return PagedList.create([], 1, 10);
   } finally {
     await client.end();
   }
 }
 
-// export const findCliente = async (texto: string):Promise<Array<IClient>> => {
-//   try {
-//     if(!(await createTables())){
-//       return [];
-//     }
-//     const db = await openDb();
-//     const query = `SELECT * FROM clientes WHERE name LIKE '%${texto}%' OR app LIKE '%${texto}%' OR apm LIKE '%${texto}%' OR tel LIKE '%${texto}%'`;
-//     console.log('query:', query);
-//     const result:Array<IClient> = await db.all(query);
-//     const allClients:Array<IClient> = await Promise.all(
-//       result.map(async (cliente) => {
-//         cliente.direcciones = await findAddressByIDClient(cliente.id);
-//         return cliente;
-//       })
-//     );
-//     console.log('allClients: ', allClients);
-//     return allClients;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return [];
-//   }
-// }
-
-export const addVenta = async (venta: IDataAddVenta):Promise<number> => {
+export const addVenta = async ({id_client, id_direccion, fecha, total, pagado, productos}: IDataAddVenta):Promise<number> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const query = 'INSERT INTO tblVentas(id_client, id_direccion, fecha, total, por_pagar, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-    const values = [venta.client.id, venta.direccion.id, venta.fecha, venta.total, venta.por_pagar, venta.status];
-    const result = await client.query(query, values);
-    // console.log(`changes: ${result.changes}`);
-    // console.log(`lastID: ${result.lastID}`);
-    // console.log(`addVenta: ${result.stmt}`);
-    await Promise.all(
-      venta.productos.map(async (producto) => {
-        const id_venta = result.oid ?? 0;
-        return await addVentaProducto(producto, id_venta);
-      })
-    )
-    return result.oid ?? 0;
+    const productosArray = productos.length > 0 ? `ARRAY[${productos.map(prod => `'(${prod.id_producto}, ${prod.precio}, ${prod.cantidad})::product_venta'`).join(",")}]` : "ARRAY[]::product_venta[]";
+    const query = `SELECT fn_insertVenta(${id_client}, ${id_direccion}, ${total}, ${pagado},'${fecha}', ${productosArray} ) AS id;`;
+    const temp = await client.query(`${query}`);
+    const result:Array<number> = temp.rows;
+    const _id:number = result.length > 0 ? temp.rows[0].id : -1;
+    console.log(`_id: ${_id}`);
+    return _id;
   } catch (error) {
     console.log('ERROR:', error);
     return -1;
@@ -131,137 +91,3 @@ export const addVenta = async (venta: IDataAddVenta):Promise<number> => {
   }
 }
 
-export const addVentaProducto = async (product: IDataAddVentaProductos, id_venta: number):Promise<number> => {
-  const client = await openDBPostgres();
-  await client.connect();
-  try {
-    const {cantidad, producto} = product;
-    const query = 'INSERT INTO tblVentaProductos(id_venta, id_producto, precio, cantidad) VALUES ($1, $2, $3, $4) RETURNING *';
-    const values = [id_venta, producto.id, producto.precio, cantidad];
-    const result = await client.query(query,values);
-    // console.log(`changes: ${result.changes}`);
-    // console.log(`lastID: ${result.lastID}`);
-    console.log(`addVentaProducto: ${result.oid}`);
-    return result.oid ?? 0;
-  } catch (error) {
-    console.log('ERROR:', error);
-    return -1;
-  } finally {
-    await client.end();
-  }
-}
-
-
-// export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> => {
-//   try {
-//     if(!(await createTables())){
-//       return -2;
-//     }
-//     const db = await openDb();
-//     const result = await db.run('UPDATE clientes SET name=:name, app=:app, apm=:apm, tel=:tel WHERE id=:id', {
-//       ':id': cliente.id,
-//       ':name': cliente.client.name,
-//       ':app': cliente.client.app,
-//       ':apm': cliente.client.apm,
-//       ':tel': cliente.client.tel
-//     });
-//     console.log(`changes: ${result.changes}`);
-//     console.log(`lastID: ${result.lastID}`);
-
-//     return result.changes ?? 0;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return -1;
-//   }
-// }
-
-
-// export const deleteCliente = async (id: number):Promise<number> => {
-//   try {
-//     if(!(await createTables())){
-//       return -2;
-//     }
-//     const db = await openDb();
-//     const result = await db.run('DELETE FROM clientes WHERE id=:id', {
-//       ':id': id
-//     });
-//     console.log(`changes: ${result.changes}`);
-//     console.log(`lastID: ${result.lastID}`);
-//     return result.changes ?? 0;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return -1;
-//   }
-// }
-
-// // Direcciones
-// export const findAllAddress = async ():Promise<Array<IDirection>> => {
-//   try {
-//     if(!(await createTables())){
-//       return [];
-//     }
-//     const db = await openDb();
-//     const result:Array<IDirection> = await db.all('SELECT * FROM direcciones');
-//     return result;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return [];
-//   }
-// }
-
-// export const addAddress = async (direccion: IDataAddAddress):Promise<number> => {
-//   try {
-//     if(!(await createTables())){
-//       return -2;
-//     }
-//     const db = await openDb();
-//     const result = await db.run('INSERT INTO direcciones(id_client, direccion) VALUES (:cliente, :direccion)', {
-//       ':cliente': direccion.id_client,
-//       ':direccion': direccion.direccion,
-//     });
-//     console.log(`changes: ${result.changes}`);
-//     console.log(`lastID: ${result.lastID}`);
-//     return result.lastID ?? 0;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return -1;
-//   }
-// }
-
-// export const updateAddress = async (direccion: IDataUpdateAddress):Promise<number> => {
-//   try {
-//     if(!(await createTables())){
-//       return -2;
-//     }
-//     const db = await openDb();
-//     const result = await db.run('UPDATE direcciones SET direccion=:direccion WHERE id=:id', {
-//       ':id': direccion.id,
-//       ':direccion': direccion.direccion.direccion
-//     });
-//     console.log(`changes: ${result.changes}`);
-//     console.log(`lastID: ${result.lastID}`);
-
-//     return result.changes ?? 0;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return -1;
-//   }
-// }
-
-// export const deleteAddress = async (id: number):Promise<number> => {
-//   try {
-//     if(!(await createTables())){
-//       return -2;
-//     }
-//     const db = await openDb();
-//     const result = await db.run('DELETE FROM direcciones WHERE id=:id', {
-//       ':id': id
-//     });
-//     console.log(`changes: ${result.changes}`);
-//     console.log(`lastID: ${result.lastID}`);
-//     return result.changes ?? 0;
-//   } catch (error) {
-//     console.log('ERROR:', error);
-//     return -1;
-//   }
-// }

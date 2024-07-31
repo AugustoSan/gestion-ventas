@@ -88,8 +88,9 @@ export const addVenta = async ({id_client, id_direccion, fecha, total, pagado, p
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const productosArray = productos.length > 0 ? `ARRAY[${productos.map(prod => `'(${prod.id_producto}, ${prod.precio}, ${prod.cantidad})::product_venta'`).join(",")}]` : "ARRAY[]::product_venta[]";
-    const query = `SELECT fn_insertVenta(${id_client}, ${id_direccion}, ${total}, ${pagado},'${fecha}', ${productosArray} ) AS id;`;
+    const productosArray = productos.length > 0 ? `ARRAY[${productos.map(prod => `(${prod.id_producto}, ${prod.precio}, ${prod.cantidad})::product_venta`).join(",")}]` : "ARRAY[]::product_venta[]";
+    const query = `SELECT fn_insertVenta(${id_client}, ${id_direccion}, ${total}, ${pagado},'${fecha}'::TIMESTAMP, ${productosArray} ) AS id;`;
+    console.log(`query: ${query}`);
     const temp = await client.query(`${query}`);
     const result:Array<number> = temp.rows;
     const _id:number = result.length > 0 ? temp.rows[0].id : -1;

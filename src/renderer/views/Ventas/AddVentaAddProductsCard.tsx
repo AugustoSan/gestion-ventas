@@ -9,13 +9,12 @@ import Alert from 'react-bootstrap/Alert';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { IProducto } from '../../../main/interfaces';
 import { IDataAddVenta } from '../../../main/interfaces/IVentas';
-import { AddVenta, setAddVenta, setSelectView } from '../../redux/slice/ventas';
+import { AddNewVenta, setAddVenta, setSelectView } from '../../redux/slice/ventas';
 import { InputProductItem } from '../../components/InputProductItem';
 import { TablaProductosAddVenta } from './TablaProductosAddVenta';
 
 export const AddVentaAddProductsCard = ():JSX.Element => {
-  const {productosArray} = useCustomSelector((state) => state.productSlice);
-  const {selectClient, addVenta} = useCustomSelector((state) => state.ventaSlice);
+  const {selectClient, addVenta, selectProductos} = useCustomSelector((state) => state.ventaSlice);
 
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
@@ -26,6 +25,36 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
   const dispatch = useCustomDispatch();
 
   const validateInputs = (): boolean => {
+    if(addVenta === null)
+    {
+      setError('No se encontro información sobre el cliente');
+      return false;
+    }
+    if(addVenta.id_client === null)
+    {
+      setError('No se encontro el id del cliente');
+      return false;
+    }
+    if(addVenta.id_direccion === null)
+    {
+      setError('No se encontro el id de la dirección');
+      return false;
+    }
+    if(addVenta.fecha === null)
+    {
+      setError('No se encontro la fecha');
+      return false;
+    }
+    if(addVenta.total > 0)
+    {
+      setError('El total es cero');
+      return false;
+    }
+    if(selectProductos.length === 0)
+    {
+      setError('No tiene productos agregados');
+      return false;
+    }
     setError('');
     return true;
   }
@@ -66,13 +95,17 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
               <Button
                 variant='outline-primary'
                 onClick={() => {
+                  console.log('entro en onclic');
                   if(validateInputs()){
-                    const {id_client, id_direccion, fecha, productos, total: totalAddVenta, pagado } = addVenta;
-                    if(id_client !== null && id_direccion !== null  && fecha !== null && total > 0 && productos.length > 0){
-                      console.log('Se va a guardar el nuevo producto');
-                      dispatch(AddVenta(addVenta));
-                      dispatch(setSelectView('all'))
+                    console.log('Se va a guardar el nuevo producto');
+                    const newVenta: IDataAddVenta = 
+                    {
+                      ...addVenta,
+                      productos: selectProductos
                     }
+                    console.log('newVenta: ', newVenta);
+                    dispatch(AddNewVenta(newVenta));
+                    dispatch(setSelectView('all'));
                   }
                 }}
               >

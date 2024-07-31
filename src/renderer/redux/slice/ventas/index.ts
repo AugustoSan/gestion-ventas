@@ -171,7 +171,7 @@ export const GetAllVentasByClient = (id: number, page: number, sizePage: number 
 //   dispatch(setSelectVenta(venta));
 // }
 
-export const AddVenta = (venta: IDataAddVenta): Thunk => async (dispatch): Promise<void> => {
+export const AddNewVenta = (venta: IDataAddVenta): Thunk => async (dispatch): Promise<void> => {
   const id = await window.electron.ipcRenderer.AddVenta(venta);
   console.log('id: ', id);
   const productos = await window.electron.ipcRenderer.GetProductosFromVenta(id);

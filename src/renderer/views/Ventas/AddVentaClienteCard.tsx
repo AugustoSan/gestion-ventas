@@ -87,7 +87,7 @@ export const AddVentaClienteCard = ():JSX.Element => {
                       const newVenta:IDataAddVenta = {
                         id_client: cliente.id,
                         id_direccion: address.id,
-                        fecha: inputDate.toDateString(),
+                        fecha: inputDate.toISOString(),
                         total: 0,
                         pagado: 0,
                         productos: []

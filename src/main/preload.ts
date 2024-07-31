@@ -41,6 +41,7 @@ const electronHandler = {
     DeleteAddress:(data: number):Promise<number> => ipcRenderer.invoke('address:deleteAddress', data),
     // Products
     GetAllProducts:(data: IDataPagination):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:getAllProducts', data),
+    GetAllProductsDropdown:():Promise<Array<IProducto>> => ipcRenderer.invoke('products:getAllProductsDropdown'),
     FindProducto:(concepto: string, data: IDataPagination):Promise<PagedList<IProducto>> => ipcRenderer.invoke('products:findProduct', concepto, data),
     FindProductoById:(id: number):Promise<IProducto | null> => ipcRenderer.invoke('products:findProductById', id),
     // FindPricesProducto:(data: IDataFindPricesProduct):Promise<Array<IPriceProduct>> => ipcRenderer.invoke('products:findPricesProduct', data),

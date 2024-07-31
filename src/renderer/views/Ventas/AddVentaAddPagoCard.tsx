@@ -2,50 +2,48 @@ import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
-import { IProducto } from '../../../main/interfaces';
 import { IDataAddVenta } from '../../../main/interfaces/IVentas';
 import { AddNewVenta, setAddVenta, setSelectView } from '../../redux/slice/ventas';
-import { InputProductItem } from '../../components/InputProductItem';
-import { TablaProductosAddVenta } from './TablaProductosAddVenta';
+import { InputPriceCard } from '../../components/InputPriceCard';
 
-export const AddVentaAddProductsCard = ():JSX.Element => {
-  const {selectClient, addVenta, selectProductos, totalAddVenta} = useCustomSelector((state) => state.ventaSlice);
-  const [product, setProduct] = useState<IProducto | null>(null);
+export const AddVentaAddPagoCard = ():JSX.Element => {
+  const {addVenta} = useCustomSelector((state) => state.ventaSlice);
+  const [pagado, setPagado] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
 
   const validateInputs = (): boolean => {
-    if(addVenta === null)
+    if(addVenta === null || addVenta === undefined)
     {
       setError('No se encontro información sobre el cliente');
       return false;
     }
-    if(addVenta.id_client === null)
+    const { id_client, id_direccion, fecha, total, productos } = addVenta;
+    if(id_client === null)
     {
       setError('No se encontro el id del cliente');
       return false;
     }
-    if(addVenta.id_direccion === null)
+    if(id_direccion === null)
     {
       setError('No se encontro el id de la dirección');
       return false;
     }
-    if(addVenta.fecha === null)
+    if(fecha === null)
     {
       setError('No se encontro la fecha');
       return false;
     }
-    if(addVenta.total > 0)
+    if(total === 0)
     {
       setError('El total es cero');
       return false;
     }
-    if(selectProductos.length === 0)
+    if(productos.length === 0)
     {
       setError('No tiene productos agregados');
       return false;
@@ -54,22 +52,17 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
     return true;
   }
 
-  console.log('producto: ', product);
-
-
-  return addVenta !== null && selectClient !== null 
+  return addVenta !== null 
   ? (
     <Card className="mb-2">
       <Card.Header>Crear nueva venta</Card.Header>
       <Card.Body>
-        {/* Aqui va la info del cliente */}
-        <InputProductItem producto={product} cliente={selectClient} onChangeProduct={setProduct}/>
         {
           error.length !== 0
           ? (<Alert variant={'danger'}>{error}</Alert>)
           : <></>
         }
-        <TablaProductosAddVenta />
+        <InputPriceCard title={'Monto abonado'} value={pagado} onChange={setPagado} />
       </Card.Body>
       <Card.Footer>
         <Container>
@@ -95,17 +88,15 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
                     const newVenta: IDataAddVenta = 
                     {
                       ...addVenta,
-                      total: totalAddVenta,
-                      productos: selectProductos
+                      pagado: pagado
                     }
                     console.log('newVenta: ', newVenta);
-                    dispatch(setAddVenta(newVenta));
-                    // dispatch(AddNewVenta(newVenta));
-                    dispatch(setSelectView('addPago'));
+                    dispatch(AddNewVenta(newVenta));
+                    dispatch(setSelectView('all'));
                   }
                 }}
               >
-                Pagar
+                Crear venta
               </Button>
             </Col>
           </Row>

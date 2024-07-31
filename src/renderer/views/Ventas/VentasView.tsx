@@ -7,6 +7,7 @@ import { TablaVentas } from './TablaVentas';
 import { GetAllVentas, setHandleAddVenta, setSelectClienteSearch, setSelectView } from '../../redux/slice/ventas';
 import { AddVentaClienteCard } from './AddVentaClienteCard';
 import { AddVentaAddProductsCard } from './AddVentaAddProductsCard';
+import { AddVentaAddPagoCard } from './AddVentaAddPagoCard';
 
 export const VentasView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
@@ -91,7 +92,9 @@ export const VentasView = ():JSX.Element => {
             ? <AddVentaClienteCard />
             : selectView === "addProducts"
               ? <AddVentaAddProductsCard />
-              : <></>
+              : selectView === "addPago"
+                ? <AddVentaAddPagoCard />
+                : <></>
       }
     </main>
   );

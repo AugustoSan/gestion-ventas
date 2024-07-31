@@ -19,7 +19,7 @@ interface IVentaSlice {
   selectFecha: string | null;
   selectProductos: Array<IDataAddVentaProductos>;
   totalAddVenta: number;
-  selectView: "all"  | "addCliente" | "addProducts" | "infoVenta";
+  selectView: "all"  | "addCliente" | "addProducts" | "infoVenta" | "addPago";
   pagination: IPaginationForSlides;
 }
 
@@ -58,7 +58,7 @@ const ventaSlice = createSlice({
       setSelectClienteSearch: (state, action: PayloadAction<number | null>) =>{
         state.selectClientSearchVentas = action.payload;
       },
-      setSelectView: (state, action: PayloadAction<"all"  | "addCliente" | "addProducts" | "infoVenta">) =>{
+      setSelectView: (state, action: PayloadAction<"all"  | "addCliente" | "addProducts" | "infoVenta" | "addPago">) =>{
         if(action.payload === "all"){
           state.addVenta = null;
           state.handleAddVenta = false;
@@ -72,6 +72,15 @@ const ventaSlice = createSlice({
       },
       setAddVenta: (state, action: PayloadAction<IDataAddVenta | null>) =>{
         state.addVenta = action.payload;
+        if(action.payload === null)
+        {
+          state.totalAddVenta = 0;
+          state.selectProductos = [];
+          state.handleAddVenta = false;
+          state.selectFecha = null;
+          state.selectAddress = null;
+          state.selectClient = null;
+        }
       },
       setHandleAddVenta: (state, action: PayloadAction<boolean>) =>{
         state.handleAddVenta = action.payload;

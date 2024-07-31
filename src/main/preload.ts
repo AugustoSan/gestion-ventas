@@ -49,7 +49,7 @@ const electronHandler = {
     DeleteProduct:(data: number):Promise<number> => ipcRenderer.invoke('products:deleteProduct', data),
     // Ventas
     GetAllVentas:(data: IDataPagination):Promise<PagedList<IVenta>> => ipcRenderer.invoke('ventas:getAllVentas', data),
-    GetAllVentasByCliente:(id: number):Promise<Array<IVenta>> => ipcRenderer.invoke('ventas:getVentaByCliente', id),
+    GetAllVentasByCliente:(id: number, data: IDataPagination):Promise<PagedList<IVenta>> => ipcRenderer.invoke('ventas:getVentaByCliente', id, data),
     GetProductosFromVenta:(id: number):Promise<Array<IVentasProductos>> => ipcRenderer.invoke('ventas:getProductosFromVenta', id),
     // GetVentaByID:(id: number):Promise<IVenta> => ipcRenderer.invoke('ventas:getVentaByID', id),
     AddVenta:(venta: IDataAddVenta):Promise<number> => ipcRenderer.invoke('ventas:addVenta', venta),

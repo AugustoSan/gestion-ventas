@@ -108,6 +108,24 @@ CREATE TYPE type_address AS
   direccion TEXT
 );
 
+-- Buscar una direccion desde si id
+CREATE OR REPLACE FUNCTION fn_FindAddressById( _id INTEGER)
+RETURNS SETOF type_address AS -- USAMOS NUESTRO TYPE
+$BODY$
+DECLARE
+    reg RECORD;
+BEGIN
+	FOR reg IN SELECT id, direccion FROM tblDirecciones 
+                WHERE 
+                id = _id
+    LOOP
+        RETURN NEXT reg;
+    END LOOP;
+
+    RETURN;
+END
+$BODY$ LANGUAGE 'plpgsql';
+
 CREATE OR REPLACE FUNCTION fn_getAllAddressByClient( _id INTEGER )
 RETURNS SETOF type_address AS -- USAMOS NUESTRO TYPE
 $BODY$
@@ -392,6 +410,24 @@ BEGIN
 END
 $BODY$ LANGUAGE 'plpgsql';
 
+-- Busca venta por id
+CREATE OR REPLACE FUNCTION fn_FindVentaById( _id INTEGER)
+RETURNS SETOF datos_ventas AS -- USAMOS NUESTRO TYPE
+$BODY$
+DECLARE
+    reg RECORD;
+BEGIN
+	FOR reg IN SELECT * FROM tblVentas 
+                WHERE 
+                id = _id
+    LOOP
+        RETURN NEXT reg;
+    END LOOP;
+
+    RETURN;
+END
+$BODY$ LANGUAGE 'plpgsql';
+
 -- Obtener todos los productos de una venta
 CREATE TYPE venta_productos AS
 (
@@ -435,15 +471,13 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT ventas.id AS id, dir.direccion AS direccion, dir.id AS id_direccion,
-				ventas.fecha AS fecha, ventas.total AS total, ventas.por_pagar AS fecha,
-				ventas.estatus AS estatus
-				FROM tblClientes AS clientes
-				INNER JOIN tblDirecciones AS dir
-				ON dir.id_client = clientes.id
-				INNER JOIN tblVentas AS ventas
-				ON ventas.id_client = clientes.id
-				WHERE clientes.id = _id
+	FOR reg IN SELECT ventas.id AS id, dir.direccion AS direccion, ventas.id_direccion AS id_direccion,
+                ventas.fecha AS fecha, ventas.total AS total, ventas.por_pagar AS por_pagar,
+                ventas.estatus AS estatus
+                FROM tblVentas AS ventas
+                INNER JOIN tblDirecciones AS dir
+                ON dir.id = ventas.id_direccion
+                WHERE ventas.id_client = _id
     LOOP
         RETURN NEXT reg;
     END LOOP;
@@ -464,7 +498,7 @@ CREATE OR REPLACE FUNCTION fn_insertVenta(
     _id_direccion INTEGER,
     _total NUMERIC,
     _pagado NUMERIC,
-    _fecha DATE,
+    _fecha TIMESTAMP,
     _products product_venta[]
 )
 RETURNS INTEGER AS $BODY$
@@ -491,6 +525,10 @@ BEGIN
     VALUES (_id_client, _id_direccion, _fecha, _total, _por_pagar, _status)
     RETURNING id INTO _id;
 
+    -- Insertar el pago
+    INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto) 
+    VALUES (_id, _id_client, _fecha, _pagado);
+
     -- Insertar cada producto en tblVentaProductos
     FOREACH _product IN ARRAY _products
     LOOP
@@ -502,7 +540,8 @@ BEGIN
 END
 $BODY$ LANGUAGE 'plpgsql';
 
-
+-- Ejemplo de insertar la venta
+-- SELECT fn_insertVenta(1, 1, 500.00, 300.00, NOW()::TIMESTAMP, ARRAY[(1, 300, 2)::product_venta]) AS id;
 
 -- eliminar cliente                         si
 -- buscar cliente                           si
@@ -519,3 +558,48 @@ $BODY$ LANGUAGE 'plpgsql';
 -- Agregar producto                         
 -- Actualizar producto                      
 -- Eliminar producto                        
+--
+
+---------------Pagos
+CREATE TYPE type_pago AS (
+	id INTEGER,
+	id_venta INTEGER,
+	fecha TIMESTAMP,
+	monto NUMERIC
+);
+
+-- Busca el pago por id
+CREATE OR REPLACE FUNCTION fn_FindPagoById( _id INTEGER)
+RETURNS SETOF type_pago AS -- USAMOS NUESTRO TYPE
+$BODY$
+DECLARE
+    reg RECORD;
+BEGIN
+	FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos 
+                WHERE 
+                id = _id
+    LOOP
+        RETURN NEXT reg;
+    END LOOP;
+
+    RETURN;
+END
+$BODY$ LANGUAGE 'plpgsql';
+
+-- busca todos los pagos desde un id venta
+CREATE OR REPLACE FUNCTION fn_FindPagosByVenta( _id INTEGER)
+RETURNS SETOF type_pago AS -- USAMOS NUESTRO TYPE
+$BODY$
+DECLARE
+    reg RECORD;
+BEGIN
+	FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos 
+                WHERE 
+                id_venta = _id
+    LOOP
+        RETURN NEXT reg;
+    END LOOP;
+
+    RETURN;
+END
+$BODY$ LANGUAGE 'plpgsql';

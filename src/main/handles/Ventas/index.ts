@@ -8,8 +8,8 @@ export const findAllVentasHandler = async (event: Electron.IpcMainInvokeEvent, d
   return await findAllVentas(data);
 }
 
-export const findVentasByClienteHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<Array<IVenta>> => {
-  return await findVentasByIDClient(id);
+export const findVentasByClienteHandler = async (event: Electron.IpcMainInvokeEvent, id: number, data: IDataPagination):Promise<PagedList<IVenta>> => {
+  return await findVentasByIDClient(id, data);
 }
 
 // export const findVentaByIDHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<IVenta> => {

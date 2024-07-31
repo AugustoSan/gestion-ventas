@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { LabelInfoCard } from '../../components/LabelInfoCard';
-import { ItemClientTabla } from '../../components/ItemClientTabla';
-import { IClient } from '../../../main/interfaces';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { ItemVentaTabla } from '../../components/ItemVentaTabla';
 import { PaginationComponent } from '../../components/PaginationComponent';
 import { GetAllProducts } from '../../redux/slice/productos';
+import { GetAllVentas, GetAllVentasByClient } from '../../redux/slice/ventas';
 
 export const TablaVentas = ():JSX.Element => {
-  const { ventasArray, pagination } = useCustomSelector((state) => state.ventaSlice)
+  const { ventasArray, pagination, selectClientSearchVentas } = useCustomSelector((state) => state.ventaSlice)
   const dispatch = useCustomDispatch();
 
   const {
@@ -18,8 +16,9 @@ export const TablaVentas = ():JSX.Element => {
   } = pagination;
 
   useEffect(() => {
-    dispatch(GetAllProducts(currentPage, sizePage));
-  }, []);
+    if(selectClientSearchVentas !== null) dispatch(GetAllVentasByClient(selectClientSearchVentas, currentPage, sizePage));
+    else dispatch(GetAllVentas(currentPage, sizePage));
+  }, [selectClientSearchVentas, dispatch]);
 
   console.log('ventasArray: ', ventasArray);
 

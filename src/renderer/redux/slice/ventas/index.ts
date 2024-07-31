@@ -152,10 +152,12 @@ export const GetAllVentas = (page: number, sizePage: number): Thunk => async (di
   return [];
 }
 
-export const GetAllVentasByClient = (id: number): Thunk => async (dispatch): Promise<Array<IVenta>> => {
-  const ventas = await window.electron.ipcRenderer.GetAllVentasByCliente(id);
-  console.log('ventas del cliente: ', ventas);
-  dispatch(setVentasArray(ventas));
+export const GetAllVentasByClient = (id: number, page: number, sizePage: number ): Thunk => async (dispatch): Promise<Array<IVenta>> => {
+  const ventas = await window.electron.ipcRenderer.GetAllVentasByCliente(id, {page, sizePage});
+  console.log('ventas: ', ventas);
+  const pagination:IPaginationForSlides = createPaginationForSlides(ventas);
+  dispatch(setVentasArray(ventas.items));
+  dispatch(setPagination(pagination));
   return [];
 }
 

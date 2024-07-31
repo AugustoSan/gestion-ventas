@@ -93,13 +93,6 @@ export const VentasView = ():JSX.Element => {
               ? <AddVentaAddProductsCard />
               : <></>
       }
-      {/* {
-        client !== null
-        ? <TablaVentasByCliente cliente={client}/>
-        : client === null
-          ? <TablaVentas />
-          : <></>
-      } */}
     </main>
   );
 }

@@ -19,23 +19,35 @@ export const findProductFromVenta = async (id: number): Promise<Array<IVentasPro
   }
 }
 
-export const findVentasByIDClient = async (id: number): Promise<Array<IVenta>> => {
+export const findVentasByIDClient = async (id: number, {page, sizePage}: IDataPagination): Promise<PagedList<IVenta>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
-    const temp = await client.query(`SELECT * FROM fn_getAllVentasByClient(${id}) AS id`);
-    const result:Array<IVenta> = temp.rows;
-    const arrayVentas:Array<IVenta> = await Promise.all(
+    const temp = await client.query(`SELECT * FROM fn_getAllVentasByClient(${id})`);
+    const result:Array<ITypeVenta> = temp.rows;
+    console.log('result: ', result);
+    const response:Array<IVenta> = await Promise.all(
       result.map(async (venta) => {
-        venta.productos = await findProductFromVenta(venta.id);
-        return venta;
+        const element:IVenta = {
+          id: venta.id,
+          id_client: id,
+          id_direccion: venta.id_direccion,
+          fecha: venta.fecha.toISOString(),
+          total: venta.total,
+          por_pagar: venta.por_pagar,
+          status: venta.status,
+          productos: await findProductFromVenta(venta.id)
+        };
+        return element;
       })
     );
-    // console.log(`arrayVentas: ${arrayVentas}`);
-    return arrayVentas;
+
+    const pagedList:PagedList<IVenta> = PagedList.create(response, page, sizePage);
+    return pagedList;
+
   } catch (error) {
     console.log('ERROR:', error);
-    return [];
+    return PagedList.create([], 1, 10);
   } finally {
     await client.end();
   }

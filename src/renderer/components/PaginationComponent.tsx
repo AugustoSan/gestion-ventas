@@ -72,7 +72,11 @@ export const PaginationComponent = ({
               <Pagination.Item 
                 key={`item-pagination-${index}`} 
                 active={page === (currentPage + 1)}
-                onClick={() => actionGoToPage(page as number)}
+                onClick={() => {
+                  if (page === (currentPage + 1)) return;
+
+                  actionGoToPage(page - 1);
+                }}
               >
                 {page}
               </Pagination.Item>

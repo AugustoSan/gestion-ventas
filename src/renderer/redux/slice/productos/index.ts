@@ -134,6 +134,7 @@ export const GetAllProducts = (page: number, sizePage: number): Thunk => async (
   const Products = await window.electron.ipcRenderer.GetAllProducts({page, sizePage});
   console.log('GetAllProducts: ', Products);
   const pagination:IPaginationForSlides = createPaginationForSlides(Products);
+  console.log('pagination', pagination);
   dispatch(setProductosArray(Products.items));
   dispatch(setPagination(pagination));
   return Products.items;

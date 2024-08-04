@@ -22,3 +22,8 @@ interface IPaginationForSlides
   nextPageNumber: number | null;
   previousPageNumber: number | null;
 }
+
+interface IDataRequestFindById {
+  isValid: boolean;
+  id: number;
+}

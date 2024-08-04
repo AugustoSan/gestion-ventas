@@ -21,3 +21,17 @@ export interface IDataUpdateAddress {
   direccion: IDataAddAddress;
 }
 
+export interface IDataRequestSearchWithString
+{
+  isValid: boolean;
+  match: string;
+}
+
+export interface IDataRequestSearchWithStringAndPagination
+{
+  isValid: boolean;
+  match: string;
+  page: number;
+  sizePage: number;
+}
+

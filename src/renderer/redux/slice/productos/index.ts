@@ -118,7 +118,7 @@ export default productSlice.reducer;
 // const AddProduct = async(): Promise<>
 export const GetAllProducts = (page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IProducto>> => {
   // const filePath = await window.electron.getAllProducts();
-  const Products = await window.electron.ipcRenderer.GetAllProducts({page, sizePage});
+  const Products = await window.electron.ipcRenderer.GetAllProductsWithPagination({page, sizePage});
   console.log('GetAllProducts: ', Products);
   const pagination:IPaginationForSlides = createPaginationForSlides(Products);
   console.log('pagination', pagination);

@@ -14,8 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAllAddressByClientHandler, findAllClientsHandler, findClienteByIdHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
-import { addProductoHandler, deleteProductoHandler, findAllProductosHandler, findProductoByIdHandler, findProductoHandler, getAllProductosHandler, updateProductoHandler } from './handles/Productos';
+import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAddressByIdHandler, findAllAddressByClientHandler, findAllClientsHandler, findAllClientsWithPaginationHandler, findClienteByIdHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
+import { addProductoHandler, deleteProductoHandler, getAllProductosWithPaginationHandler, findProductoByIdHandler, findProductoHandler, getAllProductosHandler, updateProductoHandler } from './handles/Productos';
 // import { migrateDB } from './database/database';
 import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentasByClienteHandler } from './handles/Ventas';
 
@@ -41,6 +41,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
 
 // Clientes
 ipcMain.handle('clients:getAllClients', findAllClientsHandler);
+ipcMain.handle('clients:getAllClientsWithPagination', findAllClientsWithPaginationHandler);
 ipcMain.handle('clients:findClient', findClienteHandler);
 ipcMain.handle('clients:findClientById', findClienteByIdHandler);
 ipcMain.handle('clients:addlClient', addClienteHandler);
@@ -49,14 +50,15 @@ ipcMain.handle('clients:deleteClient', deleteClienteHandler);
 
 //Direcciones
 ipcMain.handle('address:getAllAddress', getAllAddressHandler);
+ipcMain.handle('address:findAddressById', findAddressByIdHandler);
 ipcMain.handle('address:getAllAddressByClient', findAllAddressByClientHandler);
 ipcMain.handle('address:addlAddress', addAddressHandler);
 ipcMain.handle('address:updateAddress', updateAddressHandler);
 ipcMain.handle('address:deleteAddress', deleteAddressHandler);
 
 // Productos
-ipcMain.handle('products:getAllProducts', findAllProductosHandler);
-ipcMain.handle('products:getAllProductsDropdown', getAllProductosHandler);
+ipcMain.handle('products:getAllProducts', getAllProductosHandler);
+ipcMain.handle('products:getAllProductsWithPagination', getAllProductosWithPaginationHandler);
 ipcMain.handle('products:findProduct', findProductoHandler);
 ipcMain.handle('products:findProductById', findProductoByIdHandler);
 // ipcMain.handle('products:findPricesProduct', findPricesProductoHandler);

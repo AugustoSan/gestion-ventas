@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import { IClient, IProducto } from '../../main/interfaces';
 import { SetStateAction, useState, useEffect } from 'react';
 import Select from 'react-select';
-import { getAllProductsHook } from '../hooks/database/Product.hook';
+import { useGetAllProducts } from '../hooks';
 // import { FindPricesProduct } from '../redux/slice/productos';
 // import { IDataFindPricesProduct } from '../../main/interfaces/IProducts';
 
@@ -22,9 +22,9 @@ interface OptionType {
 export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):JSX.Element => {
   // const {productosArray} = useCustomSelector((state) => state.productSlice);
   const [isValid, setIsValid] = useState<boolean>(true);
-  const {result, isLoading, isSuccess, error, status} = getAllProductsHook(isValid);
+  const {result, isLoading, isSuccess, error, status} = useGetAllProducts(isValid);
 
-  const options:OptionType[] = result.map((producto) => { 
+  const options:OptionType[] = result === null ? [] : result.map((producto) => {
     const newOption: OptionType = {
       label: producto.concepto,
       value: producto
@@ -42,7 +42,7 @@ export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):
   useEffect(() => {
     if(isSuccess) setIsValid(false);
   }, [isSuccess])
-  
+
 
   return (
     <InputGroup className="mb-3">
@@ -50,8 +50,8 @@ export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):
         <Row>
           <Col xs={4}><InputGroup.Text>{"Seleccionar producto"}</InputGroup.Text></Col>
           <Col xs={8}>
-            <Select 
-              options={options} 
+            <Select
+              options={options}
               onChange={(prod) => {
                 if(prod === null) return;
                 onChange(prod.value);

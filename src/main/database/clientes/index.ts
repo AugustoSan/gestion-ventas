@@ -21,12 +21,12 @@ export const findAddressByIDClient = async (id: number): Promise<Array<IDirectio
   }
 }
 
-export const findAllClients = async ({page, sizePage}: IDataPagination):Promise<PagedList<IClient>> => {
+export const findAllClientsWithPagination = async ({page, sizePage}: IDataPagination):Promise<PagedList<IClient>> => {
   const client = await openDBPostgres();
   await client.connect();
   try {
     console.log('entro en findAllClients');
-    
+
     const temp = await client.query(`SELECT * FROM fn_getAllClients()`);
     console.log('temp: ', temp);
     const result:Array<IClient> = temp.rows;
@@ -42,6 +42,31 @@ export const findAllClients = async ({page, sizePage}: IDataPagination):Promise<
   } catch (error) {
     console.log('ERROR:', error);
     return PagedList.create([], 1, 10);
+  } finally {
+    await client.end();
+  }
+}
+
+export const findAllClients = async ():Promise<Array<IClient>> => {
+  const client = await openDBPostgres();
+  await client.connect();
+  try {
+    console.log('entro en findAllClients');
+
+    const temp = await client.query(`SELECT * FROM fn_getAllClients()`);
+    console.log('temp: ', temp);
+    const result:Array<IClient> = temp.rows;
+    console.log('result: ', result);
+    const allClients:Array<IClient> = await Promise.all(
+      result.map(async (cliente) => {
+        cliente.direcciones = await findAddressByIDClient(cliente.id);
+        return cliente;
+      })
+    );
+    return allClients;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return [];
   } finally {
     await client.end();
   }
@@ -161,6 +186,22 @@ export const findAllAddress = async ():Promise<Array<IDirection>> => {
   } catch (error) {
     console.log('ERROR:', error);
     return [];
+  } finally {
+    await client.end();
+  }
+}
+
+export const findAddressById = async (id: number):Promise<IDirection | null> => {
+  const client = await openDBPostgres();
+  await client.connect();
+  try {
+    const query = `SELECT * FROM fn_FindAddressById(${id});`;
+    const temp = await client.query(`${query}`);
+    const result:Array<IDirection> = temp.rows;
+    return result[0] ?? null;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return null;
   } finally {
     await client.end();
   }

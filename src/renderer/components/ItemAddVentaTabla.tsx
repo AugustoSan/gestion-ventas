@@ -4,8 +4,8 @@ import { IPrecioProductoCliente, IProducto } from "../../main/interfaces";
 import { useCustomDispatch } from '../hooks/redux';
 import { IDataAddVentaProductos } from "../../main/interfaces/IVentas";
 import { deleteAddProductAddVenta } from "../redux/slice/ventas";
-import { getProductHook } from "../hooks/database/Product.hook";
 import { numberToPrice } from "../utils/price";
+import { useFindProductById } from "../hooks";
 
 interface IDataProps{
   data: IDataAddVentaProductos;
@@ -16,10 +16,10 @@ export const ItemAddVentaTabla = ({data}: IDataProps):JSX.Element => {
   const {id_producto, precio, cantidad} = data;
   const total = cantidad * precio;
 
-  const {result, isLoading, isSuccess, status, error} = getProductHook(isValid, id_producto);
+  const {result, isLoading, isSuccess, status, error} = useFindProductById({isValid, id: id_producto});
 
   const dispatch = useCustomDispatch();
-  return result === null ? <></> 
+  return result === null ? <></>
   : (
   <tr>
     <td>{result.id}</td>

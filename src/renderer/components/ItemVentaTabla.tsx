@@ -5,7 +5,7 @@ import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { DeleteProduct, setSelectProduct } from "../redux/slice/productos";
 import { numberToPrice } from "../utils/price";
 import { dateToString } from "../utils/date";
-import { getClientHook } from "../hooks/database/getClient";
+import { useGetClientById } from "../hooks/";
 
 interface IDataProps{
   venta: IVenta;
@@ -17,13 +17,13 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
 
   const [address, setAddress] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(true);
-  const {result:client, isLoading, isSuccess, error} = getClientHook(isValid, id_client);
+  const {result:client, isLoading, isSuccess, error} = useGetClientById({isValid, id: id_client});
   const itemDate = new Date(fecha);
 
   useEffect(() => {
     if(isSuccess) setIsValid(false);
   }, [isSuccess]);
-  
+
 
   return client === null
   ? <></>

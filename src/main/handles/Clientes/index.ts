@@ -1,11 +1,14 @@
 import { IClient, IDirection } from '../../interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from '../../interfaces/IClients';
-import { addAddress, addCliente, deleteAddress, deleteCliente, findAddressByIDClient, findAllAddress, findAllClients, findCliente, findClienteById, updateAddress, updateCliente } from '../../database/clientes/';
+import { addAddress, addCliente, deleteAddress, deleteCliente, findAddressByIDClient, findAddressById, findAllAddress, findAllClients, findAllClientsWithPagination, findCliente, findClienteById, updateAddress, updateCliente } from '../../database/clientes/';
 import { PagedList } from '../../utils/Pagination';
 import { IDataPagination } from '../../interfaces/IProducts';
 
-export const findAllClientsHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<PagedList<IClient>> => {
-  return await findAllClients(data);
+export const findAllClientsWithPaginationHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<PagedList<IClient>> => {
+  return await findAllClientsWithPagination(data);
+}
+export const findAllClientsHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<Array<IClient>> => {
+  return await findAllClients();
 }
 
 export const findClienteHandler = async (event: Electron.IpcMainInvokeEvent, texto: string, data: IDataPagination):Promise<PagedList<IClient>> => {
@@ -31,6 +34,10 @@ export const deleteClienteHandler = async (event: Electron.IpcMainInvokeEvent, d
 // Direcciones
 export const getAllAddressHandler = async (event: Electron.IpcMainInvokeEvent):Promise<Array<IDirection>> => {
   return await findAllAddress();
+}
+
+export const findAddressByIdHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<IDirection | null> => {
+  return await findAddressById(id);
 }
 
 export const findAllAddressByClientHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<Array<IDirection>> => {

@@ -1,3 +1,4 @@
+export { IDataRequestSearchWithString, IDataRequestSearchWithStringAndPagination } from "./IClients";
 export interface IDirection {
   id: number;
   id_client: number;
@@ -76,4 +77,17 @@ export interface IItemMenu {
   title: string;
   href: string;
   icon: JSX.Element;
+}
+
+
+export interface IDataRequestDelete
+{
+  isValid: boolean;
+  id: number;
+}
+
+export interface IDataRequestWithPagination {
+  page: number;
+  sizePage: number;
+  isValid: boolean;
 }

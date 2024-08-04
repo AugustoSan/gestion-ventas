@@ -3,7 +3,7 @@ import { IPriceProduct, IProducto } from '../../interfaces';
 import { IDataAddProduct, IDataFindPricesProduct, IDataPagination, IDataUpdateProduct } from '../../interfaces/IProducts';
 import { PagedList } from '../../utils/Pagination';
 
-export const findAllProductosHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<PagedList<IProducto>> => {
+export const getAllProductosWithPaginationHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<PagedList<IProducto>> => {
   return await findAllProductos(data);
 }
 

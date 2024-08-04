@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
-import { IClient } from '../../../main/interfaces';
+import { IDataRequestDelete } from '../../../main/interfaces';
+
 
 interface IDataResponse {
-    result: IClient | null;
+    result: number | null;
     isLoading: boolean;
     isSuccess: boolean;
     status: string;
     error: Error | null;
 }
 
-export const getClientHook = (
-  isValid: boolean,
-  id: number
-): IDataResponse => {
-  const [result, setResult] = useState<IClient | null>(null);
+export const useDeleteClient = ({ isValid, id }: IDataRequestDelete): IDataResponse => {
+  const [result, setResult] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [status, setStatus] = useState<string>('');
@@ -26,7 +24,7 @@ export const getClientHook = (
       const callContractFunction = async (): Promise<void> => {
         setIsLoading(true);
         try {
-            const response = await window.electron.ipcRenderer.FindClienteById(id);
+            const response = await window.electron.ipcRenderer.DeleteClient(id);
             setIsSuccess(true);
             setResult(response);
         } catch (err) {

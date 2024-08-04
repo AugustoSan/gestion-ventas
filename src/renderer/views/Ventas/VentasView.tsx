@@ -8,14 +8,15 @@ import { GetAllVentas, setHandleAddVenta, setSelectClienteSearch, setSelectView 
 import { AddVentaClienteCard } from './AddVentaClienteCard';
 import { AddVentaAddProductsCard } from './AddVentaAddProductsCard';
 import { AddVentaAddPagoCard } from './AddVentaAddPagoCard';
+import { InfoVentaCard } from './InfoVentaCard';
 
 export const VentasView = ():JSX.Element => {
   const {clientesArray} = useCustomSelector((state) => state.clientSlice);
-  const {handleAddVenta, selectView, addVenta, pagination} = useCustomSelector((state) => state.ventaSlice);
+  const {handleAddVenta, selectView, addVenta, pagination, selectVenta} = useCustomSelector((state) => state.ventaSlice);
   const [client, setClient] = useState<IClient | null>(null);
   const [dropdownSelect, setDropdownSelect] = useState<string>(client === null ? 'Seleccionar cliente' : `${client.nombre} ${client.apellidopaterno}`);
   const {
-    currentPage, sizePage, totalPages, totalCount, 
+    currentPage, sizePage, totalPages, totalCount,
     hasPreviousPage, hasNextPage, nextPageNumber, previousPageNumber
   } = pagination;
 
@@ -87,7 +88,7 @@ export const VentasView = ():JSX.Element => {
         selectView === "all"
         ? <TablaVentas />
         : selectView === "infoVenta"
-          ? <></>
+          ? <InfoVentaCard id={selectVenta ?? -1} />
           : selectView === "addCliente"
             ? <AddVentaClienteCard />
             : selectView === "addProducts"

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
 import { IClient, IVenta } from "../../main/interfaces";
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
-import { DeleteProduct, setSelectProduct } from "../redux/slice/productos";
 import { numberToPrice } from "../utils/price";
 import { dateToString } from "../utils/date";
 import { useGetClientById } from "../hooks/";
+import { setSelectVenta, setSelectView } from "../redux/slice/ventas";
 
 interface IDataProps{
   venta: IVenta;
@@ -13,7 +13,7 @@ interface IDataProps{
 
 export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
   const {id, id_client, fecha, total, por_pagar, status} = venta;
-  // const dispatch = useCustomDispatch();
+  const dispatch = useCustomDispatch();
 
   const [address, setAddress] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(true);
@@ -42,7 +42,8 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
         onClick={
           () => {
             console.log(`se visualizara la venta con id ${id}`);
-            // dispatch(setSelectProduct(producto));
+            dispatch(setSelectVenta(id));
+            dispatch(setSelectView("infoVenta"));
           }
         }
       >

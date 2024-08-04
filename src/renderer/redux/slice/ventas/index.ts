@@ -8,7 +8,7 @@ import { createPaginationForSlides } from '../../../utils/pagination';
 // import { findAllProducts } from '../../../../main/database/database';
 
 interface IVentaSlice {
-  selectVenta: IVenta | null;
+  selectVenta: number | null;
   selectClientSearchVentas: number | null;
   ventasArray: Array<IVenta>;
   handleAddVenta: boolean;
@@ -85,7 +85,7 @@ const ventaSlice = createSlice({
       setHandleAddVenta: (state, action: PayloadAction<boolean>) =>{
         state.handleAddVenta = action.payload;
       },
-      setSelectVenta: (state, action: PayloadAction<IVenta | null>) =>{
+      setSelectVenta: (state, action: PayloadAction<number | null>) =>{
         state.selectVenta = action.payload;
       },
       setVentasArray: (state, action: PayloadAction<Array<IVenta>>) => {
@@ -94,7 +94,7 @@ const ventaSlice = createSlice({
         // state.ventasArray = action.payload.map(venta => ({
         //   ...venta,
         //   fecha: new Date(venta.fecha), // Convertir la fecha a una cadena ISO
-        // }));      
+        // }));
       },
       setAddListPricesProductArray: (state, action: PayloadAction<Array<IPrecioProductoCliente>>) => {
         console.log('Entro en setAddListPricesProductArray: ', action.payload);

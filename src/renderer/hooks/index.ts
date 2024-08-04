@@ -6,7 +6,7 @@ export {
   useGetAllClientsWithPagination,
   useGetClientById,
   useUpdateClient
-} from "./Clientes";
+} from './Clientes';
 export {
   useAddAddress,
   useDeleteAddress,
@@ -14,7 +14,7 @@ export {
   useFindAddressById,
   useGetAllAddress,
   useUpdateAddress
-} from "./Direcciones";
+} from './Direcciones';
 export {
   useAddProducto,
   useDeleteProducto,
@@ -23,11 +23,15 @@ export {
   useGetAllProducts,
   useGetAllProductsWithPagination,
   useUpdateProducto
-} from "./Productos";
+} from './Productos';
+export {
+  useFindPagoById,
+  useGetAllPagosByVenta
+} from './Pagos';
 export {
   useAddVenta,
   useGetAllProductosByVenta,
   useGetAllVentas,
   useGetAllVentasByClient,
   useGetVentaById
-} from "./Ventas";
+} from './Ventas';

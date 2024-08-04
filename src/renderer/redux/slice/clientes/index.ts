@@ -129,7 +129,7 @@ export default clientSlice.reducer;
 // const AddClient = async(): Promise<>
 export const GetAllClients = (page: number, sizePage: number): Thunk => async (dispatch): Promise<Array<IClient>> => {
   // const filePath = await window.electron.getAllClients();
-  const clients = await window.electron.ipcRenderer.GetAllClients({page, sizePage});
+  const clients = await window.electron.ipcRenderer.GetAllClientsWithPagination({page, sizePage});
   console.log('GetAllClients: ', clients);
   // const temp = PagedList.create(clients, 1, 4);
   // console.log('temp: ', temp);

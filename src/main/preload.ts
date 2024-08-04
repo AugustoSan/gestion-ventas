@@ -1,7 +1,7 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { IClient, IDirection, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
+import { IClient, IDirection, IPago, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from './interfaces/IClients';
 import { IDataAddProduct, IDataFindPricesProduct, IDataPagination, IDataUpdateProduct } from './interfaces/IProducts';
 import { IDataAddVenta } from './interfaces/IVentas';
@@ -52,10 +52,14 @@ const electronHandler = {
     DeleteProduct:(data: number):Promise<number> => ipcRenderer.invoke('products:deleteProduct', data),
     // Ventas
     GetAllVentas:(data: IDataPagination):Promise<PagedList<IVenta>> => ipcRenderer.invoke('ventas:getAllVentas', data),
+    GetVentaById:(id: number):Promise<IVenta | null> => ipcRenderer.invoke('ventas:getVentaById', id),
     GetAllVentasByCliente:(id: number, data: IDataPagination):Promise<PagedList<IVenta>> => ipcRenderer.invoke('ventas:getVentaByCliente', id, data),
     GetProductosFromVenta:(id: number):Promise<Array<IVentasProductos>> => ipcRenderer.invoke('ventas:getProductosFromVenta', id),
     // GetVentaByID:(id: number):Promise<IVenta> => ipcRenderer.invoke('ventas:getVentaByID', id),
     AddVenta:(venta: IDataAddVenta):Promise<number> => ipcRenderer.invoke('ventas:addVenta', venta),
+    // Pagos
+    GetAllPagosByVenta:(id: number):Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosByVentaHandler', id),
+    FindPagoById:(id: number):Promise<IPago | null> => ipcRenderer.invoke('pagos:findPagoByIdHandler', id),
   },
 };
 

@@ -84,6 +84,36 @@ export const findAllVentas = async ({page, sizePage}: IDataPagination):Promise<P
   }
 }
 
+export const findVentaById = async (id: number):Promise<IVenta | null> => {
+  const client = await openDBPostgres();
+  await client.connect();
+  try {
+    const temp = await client.query(`SELECT * FROM fn_FindVentaById(${id})`);
+    const result:Array<ITypeVenta> = temp.rows;
+    console.log('result ventas:', result);
+    let response:Array<IVenta> = [];
+    for (let i = 0; i < result.length; i++) {
+      const element:IVenta = {
+        id: result[i].id,
+        id_client: result[i].id_client,
+        id_direccion: result[i].id_direccion,
+        fecha: result[i].fecha.toISOString(),
+        total: result[i].total,
+        por_pagar: result[i].por_pagar,
+        status: result[i].status,
+        productos: []
+      };
+      response = [element, ...response];
+    }
+    return response[0] ?? null;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return null;
+  } finally {
+    await client.end();
+  }
+}
+
 export const addVenta = async ({id_client, id_direccion, fecha, total, pagado, productos}: IDataAddVenta):Promise<number> => {
   const client = await openDBPostgres();
   await client.connect();

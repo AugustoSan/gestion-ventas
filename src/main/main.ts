@@ -17,7 +17,8 @@ import { resolveHtmlPath } from './util';
 import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAddressByIdHandler, findAllAddressByClientHandler, findAllClientsHandler, findAllClientsWithPaginationHandler, findClienteByIdHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
 import { addProductoHandler, deleteProductoHandler, getAllProductosWithPaginationHandler, findProductoByIdHandler, findProductoHandler, getAllProductosHandler, updateProductoHandler } from './handles/Productos';
 // import { migrateDB } from './database/database';
-import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentasByClienteHandler } from './handles/Ventas';
+import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
+import { findPagoByIdHandler, getAllPagosByVentaHandler } from './handles/Pagos';
 
 class AppUpdater {
   constructor() {
@@ -68,10 +69,15 @@ ipcMain.handle('products:deleteProduct', deleteProductoHandler);
 
 // Ventas
 ipcMain.handle('ventas:getAllVentas', findAllVentasHandler);
+ipcMain.handle('ventas:getVentaById', findVentaByIDHandler);
 ipcMain.handle('ventas:getVentaByCliente', findVentasByClienteHandler);
 // ipcMain.handle('ventas:getVentaByID', findVentaByIDHandler);
 ipcMain.handle('ventas:getProductosFromVenta', findProductoFromVentaHandler);
 ipcMain.handle('ventas:addVenta', addVentaHandler);
+
+// Pagos
+ipcMain.handle('pagos:getAllPagosByVentaHandler', getAllPagosByVentaHandler);
+ipcMain.handle('pagos:findPagoByIdHandler', findPagoByIdHandler);
 
 
 if (process.env.NODE_ENV === 'production') {

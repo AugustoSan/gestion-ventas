@@ -24,3 +24,10 @@ export {
   useGetAllProductsWithPagination,
   useUpdateProducto
 } from "./Productos";
+export {
+  useAddVenta,
+  useGetAllProductosByVenta,
+  useGetAllVentas,
+  useGetAllVentasByClient,
+  useGetVentaById
+} from "./Ventas";

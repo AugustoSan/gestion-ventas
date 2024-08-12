@@ -91,3 +91,9 @@ export interface IDataRequestWithPagination {
   sizePage: number;
   isValid: boolean;
 }
+
+export interface IQueryDB {
+  name: string;
+  type: 'table' | 'function' | 'type';
+  query: string;
+}

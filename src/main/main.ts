@@ -19,6 +19,7 @@ import { addProductoHandler, deleteProductoHandler, getAllProductosWithPaginatio
 // import { migrateDB } from './database/database';
 import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
 import { findPagoByIdHandler, getAllPagosByVentaHandler } from './handles/Pagos';
+import { initializer } from './database/database-pg';
 
 class AppUpdater {
   constructor() {
@@ -87,6 +88,8 @@ if (process.env.NODE_ENV === 'production') {
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+let errorWindow: BrowserWindow | null = null;
 
 if (isDebug) {
   require('electron-debug')();
@@ -164,6 +167,65 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
+const createErrorWindow = async (errorMessage: string) => {
+  if (isDebug) {
+    await installExtensions();
+  }
+
+  const RESOURCES_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets');
+
+  const getAssetPath = (...paths: string[]): string => {
+    return path.join(RESOURCES_PATH, ...paths);
+  };
+
+  errorWindow = new BrowserWindow({
+    show: false,
+    width: 1200,
+    height: 650,
+    icon: getAssetPath('icon.png'),
+    center: true,
+    minHeight: 600,
+    minWidth: 800,
+    // webPreferences: {
+      // preload: app.isPackaged
+        // ? path.join(__dirname, 'preload.js')
+        // : path.join(__dirname, '../../.erb/dll/preload.js'),
+    // },
+  });
+
+  errorWindow.loadURL(resolveHtmlPath('error.html'));
+
+  errorWindow.on('ready-to-show', () => {
+    if (!errorWindow) {
+      throw new Error('"errorWindow" is not defined');
+    }
+    if (process.env.START_MINIMIZED) {
+      errorWindow.minimize();
+    } else {
+      errorWindow.show();
+    }
+  });
+
+  errorWindow.on('closed', () => {
+    errorWindow = null;
+  });
+
+  const menuBuilder = new MenuBuilder(errorWindow);
+  menuBuilder.buildMenu();
+
+  // Open urls in the user's browser
+  errorWindow.webContents.setWindowOpenHandler((edata) => {
+    shell.openExternal(edata.url);
+    return { action: 'deny' };
+  });
+
+  // Remove this if your app does not use auto updates
+  // eslint-disable-next-line
+  new AppUpdater();
+};
+
 /**
  * Add event listeners...
  */
@@ -178,13 +240,22 @@ app.on('window-all-closed', () => {
 
 app
   .whenReady()
-  .then(() => {
-    createWindow();
-    // migrateDB();
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (mainWindow === null) createWindow();
-    });
+  .then(async () => {
+    try {
+      console.log(`Entro en whenReady`);
+      const errors = await initializer();
+      // createWindow();
+      // migrateDB();
+
+      app.on('activate', () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if(errors.length > 0 && mainWindow === null) createErrorWindow(errors.toString());
+        if (errors.length > 0 && mainWindow === null) createWindow();
+      });
+    } catch (err) {
+      console.error('Initialization error:', JSON.stringify(err));
+      createErrorWindow(JSON.stringify(err));
+    }
   })
   .catch(console.log);

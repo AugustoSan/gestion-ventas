@@ -1,10 +1,4 @@
-import {Client} from 'pg';
-import * as fs from 'fs';
-import * as path from 'path';
-import dotnev from 'dotenv';
-
 import {
-  tblClientes, tblDirecciones, tblPagos, tblProductos, tblTiempoPago, tblVentaProductos, tblVentas,
   type_address, type_datos_clientes, type_datos_direcciones, type_datos_productos, type_datos_ventas,
   type_pago, type_product_venta, type_venta_productos, type_ventas,
   fn_FindAddressById, fn_FindClientById, fn_FindPagoById, fn_FindPagosByVenta, fn_FindProductById,

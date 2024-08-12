@@ -1,20 +1,9 @@
 import {Client} from 'pg';
-import * as fs from 'fs';
-import * as path from 'path';
 import dotnev from 'dotenv';
-
-import {
-  tblClientes, tblDirecciones, tblPagos, tblProductos, tblTiempoPago, tblVentaProductos, tblVentas,
-  type_address, type_datos_clientes, type_datos_direcciones, type_datos_productos, type_datos_ventas,
-  type_pago, type_product_venta, type_venta_productos, type_ventas,
-  fn_FindAddressById, fn_FindClientById, fn_FindPagoById, fn_FindPagosByVenta, fn_FindProductById,
-  fn_FindVentaById, fn_deleteAddress, fn_deleteClient, fn_deleteProduct, fn_findMatchClients,
-  fn_findMatchProducts, fn_getAllAddress, fn_getAllAddressByClient, fn_getAllClients,
-  fn_getAllProducts, fn_getAllProductsByVenta, fn_getAllVentas, fn_getAllVentasByClient,
-  fn_insertAddress, fn_insertClient, fn_insertProduct, fn_insertVenta, fn_updateAddress,
-  fn_updateClient, fn_updateProduct
-} from './querysDatabase';
 import { IQueryDB } from '../interfaces';
+import { initializerTables } from './tables.initializer';
+import { initializerTypes } from './types.initializer';
+import { initializerFunctions } from './functions.initializer';
 
 dotnev.config();
 
@@ -48,55 +37,14 @@ export const initializer = async ():Promise<Array<string>> =>
     let errors: Array<string> = [];
     if(!validateDB) errors = await createDatabaseIfNotExist();
 
-    // tblClientes, tblDirecciones, tblPagos, tblProductos, tblTiempoPago, tblVentaProductos, tblVentas,
-    const validateTblClientes = await checkTableIfExists(tblClientes.name);
-    if(!validateTblClientes)
-    {
-      const getErrors = await createTable(tblClientes);
-      errors = [...errors, ...getErrors]
-    }
+    const getErrorsTables = await initializerTables();
+    errors = [...errors, ...getErrorsTables];
 
-    const validateTblDirecciones = await checkTableIfExists(tblDirecciones.name);
-    if(!validateTblDirecciones)
-    {
-      const getErrors = await createTable(tblDirecciones);
-      errors = [...errors, ...getErrors]
-    }
+    const getErrorsTypes = await initializerTypes();
+    errors = [...errors, ...getErrorsTypes];
 
-    const validateTblPagos = await checkTableIfExists(tblPagos.name);
-    if(!validateTblPagos)
-    {
-      const getErrors = await createTable(tblPagos);
-      errors = [...errors, ...getErrors]
-    }
-
-    const validateTblProductos = await checkTableIfExists(tblProductos.name);
-    if(!validateTblProductos)
-    {
-      const getErrors = await createTable(tblProductos);
-      errors = [...errors, ...getErrors]
-    }
-
-    const validateTblTiempoPago = await checkTableIfExists(tblTiempoPago.name);
-    if(!validateTblTiempoPago)
-    {
-      const getErrors = await createTable(tblTiempoPago);
-      errors = [...errors, ...getErrors]
-    }
-
-    const validateTblVentaProductos = await checkTableIfExists(tblVentaProductos.name);
-    if(!validateTblVentaProductos)
-    {
-      const getErrors = await createTable(tblVentaProductos);
-      errors = [...errors, ...getErrors]
-    }
-
-    const validateTblVentas = await checkTableIfExists(tblVentas.name);
-    if(!validateTblVentas)
-    {
-      const getErrors = await createTable(tblVentas);
-      errors = [...errors, ...getErrors]
-    }
+    const getErrorsFunctions = await initializerFunctions();
+    errors = [...errors, ...getErrorsFunctions];
 
     return errors;
   } catch (error) {

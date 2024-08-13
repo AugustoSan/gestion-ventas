@@ -2,10 +2,10 @@ import { ITypeVenta, IVenta, IVentasProductos } from "../../interfaces";
 import { IDataPagination } from "../../interfaces/IProducts";
 import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas";
 import { PagedList } from "../../utils/Pagination";
-import { openDBPostgres } from "../database-pg";
+import { getClientDB } from "../database-pg";
 
 export const findProductFromVenta = async (id: number): Promise<Array<IVentasProductos>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp= await client.query(`SELECT * FROM fn_getAllProductsByVenta(${id}) AS id;`);
@@ -20,7 +20,7 @@ export const findProductFromVenta = async (id: number): Promise<Array<IVentasPro
 }
 
 export const findVentasByIDClient = async (id: number, {page, sizePage}: IDataPagination): Promise<PagedList<IVenta>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query(`SELECT * FROM fn_getAllVentasByClient(${id})`);
@@ -54,7 +54,7 @@ export const findVentasByIDClient = async (id: number, {page, sizePage}: IDataPa
 }
 
 export const findAllVentas = async ({page, sizePage}: IDataPagination):Promise<PagedList<IVenta>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query('SELECT * FROM fn_getAllVentas()');
@@ -85,7 +85,7 @@ export const findAllVentas = async ({page, sizePage}: IDataPagination):Promise<P
 }
 
 export const findVentaById = async (id: number):Promise<IVenta | null> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query(`SELECT * FROM fn_FindVentaById(${id})`);
@@ -115,7 +115,7 @@ export const findVentaById = async (id: number):Promise<IVenta | null> => {
 }
 
 export const addVenta = async ({id_client, id_direccion, fecha, total, pagado, productos}: IDataAddVenta):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const productosArray = productos.length > 0 ? `ARRAY[${productos.map(prod => `(${prod.id_producto}, ${prod.precio}, ${prod.cantidad})::product_venta`).join(",")}]` : "ARRAY[]::product_venta[]";

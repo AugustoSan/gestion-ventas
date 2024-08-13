@@ -87,7 +87,7 @@ const checkIfTypeExists = async (typeName: string): Promise<boolean> => {
 
   try {
       await client.connect();
-      console.log(`Conectado a la base de datos: ${process.env.DATABASE_DATABASE}`);
+      // console.log(`Conectado a la base de datos: ${process.env.DATABASE_DATABASE}`);
 
       // Consulta para verificar si existe el tipo en la base de datos
       const query = `
@@ -101,11 +101,11 @@ const checkIfTypeExists = async (typeName: string): Promise<boolean> => {
       const res = await client.query(query, [typeName]);
       return res.rows[0].type_exists;
   } catch (err) {
-      console.error('Error al verificar el tipo:', err);
+      // console.error('Error al verificar el tipo:', err);
       return false;
   } finally {
       await client.end();
-      console.log('Conexión a la base de datos cerrada.');
+      // console.log('Conexión a la base de datos cerrada.');
   }
 };
 
@@ -118,18 +118,18 @@ const createCustomType = async (entity: IQueryDB): Promise<Array<string>> => {
   try {
 
       await client.connect();
-      console.log(`Conectado a la base de datos: ${process.env.DATABASE_DATABASE}`);
-      console.log(`Creando tipo con la consulta: ${query}`);
+      // console.log(`Conectado a la base de datos: ${process.env.DATABASE_DATABASE}`);
+      // console.log(`Creando tipo con la consulta: ${query}`);
 
       // Ejecutar la consulta
       await client.query(query);
-      console.log(`Type ${name} creado con éxito.`);
+      // console.log(`Type ${name} creado con éxito.`);
   } catch (err) {
-      console.error('Error al crear el type:', err);
+      // console.error('Error al crear el type:', err);
       errors = [...errors, 'Error al crear el type:', JSON.stringify(err)];
   } finally {
       await client.end();
-      console.log('Conexión a la base de datos cerrada.');
+      // console.log('Conexión a la base de datos cerrada.');
   }
   return errors;
 };

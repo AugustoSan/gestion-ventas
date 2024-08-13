@@ -1,10 +1,10 @@
 import { PagedList } from "../../utils/Pagination";
 import { WriteFileSQLBackup } from "../../files/log";
 import { IPago } from "../../interfaces";
-import { openDBPostgres } from "../database-pg";
+import { getClientDB } from "../database-pg";
 
 // export const getAllPagosWithPagination = async ({page, sizePage}: IDataPagination):Promise<PagedList<IProducto>> => {
-//   const client = await openDBPostgres();
+//   const client = await getClientDB();
 //   await client.connect();
 //   try {
 //     const temp = await client.query(`SELECT * FROM fn_getAllProducts()`);
@@ -23,7 +23,7 @@ import { openDBPostgres } from "../database-pg";
 // }
 
 export const getAllPagosByVenta = async (id: number):Promise<Array<IPago>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query(`SELECT * FROM fn_FindPagosByVenta(${id})`);
@@ -39,7 +39,7 @@ export const getAllPagosByVenta = async (id: number):Promise<Array<IPago>> => {
 }
 
 export const findPagoById = async (id: number):Promise<IPago | null> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const query = `SELECT * FROM fn_FindPagoById(${id})`;
@@ -56,7 +56,7 @@ export const findPagoById = async (id: number):Promise<IPago | null> => {
 
 
 // export const addProducto = async ({concepto, precio}: IDataAddProduct):Promise<number> => {
-//   const client = await openDBPostgres();
+//   const client = await getClientDB();
 //   await client.connect();
 //   try {
 //     const query = `SELECT fn_insertProduct('${concepto}', ${precio}) AS id;`;
@@ -74,7 +74,7 @@ export const findPagoById = async (id: number):Promise<IPago | null> => {
 // }
 
 // export const updateProducto = async (producto: IDataUpdateProduct):Promise<number> => {
-//   const client = await openDBPostgres();
+//   const client = await getClientDB();
 //   await client.connect();
 //   try {
 //     const {concepto, precio} = producto.product;
@@ -94,7 +94,7 @@ export const findPagoById = async (id: number):Promise<IPago | null> => {
 
 
 // export const deleteProducto = async (id: number):Promise<number> => {
-//   const client = await openDBPostgres();
+//   const client = await getClientDB();
 //   await client.connect();
 //   try {
 //     const query = `SELECT fn_deleteProduct(${id}) AS id;`;

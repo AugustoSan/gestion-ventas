@@ -77,9 +77,6 @@ const checkTableIfExists = async (tableName: string): Promise<boolean> => {
 
   try {
     await client.connect();
-
-    // Consulta para verificar si la tabla existe
-      await client.connect();
       const query = `
         SELECT EXISTS (
           SELECT 1
@@ -92,11 +89,11 @@ const checkTableIfExists = async (tableName: string): Promise<boolean> => {
       await client.end();
       return res.rows[0].exists;
     } catch (err) {
-      console.error('Error al verificar o crear la tabla:', JSON.stringify(err));
+      // console.error('Error al verificar la tabla:', JSON.stringify(err));
       return false;
     } finally {
       await client.end();
-      console.log('Conexión a la base de datos cerrada.');
+      // console.log('Conexión a la base de datos cerrada.');
     }
   };
 
@@ -108,14 +105,15 @@ const createTable = async (entity: IQueryDB): Promise<Array<string>> => {
 
   try {
     await client.connect();
+    // console.log('query: ', query);
     await client.query(query);
     return [];
   } catch (err) {
-    console.error('Error al verificar o crear la tabla:', JSON.stringify(err));
-    errors = [...errors, 'Error al verificar o crear la tabla:', JSON.stringify(err)];
+    // console.error('Error al crear la tabla:', JSON.stringify(err));
+    errors = [...errors, 'Error al crear la tabla:', JSON.stringify(err)];
   } finally {
     await client.end();
-    console.log('Conexión a la base de datos cerrada.');
+    // console.log('Conexión a la base de datos cerrada.');
   }
   return errors;
 };

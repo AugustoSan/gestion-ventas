@@ -3,10 +3,10 @@ import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient 
 import { IDataPagination } from "../../interfaces/IProducts";
 import { PagedList } from "../../utils/Pagination";
 // import { createTables, openDb } from "../database";
-import { openDBPostgres } from "../database-pg";
+import { getClientDB } from "../database-pg";
 
 export const findAddressByIDClient = async (id: number): Promise<Array<IDirection>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query(`SELECT * FROM fn_getAllAddressByClient(${id})`);
@@ -14,7 +14,7 @@ export const findAddressByIDClient = async (id: number): Promise<Array<IDirectio
     // const result:Array<IDirection> = await db.all(`SELECT * FROM direcciones WHERE id_client=${id}`);
     return result;
   } catch (error) {
-    console.log('ERROR:', error);
+    // console.log('ERROR:', error);
     return [];
   } finally {
     await client.end();
@@ -22,15 +22,15 @@ export const findAddressByIDClient = async (id: number): Promise<Array<IDirectio
 }
 
 export const findAllClientsWithPagination = async ({page, sizePage}: IDataPagination):Promise<PagedList<IClient>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
-    console.log('entro en findAllClients');
+    // console.log('entro en findAllClients');
 
     const temp = await client.query(`SELECT * FROM fn_getAllClients()`);
-    console.log('temp: ', temp);
+    // console.log('temp: ', temp);
     const result:Array<IClient> = temp.rows;
-    console.log('result: ', result);
+    // console.log('result: ', result);
     const allClients:Array<IClient> = await Promise.all(
       result.map(async (cliente) => {
         cliente.direcciones = await findAddressByIDClient(cliente.id);
@@ -40,7 +40,7 @@ export const findAllClientsWithPagination = async ({page, sizePage}: IDataPagina
     const pagedList:PagedList<IClient> = PagedList.create(allClients, page, sizePage);
     return pagedList;
   } catch (error) {
-    console.log('ERROR:', error);
+    // console.log('ERROR:', error);
     return PagedList.create([], 1, 10);
   } finally {
     await client.end();
@@ -48,10 +48,10 @@ export const findAllClientsWithPagination = async ({page, sizePage}: IDataPagina
 }
 
 export const findAllClients = async ():Promise<Array<IClient>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
-    console.log('entro en findAllClients');
+    // console.log('entro en findAllClients');
 
     const temp = await client.query(`SELECT * FROM fn_getAllClients()`);
     console.log('temp: ', temp);
@@ -73,7 +73,7 @@ export const findAllClients = async ():Promise<Array<IClient>> => {
 }
 
 export const findCliente = async (texto: string, {page, sizePage}: IDataPagination):Promise<PagedList<IClient>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const query = `SELECT * FROM fn_findmatchclients('${texto}');`;
@@ -96,7 +96,7 @@ export const findCliente = async (texto: string, {page, sizePage}: IDataPaginati
 }
 
 export const findClienteById = async (id: number):Promise<IClient | null> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const query = `SELECT * FROM fn_FindClientById(${id});`;
@@ -118,7 +118,7 @@ export const findClienteById = async (id: number):Promise<IClient | null> => {
 }
 
 export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const {nombre, apellidopaterno, apellidomaterno, telefono, direccioness} = cliente;
@@ -138,7 +138,7 @@ export const addCliente = async (cliente: IDataAddClient):Promise<number> => {
 }
 
 export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const {nombre, apellidopaterno, apellidomaterno, telefono} = cliente.client;
@@ -158,7 +158,7 @@ export const updateCliente = async (cliente: IDataUpdateClient):Promise<number> 
 
 
 export const deleteCliente = async (id: number):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const query = `SELECT fn_deleteClient(${id}) AS id`;
@@ -177,7 +177,7 @@ export const deleteCliente = async (id: number):Promise<number> => {
 
 // Direcciones
 export const findAllAddress = async ():Promise<Array<IDirection>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query(`SELECT * FROM fn_getAllAddress()`);
@@ -192,7 +192,7 @@ export const findAllAddress = async ():Promise<Array<IDirection>> => {
 }
 
 export const findAddressById = async (id: number):Promise<IDirection | null> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const query = `SELECT * FROM fn_FindAddressById(${id});`;
@@ -208,7 +208,7 @@ export const findAddressById = async (id: number):Promise<IDirection | null> => 
 }
 
 export const findAllAddressByClient = async (id: number):Promise<Array<IDirection>> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const temp = await client.query(`SELECT * FROM fn_getAllAddressByClient(${id})`);
@@ -223,7 +223,7 @@ export const findAllAddressByClient = async (id: number):Promise<Array<IDirectio
 }
 
 export const addAddress = async (direccion: IDataAddAddress):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const {id_client, direccion:dir } = direccion;
@@ -242,7 +242,7 @@ export const addAddress = async (direccion: IDataAddAddress):Promise<number> => 
 }
 
 export const updateAddress = async (direccion: IDataUpdateAddress):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     // const query = `UPDATE tblDirecciones SET direccion=$1 WHERE id=$2 RETURNING *`;
@@ -262,7 +262,7 @@ export const updateAddress = async (direccion: IDataUpdateAddress):Promise<numbe
 }
 
 export const deleteAddress = async (id: number):Promise<number> => {
-  const client = await openDBPostgres();
+  const client = await getClientDB();
   await client.connect();
   try {
     const query = `SELECT fn_deleteAddress(${id}) AS id;`;

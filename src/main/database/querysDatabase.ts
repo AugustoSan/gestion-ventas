@@ -4,7 +4,7 @@ export const tblClientes:IQueryDB =
 {
   name: 'tblClientes',
   type: 'table',
-  query: `CREATE TABLE tblClientes
+  query: `CREATE TABLE IF NOT EXISTS tblClientes
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
         name text NOT NULL DEFAULT '-',
@@ -17,7 +17,7 @@ export const tblClientes:IQueryDB =
 
 export const tblDirecciones :IQueryDB =
 {
-  query: `CREATE TABLE tblDirecciones
+  query: `CREATE TABLE IF NOT EXISTS tblDirecciones
   (
       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
       id_client integer NOT NULL DEFAULT 0,
@@ -30,7 +30,7 @@ export const tblDirecciones :IQueryDB =
 
 export const tblProductos:IQueryDB =
 {
-  query : `CREATE TABLE tblProductos
+  query : `CREATE TABLE IF NOT EXISTS tblProductos
   (
       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
       concepto text NOT NULL DEFAULT '-',
@@ -43,7 +43,7 @@ export const tblProductos:IQueryDB =
 
 export const tblVentas:IQueryDB =
 {
-  query: `CREATE TABLE tblVentas
+  query: `CREATE TABLE IF NOT EXISTS tblVentas
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
         id_client integer NOT NULL DEFAULT 0,
@@ -60,7 +60,7 @@ export const tblVentas:IQueryDB =
 
 export const tblVentaProductos:IQueryDB =
 {
-  query: `CREATE TABLE tblVentaProductos
+  query: `CREATE TABLE IF NOT EXISTS tblVentaProductos
   (
       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
       id_venta integer NOT NULL DEFAULT 0,
@@ -75,7 +75,7 @@ export const tblVentaProductos:IQueryDB =
 
 export const tblPagos:IQueryDB =
 {
-  query: `CREATE TABLE tblPagos
+  query: `CREATE TABLE IF NOT EXISTS tblPagos
   (
       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
       id_venta integer DEFAULT 0,
@@ -90,7 +90,7 @@ export const tblPagos:IQueryDB =
 
 export const tblTiempoPago:IQueryDB =
 {
-  query: `CREATE TABLE tblTiempoPago
+  query: `CREATE TABLE IF NOT EXISTS tblTiempoPago
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
         porcentaje integer DEFAULT 0,

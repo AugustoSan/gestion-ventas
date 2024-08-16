@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import CardGroup from 'react-bootstrap/CardGroup';
-import { LabelInfoCard } from '../../components/LabelInfoCard';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { InputCard } from '../../components/InputCard';
-import { IDataUpdateClient } from '../../../main/interfaces/IClients';
-import { IDataUpdateProduct } from '../../../main/interfaces/IProducts';
 import { InputPriceCard } from '../../components/InputPriceCard';
-import { useGetVentaById } from '../../hooks';
+import { useFindAddressById, useGetClientById, useGetVentaById } from '../../hooks';
 import { useEffect } from 'react';
 import { setSelectVenta, setSelectView } from '../../redux/slice/ventas';
 
@@ -23,12 +18,50 @@ interface IDataProps{
 export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
   const { selectVenta } = useCustomSelector((state) => state.ventaSlice);
   const [isEnabled, setIsEnabled] = useState<boolean>(true);
+  const [isEnabledResult, setIsEnabledResult] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [idClient, setIdClient] = useState<number>(-1);
+  const [idAddress, setIdAddress] = useState<number>(-1);
   const dispatch = useCustomDispatch();
-  const {result, isLoading, isSuccess, error, status} = useGetVentaById({isValid: isEnabled, id});
+  const {
+    result,
+    isLoading,
+    isSuccess,
+    error,
+    status
+  } = useGetVentaById({isValid: isEnabled, id});
+  const {
+    result: client,
+    isLoading: isLoadingClient,
+    isSuccess: isSuccessClient,
+    error: errorClient,
+    status: statusClient
+  } = useGetClientById({isValid: isEnabledResult, id: idClient});
+  const {
+    result: direction,
+    isLoading: isLoadingDirection,
+    isSuccess: isSuccessDirection,
+    error: errorDirection,
+    status: statusDirection
+  } = useFindAddressById({isValid: isEnabledResult, id: idAddress});
 
   useEffect(() => {
     if(isSuccess) setIsEnabled(false);
-  }, [isSuccess]);
+    if(isSuccessClient) setIsEnabledResult(false);
+    if(isSuccessClient) setIsEnabledResult(false);
+  }, [isSuccess, isSuccessClient, isSuccessDirection]);
+
+  useEffect(() => {
+    if(result !== null)
+    {
+      setIsEnabledResult(true);
+      setIdAddress(result.id_direccion);
+      setIdClient(result.id_client);
+    }
+    if(client !== null) setName(client.nombre);
+    if(direction !== null) setAddress(direction.direccion);
+  }, [result, client, direction]);
 
 
   console.log('venta: - ', result);
@@ -46,18 +79,18 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
         />
         <InputCard
           title={'Cliente'}
-          value={result.id_client.toString()}
+          value={name}
           onChange={() => {}}
           disabled={true}
         />
         <InputCard
           title={'Direccion'}
-          value={result.id_direccion.toString()}
+          value={address}
           onChange={() => {}}
           disabled={true}
         />
         <InputPriceCard
-          title={'Por_pagar'}
+          title={'Por pagar'}
           value={result.por_pagar}
           onChange={() => {}}
           disabled={true}

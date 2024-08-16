@@ -3,6 +3,7 @@ import { IDataPagination } from "../../interfaces/IProducts";
 import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas";
 import { PagedList } from "../../utils/Pagination";
 import { getClientDB } from "../database-pg";
+import { type_product_venta } from "../querysDatabase";
 
 export const findProductFromVenta = async (id: number): Promise<Array<IVentasProductos>> => {
   const client = await getClientDB();
@@ -118,7 +119,8 @@ export const addVenta = async ({id_client, id_direccion, fecha, total, pagado, p
   const client = await getClientDB();
   await client.connect();
   try {
-    const productosArray = productos.length > 0 ? `ARRAY[${productos.map(prod => `(${prod.id_producto}, ${prod.precio}, ${prod.cantidad})::product_venta`).join(",")}]` : "ARRAY[]::product_venta[]";
+    const {name} = type_product_venta;
+    const productosArray = productos.length > 0 ? `ARRAY[${productos.map(prod => `(${prod.id_producto}, ${prod.precio}, ${prod.cantidad})::${name}`).join(",")}]` : `ARRAY[]::${name}[]`;
     const query = `SELECT fn_insertVenta(${id_client}, ${id_direccion}, ${total}, ${pagado},'${fecha}'::TIMESTAMP, ${productosArray} ) AS id;`;
     console.log(`query: ${query}`);
     const temp = await client.query(`${query}`);

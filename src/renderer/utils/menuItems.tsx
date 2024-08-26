@@ -31,10 +31,16 @@ const productos:IItemMenu = {
   href: "/productos",
   icon: <TbBottleFilled />
 }
+const pagos:IItemMenu = {
+  title: "Pagos",
+  href: "/pagos",
+  icon: <TbBottleFilled />
+}
 export const menuItems = {
   home,
   clientes,
   ingresos,
   ventas,
+  pagos,
   productos
 }

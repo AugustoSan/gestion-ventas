@@ -10,6 +10,7 @@ import { InputPriceCard } from '../../components/InputPriceCard';
 import { useFindAddressById, useGetClientById, useGetVentaById } from '../../hooks';
 import { useEffect } from 'react';
 import { setSelectVenta, setSelectView } from '../../redux/slice/ventas';
+import { TablaPagosVenta } from './TablaPagosVenta';
 
 interface IDataProps{
   id: number;
@@ -101,6 +102,7 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
           onChange={() => {}}
           disabled={true}
         />
+        <TablaPagosVenta id={id}/>
       </Card.Body>
       <Card.Footer>
         <Container>

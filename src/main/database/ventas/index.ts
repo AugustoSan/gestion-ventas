@@ -36,7 +36,7 @@ export const findVentasByIDClient = async (id: number, {page, sizePage}: IDataPa
           fecha: venta.fecha.toISOString(),
           total: venta.total,
           por_pagar: venta.por_pagar,
-          status: venta.status,
+          status: venta.estatus,
           productos: await findProductFromVenta(venta.id)
         };
         return element;
@@ -70,7 +70,7 @@ export const findAllVentas = async ({page, sizePage}: IDataPagination):Promise<P
         fecha: result[i].fecha.toISOString(),
         total: result[i].total,
         por_pagar: result[i].por_pagar,
-        status: result[i].status,
+        status: result[i].estatus,
         productos: []
       };
       response = [element, ...response];
@@ -101,7 +101,7 @@ export const findVentaById = async (id: number):Promise<IVenta | null> => {
         fecha: result[i].fecha.toISOString(),
         total: result[i].total,
         por_pagar: result[i].por_pagar,
-        status: result[i].status,
+        status: result[i].estatus,
         productos: []
       };
       response = [element, ...response];

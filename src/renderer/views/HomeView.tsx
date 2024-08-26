@@ -3,7 +3,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import './../public/css/dashboard.css'
 import './../public/css/dashboard.rtl.css'
 import { Graphic } from '../components/Graphic';
-import { Tabla } from '../components/Tabla';
 import { graphicDataIngresos, graphicDataPedidos, graphicLabelsDays } from '../utils/graphics';
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { GetAllClients } from '../redux/slice/clientes';

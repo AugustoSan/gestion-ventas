@@ -51,7 +51,7 @@ export interface ITypeVenta {
   fecha: Date;
   total: number;
   por_pagar: number;
-  status: number;
+  estatus: number;
   productos: Array<IVentasProductos>
 }
 

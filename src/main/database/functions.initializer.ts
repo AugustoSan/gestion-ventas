@@ -4,7 +4,7 @@ import {
   fn_findMatchProducts, fn_getAllAddress, fn_getAllAddressByClient, fn_getAllClients,
   fn_getAllProducts, fn_getAllProductsByVenta, fn_getAllVentas, fn_getAllVentasByClient,
   fn_insertAddress, fn_insertClient, fn_insertProduct, fn_insertVenta, fn_updateAddress,
-  fn_updateClient, fn_updateProduct
+  fn_updateClient, fn_updateProduct, fn_GetAllPagos, fn_FindPagosByCliente
 } from './querysDatabase';
 import { IQueryDB } from '../interfaces';
 import { getClientDB } from './database-pg';
@@ -42,6 +42,20 @@ export const initializerFunctions = async ():Promise<Array<string>> =>
     if(!validateFnFindPagosByVenta)
     {
       const getErrors = await createFunction(fn_FindPagosByVenta);
+      errors = [...errors, ...getErrors]
+    }
+
+    const validatefn_GetAllPagos = await checkIfFunctionExists(fn_GetAllPagos.name);
+    if(!validatefn_GetAllPagos)
+    {
+      const getErrors = await createFunction(fn_GetAllPagos);
+      errors = [...errors, ...getErrors]
+    }
+
+    const validatefn_FindPagosByCliente = await checkIfFunctionExists(fn_FindPagosByCliente.name);
+    if(!validatefn_FindPagosByCliente)
+    {
+      const getErrors = await createFunction(fn_FindPagosByCliente);
       errors = [...errors, ...getErrors]
     }
 

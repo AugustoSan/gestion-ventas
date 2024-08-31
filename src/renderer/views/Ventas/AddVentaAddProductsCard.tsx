@@ -54,10 +54,8 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
     return true;
   }
 
-  console.log('producto: ', product);
 
-
-  return addVenta !== null && selectClient !== null 
+  return addVenta !== null && selectClient !== null
   ? (
     <Card className="mb-2">
       <Card.Header>Crear nueva venta</Card.Header>
@@ -89,16 +87,15 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
               <Button
                 variant='outline-primary'
                 onClick={() => {
-                  console.log('entro en onclic');
                   if(validateInputs()){
-                    console.log('Se va a guardar el nuevo producto');
-                    const newVenta: IDataAddVenta = 
+                    /* console.log('Se va a guardar el nuevo producto'); */
+                    const newVenta: IDataAddVenta =
                     {
                       ...addVenta,
                       total: totalAddVenta,
                       productos: selectProductos
                     }
-                    console.log('newVenta: ', newVenta);
+                    /* console.log('newVenta: ', newVenta); */
                     dispatch(setAddVenta(newVenta));
                     // dispatch(AddNewVenta(newVenta));
                     dispatch(setSelectView('addPago'));

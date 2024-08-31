@@ -2,6 +2,7 @@ import { PagedList } from "../../utils/Pagination";
 import { WriteFileSQLBackup } from "../../files/log";
 import { IPago } from "../../interfaces";
 import { getClientDB } from "../database-pg";
+import { fn_FindPagoById, fn_FindPagosByCliente, fn_FindPagosByVenta, fn_GetAllPagos } from "../querysDatabase";
 
 // export const getAllPagosWithPagination = async ({page, sizePage}: IDataPagination):Promise<PagedList<IProducto>> => {
 //   const client = await getClientDB();
@@ -22,11 +23,54 @@ import { getClientDB } from "../database-pg";
 //   }
 // }
 
-export const getAllPagosByVenta = async (id: number):Promise<Array<IPago>> => {
+// fn_GetAllPagos
+
+export const getAllPagos = async ():Promise<Array<IPago>> => {
+  console.log('getAllPagos');
   const client = await getClientDB();
   await client.connect();
   try {
-    const temp = await client.query(`SELECT * FROM fn_FindPagosByVenta(${id})`);
+    const query = `SELECT * FROM ${fn_GetAllPagos.name}()`;
+    const temp = await client.query(query);
+    console.log(query);
+    const result:Array<IPago> = temp.rows;
+    console.log('result: ', result);
+    return result;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return [];
+  } finally {
+    await client.end();
+  }
+}
+
+export const getAllPagosByVenta = async (id: number):Promise<Array<IPago>> => {
+  console.log('getAllPagosByVenta');
+  const client = await getClientDB();
+  await client.connect();
+  try {
+    const query = `SELECT * FROM ${fn_FindPagosByVenta.name}(${id})`;
+    console.log(query);
+    const temp = await client.query(query);
+    const result:Array<IPago> = temp.rows;
+    console.log('result: ', result);
+    return result;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return [];
+  } finally {
+    await client.end();
+  }
+}
+
+export const getAllPagosByClient = async (id: number):Promise<Array<IPago>> => {
+  console.log('getAllPagosByClient id:', id);
+  const client = await getClientDB();
+  await client.connect();
+  try {
+    const query = `SELECT * FROM ${fn_FindPagosByCliente.name}(${id})`;
+    const temp = await client.query(query);
+    console.log(query);
     const result:Array<IPago> = temp.rows;
     console.log('result: ', result);
     return result;
@@ -42,7 +86,8 @@ export const findPagoById = async (id: number):Promise<IPago | null> => {
   const client = await getClientDB();
   await client.connect();
   try {
-    const query = `SELECT * FROM fn_FindPagoById(${id})`;
+    const query = `SELECT * FROM ${fn_FindPagoById.name}(${id})`;
+    console.log(query);
     const temp = await client.query(query);
     const result:Array<IPago> = temp.rows;
     return result[0] ?? null;

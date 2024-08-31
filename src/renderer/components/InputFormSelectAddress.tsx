@@ -14,7 +14,7 @@ interface IDataProps {
 
 export const InputFormSelectAddress = ({cliente, onChange}:IDataProps):JSX.Element => {
 
-  console.log('cliente:', cliente);
+/*   console.log('cliente:', cliente); */
 
 
   return (

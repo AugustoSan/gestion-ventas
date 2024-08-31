@@ -64,7 +64,6 @@ export const AddProductoCard = ():JSX.Element => {
                 variant='outline-primary'
                 onClick={() => {
                   if(validateInputs()){
-                    console.log('Se va a guardar el nuevo producto');
                     const newProduct: IDataAddProduct = {
                       concepto: inputConcepto,
                       precio: inputPrecio

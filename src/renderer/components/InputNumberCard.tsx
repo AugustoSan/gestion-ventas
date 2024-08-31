@@ -24,7 +24,7 @@ export const InputNumberCard = ({title, value, onChange, disabled = false}:IData
               value={value}
               onChange={(event) => {
                 try {
-                  console.log(`nuevo valor: ${event.target.value}`);
+                  /* console.log(`nuevo valor: ${event.target.value}`); */
                   const newValue:number = Number(event.target.value);
                   if (!isNaN(newValue)) { // Ensure newValue is a valid number
                     onChange(newValue);

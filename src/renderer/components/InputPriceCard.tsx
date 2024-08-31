@@ -30,7 +30,7 @@ export const InputPriceCard = ({title, value, onChange, disabled = false}:IDataP
                   // Si el valor contiene un símbolo `$`, limpia el valor
                   if (valueWithSymbol.includes('$')) {
                     const getNumber = valueWithSymbol.replace(/[$,.]/g, '');
-                    console.log(`Nuevo valor: ${getNumber}`);
+                    /* console.log(`Nuevo valor: ${getNumber}`); */
                     const newNumberWithPoint: string = `${getNumber.substring(0, getNumber.length - 2)}.${getNumber.substring(getNumber.length - 2, getNumber.length)}`
                     const newValue = Number(newNumberWithPoint);
 

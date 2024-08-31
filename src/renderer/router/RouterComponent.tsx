@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import {HomeView} from '../views/HomeView';
 import { ClientesView } from '../views/Clientes/ClientesView';
-import { IngresoView } from '../views/IngresoView';
+import { IngresoView } from '../views/Ingresos/IngresoView';
 import { VentasView } from '../views/Ventas/VentasView';
 import { ProductosView } from '../views/Productos/ProductosView';
 import { menuItems } from '../utils/menuItems';

@@ -20,7 +20,7 @@ export const InputFormSelectPriceProduct = ({cliente, producto, onChange, disabl
   const {addVentaListPricesProduct} = useCustomSelector((state) => state.ventaSlice);
   const dispatch = useCustomDispatch();
 
-  console.log(producto)
+/*   console.log(producto) */
 
   useEffect(() => {
     if(producto !== null && producto.id !== 0 && producto.concepto.length > 2){

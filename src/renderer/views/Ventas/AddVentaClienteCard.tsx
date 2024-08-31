@@ -92,11 +92,11 @@ export const AddVentaClienteCard = ():JSX.Element => {
                         pagado: 0,
                         productos: []
                       };
-                      console.log('newVenta', newVenta);
+                      /* console.log('newVenta', newVenta); */
 
                       dispatch(setAddVenta(newVenta));
                       dispatch(setSelectView("addProducts"));
-                      console.log('Se procedera con el proceso de agregar una nueva venta.')
+                      /* console.log('Se procedera con el proceso de agregar una nueva venta.') */
                     }
                     else{
                       dispatch(setAddVenta(null));

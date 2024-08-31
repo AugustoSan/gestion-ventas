@@ -11,7 +11,7 @@ export const TablaVentas = ():JSX.Element => {
   const dispatch = useCustomDispatch();
 
   const {
-    currentPage, sizePage, totalPages, totalCount, 
+    currentPage, sizePage, totalPages, totalCount,
     hasPreviousPage, hasNextPage, nextPageNumber, previousPageNumber
   } = pagination;
 
@@ -20,22 +20,21 @@ export const TablaVentas = ():JSX.Element => {
     else dispatch(GetAllVentas(currentPage, sizePage));
   }, [selectClientSearchVentas, dispatch]);
 
-  console.log('ventasArray: ', ventasArray);
 
   return (
       <div className="card">
         <div className="card-body">
           <div className="table-responsive small">
-          <PaginationComponent 
-            currentPage={currentPage} 
+          <PaginationComponent
+            currentPage={currentPage}
             sizePage={sizePage}
-            totalPages={totalPages} 
-            totalCount={totalCount} 
-            hasPreviousPage={hasPreviousPage} 
-            hasNextPage={hasNextPage} 
-            nextPageNumber={nextPageNumber} 
+            totalPages={totalPages}
+            totalCount={totalCount}
+            hasPreviousPage={hasPreviousPage}
+            hasNextPage={hasNextPage}
+            nextPageNumber={nextPageNumber}
             previousPageNumber={previousPageNumber}
-            actionGoToPage={(page: number) => { dispatch(GetAllProducts(page, sizePage));}} 
+            actionGoToPage={(page: number) => { dispatch(GetAllProducts(page, sizePage));}}
           />
           <Table striped bordered hover size="sm">
             <thead>
@@ -53,7 +52,6 @@ export const TablaVentas = ():JSX.Element => {
             <tbody>
               {
                 ventasArray.map( (venta, index) => {
-                  console.log('item: ', venta);
 
                   return <ItemVentaTabla key={`${index}-${venta.id}-item-venta-tabla`} venta={venta} />
                 })

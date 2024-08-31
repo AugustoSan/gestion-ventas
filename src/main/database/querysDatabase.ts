@@ -706,6 +706,26 @@ name: 'fn_FindPagoById',
 type: 'function'
 }
 
+export const fn_GetAllPagos:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_GetAllPagos()
+    RETURNS SETOF type_pago AS
+    $BODY$
+    DECLARE
+        reg RECORD;
+    BEGIN
+      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
+        LOOP
+            RETURN NEXT reg;
+        END LOOP;
+
+        RETURN;
+    END
+    $BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_GetAllPagos',
+  type: 'function'
+};
+
 export const fn_FindPagosByVenta:IQueryDB =
 {
   query: `CREATE OR REPLACE FUNCTION fn_FindPagosByVenta( _id INTEGER)
@@ -725,5 +745,27 @@ export const fn_FindPagosByVenta:IQueryDB =
     END
     $BODY$ LANGUAGE 'plpgsql';`,
   name: 'fn_FindPagosByVenta',
+  type: 'function'
+};
+
+export const fn_FindPagosByCliente:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_FindPagosByCliente( _id INTEGER)
+    RETURNS SETOF type_pago AS
+    $BODY$
+    DECLARE
+        reg RECORD;
+    BEGIN
+      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
+                    WHERE
+                    id_cliente = _id
+        LOOP
+            RETURN NEXT reg;
+        END LOOP;
+
+        RETURN;
+    END
+    $BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_FindPagosByCliente',
   type: 'function'
 };

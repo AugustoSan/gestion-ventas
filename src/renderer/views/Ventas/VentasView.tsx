@@ -40,7 +40,6 @@ export const VentasView = ():JSX.Element => {
                 key={`control-dropdown-ventas`}
                 onClick={
                   () => {
-                    console.log(`control`);
                     setDropdownSelect('Ver todo');
                     setClient(null);
                     dispatch(setSelectClienteSearch(null));
@@ -55,7 +54,7 @@ export const VentasView = ():JSX.Element => {
                             key={`${index}-${cliente.id}-dropdown-ventas`}
                             onClick={
                               () => {
-                                console.log(`id: ${cliente.id}`);
+                                /* console.log(`id: ${cliente.id}`); */
                                 setClient(cliente);
                                 dispatch(setSelectClienteSearch(cliente.id));
                                 setDropdownSelect(`${cliente.nombre} ${cliente.apellidopaterno}`);

@@ -10,8 +10,6 @@ export const TablaAddressByCliente = ():JSX.Element => {
   const {selectClient} = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
 
-  console.log('selectClient: ', selectClient);
-
   return selectClient === null ? <></>
   : (
       <div className="card">

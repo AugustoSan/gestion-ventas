@@ -84,7 +84,7 @@ export const AddClienteCard = ():JSX.Element => {
           <ListGroup>
             {
               arrayAddress.map((address, index) => {
-                    return <ListGroup.Item 
+                    return <ListGroup.Item
                               key={`${index}-item-list-address`}
                               as='li'
                               className='d-flex justify-content-between align-items-start'
@@ -130,7 +130,7 @@ export const AddClienteCard = ():JSX.Element => {
                 variant='outline-primary'
                 onClick={() => {
                   if(validateInputs()){
-                    console.log('Se va a guardar el nuevo cliente');
+                    /* console.log('Se va a guardar el nuevo cliente'); */
                     const newClient: IDataAddClient = {
                       nombre: inputName,
                       apellidopaterno: inputApp,

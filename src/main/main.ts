@@ -18,7 +18,7 @@ import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClien
 import { addProductoHandler, deleteProductoHandler, getAllProductosWithPaginationHandler, findProductoByIdHandler, findProductoHandler, getAllProductosHandler, updateProductoHandler } from './handles/Productos';
 // import { migrateDB } from './database/database';
 import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
-import { findPagoByIdHandler, getAllPagosByVentaHandler } from './handles/Pagos';
+import { findPagoByIdHandler, getAllPagosByClientHandler, getAllPagosByVentaHandler, getAllPagosHandler } from './handles/Pagos';
 import { initializer } from './database/database-pg';
 
 class AppUpdater {
@@ -83,7 +83,10 @@ ipcMain.handle('ventas:getProductosFromVenta', findProductoFromVentaHandler);
 ipcMain.handle('ventas:addVenta', addVentaHandler);
 
 // Pagos
+//getAllPagosHandler
+ipcMain.handle('pagos:getAllPagosHandler', getAllPagosHandler);
 ipcMain.handle('pagos:getAllPagosByVentaHandler', getAllPagosByVentaHandler);
+ipcMain.handle('pagos:getAllPagosByClientHandler', getAllPagosByClientHandler);
 ipcMain.handle('pagos:findPagoByIdHandler', findPagoByIdHandler);
 
 

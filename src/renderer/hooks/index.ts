@@ -26,6 +26,8 @@ export {
 } from './Productos';
 export {
   useFindPagoById,
+  useGetAllPagos,
+  useGetAllPagosByClient,
   useGetAllPagosByVenta
 } from './Pagos';
 export {

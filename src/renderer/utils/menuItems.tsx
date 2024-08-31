@@ -17,7 +17,7 @@ const clientes:IItemMenu = {
   icon: <BsFillPersonVcardFill />
 }
 const ingresos:IItemMenu = {
-  title: "Ingresos",
+  title: "Abonos",
   href: "/ingresos",
   icon: <FaCircleDollarToSlot />
 }

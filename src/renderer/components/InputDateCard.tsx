@@ -23,9 +23,9 @@ export const InputDateCard = ({value, onChange, disabled = false}:IDataProps):JS
               min="2000-01-01"
               max="2100-12-31"
               onChange={(event) => {
-                console.log('event:', event.target.value);
+                /* console.log('event:', event.target.value);
                 console.log(`${value.getFullYear()}-${value.getMonth()}-${value.getDay()}`);
-                console.log(`${value.toISOString().slice(0, 10)}`);
+                console.log(`${value.toISOString().slice(0, 10)}`); */
                 onChange(new Date(event.target.value));
               }}
               disabled={disabled}

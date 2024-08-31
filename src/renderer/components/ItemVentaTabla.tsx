@@ -41,7 +41,7 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
         variant="primary"
         onClick={
           () => {
-            console.log(`se visualizara la venta con id ${id}`);
+            /* console.log(`se visualizara la venta con id ${id}`); */
             dispatch(setSelectVenta(id));
             dispatch(setSelectView("infoVenta"));
           }

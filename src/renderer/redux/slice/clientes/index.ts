@@ -47,23 +47,23 @@ const clientSlice = createSlice({
             state.selectClient = action.payload;
         },
         setHandleUpdateClient: (state, action: PayloadAction<boolean>) => {
-          console.log('Entro en setHandleUpdateClient: ', action.payload);
+          // console.log('Entro en setHandleUpdateClient: ', action.payload);
           state.handleUpdateClient = action.payload;
         },
         setHandleAddClient: (state, action: PayloadAction<boolean>) => {
-          console.log('Entro en setHandleAddClient: ', action.payload);
+          // console.log('Entro en setHandleAddClient: ', action.payload);
           state.handleAddClient = action.payload;
         },
         setHandleWatchAddress: (state, action: PayloadAction<boolean>) => {
-          console.log('Entro en setHandleWatchAddress: ', action.payload);
+          // console.log('Entro en setHandleWatchAddress: ', action.payload);
           state.handleWatchAddress = action.payload;
         },
         setClientesArray: (state, action: PayloadAction<Array<IClient>>) => {
-          console.log('Entro en setClientesArray: ', action.payload);
+          // console.log('Entro en setClientesArray: ', action.payload);
           state.clientesArray = action.payload;
         },
         setAddClienteArray: (state, action: PayloadAction<IClient>) => {
-          console.log('Entro en setAddClienteArray: ', action.payload);
+          // sconsole.log('Entro en setAddClienteArray: ', action.payload);
           state.clientesArray = [...state.clientesArray,action.payload];
           // const clients = state.clientesArray.items;
           // state.clientesArray = PagedList.create([...clients,action.payload], state.currentPage, state.sizePage);

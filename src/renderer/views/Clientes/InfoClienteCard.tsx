@@ -16,7 +16,6 @@ import { IDataUpdateClient } from '../../../main/interfaces/IClients';
 export const InfoClienteCard = ():JSX.Element => {
   const { selectClient, handleUpdateClient } = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
-  console.log('selectClient', selectClient);
   const {id = 0, nombre = '-', apellidopaterno = '-', apellidomaterno = '-', telefono = '-', direcciones = [], saldo = 0} = selectClient ?? {};
   const [inputName, setInputName] = useState<string>(nombre);
   const [inputAPP, setInputAPP] = useState<string>(apellidopaterno);
@@ -24,7 +23,6 @@ export const InfoClienteCard = ():JSX.Element => {
   const [inputTel, setInputTel] = useState<string>(telefono);
   const [arrayAddress, setarrayAddress] = useState<Array<string>>([]);
   const [error, setError] = useState<string | null>(null);
-  console.log('cliente: - ', selectClient);
 
   const validateInputs = ():boolean => {
     if(inputName.length <= 2){
@@ -92,7 +90,7 @@ export const InfoClienteCard = ():JSX.Element => {
                 variant="danger"
                 onClick={
                   () => {
-                    console.log(`Button se eliminara el cliente con id ${id}`);
+                    /* console.log(`Button se eliminara el cliente con id ${id}`); */
                     const resultConfirm = confirm('Realmente desea eliminar el cliente');
                     if(resultConfirm){
                       dispatch(DeleteClient(selectClient.id));
@@ -121,7 +119,7 @@ export const InfoClienteCard = ():JSX.Element => {
                 variant="primary"
                 onClick={
                   () => {
-                    console.log(`se ${handleUpdateClient === true ? 'guardará' : 'editará'} el cliente con id ${id}`);
+                    /* console.log(`se ${handleUpdateClient === true ? 'guardará' : 'editará'} el cliente con id ${id}`); */
                     dispatch(setHandleUpdateClient(true));
                     if(!validateInputs()) return;
                     if(handleUpdateClient){

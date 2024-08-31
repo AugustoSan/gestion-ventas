@@ -41,7 +41,7 @@ export const HomeView = ():JSX.Element => {
                   key={`control-dropdown-ventas`}
                   onClick={
                     () => {
-                      console.log(`control`);
+                      /* console.log(`control`); */
                       setDropdownSelect('Ver todo');
                       dispatch(setSelectClienteSearch(null));
                     }
@@ -52,7 +52,7 @@ export const HomeView = ():JSX.Element => {
               {
                 clientesArray.map((cliente, index) => {
                   return (<Dropdown.Item key={`${cliente.id}-${index}-dropdown-dashboard`} onClick={() => {
-                    console.log('Se selecciono el cliente ', cliente.nombre);
+                    /* console.log('Se selecciono el cliente ', cliente.nombre); */
                     setDropdownSelect(`${cliente.nombre} ${cliente.apellidopaterno}`);
                     dispatch(setSelectClienteSearch(cliente.id));
                   }}>{`${cliente.nombre} ${cliente.apellidopaterno}`}</Dropdown.Item>);

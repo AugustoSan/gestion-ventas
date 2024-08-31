@@ -23,7 +23,6 @@ export const InfoProductoCard = ():JSX.Element => {
   const {id = 0, concepto = '', precio = 0} = selectProducto ?? {};
   const [inputConcepto, setInputConcepto] = useState<string>(concepto ?? '');
   const [inputPrecio, setInputPrecio] = useState<number>(precio ?? 0)
-  console.log('producto: - ', selectProducto);
 
   return selectProducto === null ? <></> : (
     <Card className="mb-2">

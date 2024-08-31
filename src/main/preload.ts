@@ -58,7 +58,9 @@ const electronHandler = {
     // GetVentaByID:(id: number):Promise<IVenta> => ipcRenderer.invoke('ventas:getVentaByID', id),
     AddVenta:(venta: IDataAddVenta):Promise<number> => ipcRenderer.invoke('ventas:addVenta', venta),
     // Pagos
+    GetAllPagos:():Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosHandler', []),
     GetAllPagosByVenta:(id: number):Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosByVentaHandler', id),
+    GetAllPagosByClient:(id: number):Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosByClientHandler', id),
     FindPagoById:(id: number):Promise<IPago | null> => ipcRenderer.invoke('pagos:findPagoByIdHandler', id),
   },
 };

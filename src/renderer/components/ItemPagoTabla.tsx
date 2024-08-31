@@ -19,7 +19,7 @@ export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
   const {id, id_client, fecha, monto} = pago;
   const dispatch = useCustomDispatch();
 
-  const itemDate = new Date(fecha);
+  const itemDate = new Date(fecha.toString());
 
   return (
   <tr>
@@ -32,7 +32,7 @@ export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
         variant="primary"
         onClick={
           () => {
-            console.log(`se visualizara la venta con id ${id}`);
+            /* console.log(`se visualizara la venta con id ${id}`); */
             navigate(`${pagos.href}/${id}`);
           }
         }

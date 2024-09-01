@@ -6,6 +6,7 @@ import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient 
 import { IDataAddProduct, IDataFindPricesProduct, IDataPagination, IDataUpdateProduct } from './interfaces/IProducts';
 import { IDataAddVenta } from './interfaces/IVentas';
 import { PagedList } from './utils/Pagination';
+import { IAddPago } from './interfaces/IPagos';
 
 export type Channels = 'ipc-example';
 
@@ -62,6 +63,7 @@ const electronHandler = {
     GetAllPagosByVenta:(id: number):Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosByVentaHandler', id),
     GetAllPagosByClient:(id: number):Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosByClientHandler', id),
     FindPagoById:(id: number):Promise<IPago | null> => ipcRenderer.invoke('pagos:findPagoByIdHandler', id),
+    InsertPago:(pago: IAddPago):Promise<number> => ipcRenderer.invoke('pagos:addPagoHandler', pago),
   },
 };
 

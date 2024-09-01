@@ -14,8 +14,7 @@ export const TablaPagosByCliente = ():JSX.Element => {
     isLoading,
     isSuccess,
     error,
-    status,
-    setCalls
+    status
   } = useGetAllPagosByClient({isValid: isEnabled, id: selectClient === null ? -1 : selectClient.id});
 
   useEffect(() => {
@@ -28,7 +27,6 @@ export const TablaPagosByCliente = ():JSX.Element => {
   useEffect(() => {
     console.log('se modifico el estado de selectClient')
     setIsEnabled(true);
-    setCalls(0);
   }, [selectClient]);
 
   console.log(`TablaPagosByCliente id:`, selectClient);

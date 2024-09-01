@@ -8,7 +8,7 @@ import { IngresoView } from '../views/Ingresos/IngresoView';
 import { VentasView } from '../views/Ventas/VentasView';
 import { ProductosView } from '../views/Productos/ProductosView';
 import { menuItems } from '../utils/menuItems';
-import { IngresoWithIDView } from '../views/Pagos/IngresoWithIDView';
+import { IngresoWithIDView } from '../views/Ingresos/IngresoWithIDView';
 
 export const RouterComponent:React.FC = () => {
   const {home, clientes, ingresos, ventas, productos, pagos} = menuItems;

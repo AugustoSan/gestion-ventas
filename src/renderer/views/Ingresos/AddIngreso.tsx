@@ -1,61 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { IClient } from '../../../main/interfaces';
 import { GetAllVentas, setHandleAddVenta, setSelectClienteSearch, setSelectView } from '../../redux/slice/ventas';
-import { Table } from 'react-bootstrap';
+import { InputFormSelectClientes } from '../../components/InputFormSelectClientes';
+import { InputPriceCard } from '../../components/InputPriceCard';
+import { useAddPago } from '../../hooks/Pagos/useAddPago';
+import { IAddPago } from '../../../main/interfaces/IPagos';
+
 
 export const AddIngreso = ():JSX.Element => {
-  const {clientesArray} = useCustomSelector((state) => state.clientSlice);
-  const {handleAddVenta, selectView, addVenta, pagination, selectVenta} = useCustomSelector((state) => state.ventaSlice);
-  const [client, setClient] = useState<IClient | null>(null);
-  const [dropdownSelect, setDropdownSelect] = useState<string>(client === null ? 'Seleccionar cliente' : `${client.nombre} ${client.apellidopaterno}`);
-  const {
-    currentPage, sizePage, totalPages, totalCount,
-    hasPreviousPage, hasNextPage, nextPageNumber, previousPageNumber
-  } = pagination;
+  const [abono, setAbono] = useState<number>(0);
+  const [cliente, setCliente] = useState<IClient | null>(null);
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [pago, setPago] = useState<IAddPago>({id_client: 0, monto: 0});
+  const [error, setError] = useState<string>('');
+  const { result, isSuccess, error: errorsAddPago } = useAddPago({isValid: isEnabled, pago});
 
   const dispatch = useCustomDispatch();
 
   useEffect(() => {
-    dispatch(GetAllVentas(currentPage, sizePage));
-  }, []);
+    if(pago.id_client !== 0 && pago.monto > 0){
+      setIsEnabled(true);
+    }
+  }, [pago]);
 
+  useEffect(() => {
+    if(isSuccess){
+      setIsEnabled(false);
+    }
+  }, [isSuccess]);
+
+
+  const validateInputs = (): boolean => {
+    if(cliente === null || cliente === undefined)
+    {
+      setError('Debe de seleccionar un cliente');
+      return false;
+    }
+    if(abono === 0)
+    {
+      setError('El abono debe de ser mayor a cero');
+      return false;
+    }
+    setError('');
+    return true;
+  }
+
+  console.log('result: ', result);
 
   return (
-    <div className="card">
-        <div className="card-body">
-          <div className="table-responsive small">
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Monto</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Ver</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {
-                arrayPagos === null
-                ? null
-                : arrayPagos.map( (item, index) => {
-                    return <ItemPagoTabla key={`${index}-${item.id}-item-pago-tabla`} pago={item}  />
-                  })
-              } */}
-              {/* <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>Total: </td>
-                <td>{numberToPrice(totalAddVenta)}</td>
-                <td></td>
-              </tr> */}
-            </tbody>
-          </Table>
-          </div>
-        </div>
-      </div>
+    <Card className="mb-2">
+      <Card.Header>Crear nueva venta</Card.Header>
+      <Card.Body>
+        {
+          error.length !== 0
+          ? (<Alert variant={'danger'}>{error}</Alert>)
+          : <></>
+        }
+        <InputFormSelectClientes  onChange={setCliente}/>
+        <InputPriceCard title={'Abonar'} value={abono} onChange={setAbono} />
+      </Card.Body>
+      <Card.Footer>
+        <Container>
+          <Row>
+            <Col xs={6}>
+              <Button
+                variant='outline-secondary'
+                onClick={() => {
+                  dispatch(setSelectView("all"));
+                }}
+              >
+                Cancelar
+              </Button>
+            </Col>
+            <Col xs={6}>
+             <Button
+                variant='outline-primary'
+                onClick={() => {
+                  if(validateInputs() && cliente !== null){
+                    setPago({id_client: cliente.id, monto: abono});
+                    // dispatch(setSelectView('all'));
+                  }
+                }}
+              >
+                Abonar
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </Card.Footer>
+    </Card>
   );
 }

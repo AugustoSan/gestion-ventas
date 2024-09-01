@@ -714,7 +714,7 @@ export const fn_GetAllPagos:IQueryDB =
     DECLARE
         reg RECORD;
     BEGIN
-      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
+      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos WHERE monto != 0
         LOOP
             RETURN NEXT reg;
         END LOOP;
@@ -736,7 +736,7 @@ export const fn_FindPagosByVenta:IQueryDB =
     BEGIN
       FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
                     WHERE
-                    id_venta = _id
+                    id_venta = _id AND monto != 0
         LOOP
             RETURN NEXT reg;
         END LOOP;
@@ -758,7 +758,7 @@ export const fn_FindPagosByCliente:IQueryDB =
     BEGIN
       FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
                     WHERE
-                    id_cliente = _id
+                    id_cliente = _id AND monto != 0
         LOOP
             RETURN NEXT reg;
         END LOOP;
@@ -767,5 +767,62 @@ export const fn_FindPagosByCliente:IQueryDB =
     END
     $BODY$ LANGUAGE 'plpgsql';`,
   name: 'fn_FindPagosByCliente',
+  type: 'function'
+};
+
+export const fn_InsertPagos:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_insertPago(
+    _id_client INTEGER,
+    _pago NUMERIC
+)
+RETURNS INTEGER AS $BODY$
+DECLARE
+    _id INTEGER;SELECT id, * FROM tblPagos
+                    WHERE
+                    id_venta = 2
+    _status INTEGER;
+    _por_pagar NUMERIC;
+    _pagado NUMERIC := _pago; -- Inicialmente el pago completo ingresado
+    _venta RECORD; -- Para iterar sobre las ventas no pagadas
+BEGIN
+    -- Seleccionar las ventas no pagadas o parcialmente pagadas
+    FOR _venta IN
+        SELECT ventas.id, ventas.total, ventas.por_pagar
+        FROM tblVentas AS ventas
+        WHERE ventas.id_client = _id_client AND (ventas.estatus = 1 OR ventas.estatus = 2)
+        ORDER BY ventas.fecha ASC
+    LOOP
+        IF _venta.por_pagar <= _pagado THEN
+            -- Si el pago cubre o excede lo que falta por pagar
+            _por_pagar := 0;
+            _pagado := _pagado - _venta.por_pagar;
+            _status := 0; -- Pagado
+        ELSE
+            -- Si el pago es menor que lo que falta por pagar
+            _por_pagar := _venta.por_pagar - _pagado;
+            _status := 1; -- Falta por pagar
+            _pagado := 0;
+        END IF;
+
+        -- Actualizar la venta
+        UPDATE tblVentas
+        SET por_pagar = _por_pagar, estatus = _status
+        WHERE id = _venta.id;
+
+        -- Insertar el pago
+        INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto)
+        VALUES (_venta.id, _id_client, NOW(), _pago - _pagado);
+
+        -- Si ya se ha consumido todo el pago, salir del ciclo
+        IF _pagado = 0 THEN
+            EXIT;
+        END IF;
+    END LOOP;
+
+    RETURN 1;
+END
+$BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_insertPago',
   type: 'function'
 };

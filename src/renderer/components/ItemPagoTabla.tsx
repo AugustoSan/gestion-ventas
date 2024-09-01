@@ -5,9 +5,9 @@ import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { numberToPrice } from "../utils/price";
 import { dateToString } from "../utils/date";
 import { useGetClientById } from "../hooks/";
-import { setSelectVenta, setSelectView } from "../redux/slice/ventas";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "../utils/menuItems";
+import { setSelectView } from "../redux/slice/ingresos";
 
 interface IDataProps{
   pago: IPago;
@@ -34,6 +34,7 @@ export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
           () => {
             /* console.log(`se visualizara la venta con id ${id}`); */
             navigate(`${pagos.href}/${id}`);
+            dispatch(setSelectView('viewPago'));
           }
         }
       >

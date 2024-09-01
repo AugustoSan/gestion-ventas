@@ -24,7 +24,10 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
     if(isSuccess) setIsValid(false);
   }, [isSuccess]);
 
-
+  // status
+  // 0: pagado,
+  // 1: falta por pagar,
+  // 2: pausado
   return client === null
   ? <></>
   : (
@@ -35,7 +38,7 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
     <td>{`${dateToString(itemDate)}`}</td>
     <td>{numberToPrice(total)}</td>
     <td>{numberToPrice(por_pagar)}</td>
-    <td>{status === 1 ? 'Pagado' : 'Con adeudo'}</td>
+    <td>{status === 0 ? 'Pagado' : status === 1 ? 'Con adeudo' : 'Pausado'}</td>
     <td>
       <Button
         variant="primary"

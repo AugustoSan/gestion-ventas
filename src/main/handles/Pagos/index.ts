@@ -1,6 +1,5 @@
-import { addPago, findPagoById, getAllPagos, getAllPagosByClient, getAllPagosByVenta } from '../../database/pagos';
-import { IPago } from '../../interfaces';
-import { IAddPago } from '../../interfaces/IPagos';
+import { addPago, deletePago, findPagoById, getAllPagos, getAllPagosByClient, getAllPagosByVenta } from '../../database/pagos';
+import { IAddPago, IPago } from '../../interfaces/IPagos';
 // import { PagedList } from '../../utils/Pagination';
 
 // export const getAllProductosWithPaginationHandler = async (event: Electron.IpcMainInvokeEvent, data: IDataPagination):Promise<PagedList<IProducto>> => {
@@ -26,6 +25,10 @@ export const findPagoByIdHandler = async (event: Electron.IpcMainInvokeEvent, id
 
 export const addPagoHandler = async (event: Electron.IpcMainInvokeEvent, data:IAddPago):Promise<number> => {
   return await addPago(data);
+}
+
+export const deletePagoHandler = async (event: Electron.IpcMainInvokeEvent, id:number):Promise<number> => {
+  return await deletePago(id);
 }
 
 // export const updateProductoHandler = async (event: Electron.IpcMainInvokeEvent, data:IDataUpdateProduct):Promise<number> => {

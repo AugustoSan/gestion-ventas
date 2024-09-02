@@ -12,6 +12,7 @@ import { InputFormSelectClientes } from '../../components/InputFormSelectCliente
 import { InputPriceCard } from '../../components/InputPriceCard';
 import { useAddPago } from '../../hooks/Pagos/useAddPago';
 import { IAddPago } from '../../../main/interfaces/IPagos';
+import { dateToString, timeToString } from '../../utils/date';
 
 
 export const AddIngreso = ():JSX.Element => {
@@ -56,7 +57,7 @@ export const AddIngreso = ():JSX.Element => {
 
   return (
     <Card className="mb-2">
-      <Card.Header>Crear nueva venta</Card.Header>
+      <Card.Header>Crear nuevo abono</Card.Header>
       <Card.Body>
         {
           error.length !== 0
@@ -85,6 +86,12 @@ export const AddIngreso = ():JSX.Element => {
                 onClick={() => {
                   if(validateInputs() && cliente !== null){
                     setPago({id_client: cliente.id, monto: abono});
+                    // const date = new Date(); // Obtén la fecha y hora actuales en UTC
+                    // console.log('date', date);
+                    // const utcDateString = date.toISOString(); // Convierte a formato ISO
+                    // console.log('utcDateString', utcDateString);
+                    // console.log('utcDateString', date.toUTCString());
+                    // console.log('timeToString',timeToString(new Date('2024-09-02 07:48:33.597')));
                     // dispatch(setSelectView('all'));
                   }
                 }}

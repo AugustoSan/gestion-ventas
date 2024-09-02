@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
-import { IClient, IPago, IVenta } from "../../main/interfaces";
+import { IClient, IVenta } from "../../main/interfaces";
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { numberToPrice } from "../utils/price";
 import { dateToString } from "../utils/date";
@@ -8,6 +8,7 @@ import { useGetClientById } from "../hooks/";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "../utils/menuItems";
 import { setSelectView } from "../redux/slice/ingresos";
+import { IPago } from "../../main/interfaces/IPagos";
 
 interface IDataProps{
   pago: IPago;
@@ -16,10 +17,10 @@ interface IDataProps{
 export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
   const navigate = useNavigate();
   const { pagos } = menuItems;
-  const {id, id_client, fecha, monto} = pago;
+  const {id, id_cliente, fecha, monto} = pago;
   const dispatch = useCustomDispatch();
 
-  const itemDate = new Date(fecha.toString());
+  const itemDate = new Date(fecha);
 
   return (
   <tr>
@@ -32,9 +33,9 @@ export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
         variant="primary"
         onClick={
           () => {
-            /* console.log(`se visualizara la venta con id ${id}`); */
+            console.log(`${pagos.href}/${id}`);
             navigate(`${pagos.href}/${id}`);
-            dispatch(setSelectView('viewPago'));
+            // dispatch(setSelectView('viewPago'));
           }
         }
       >

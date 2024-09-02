@@ -7,7 +7,7 @@ import { getClientDB } from './database-pg';
 
 export const initializerTypes = async ():Promise<Array<string>> =>
 {
-  console.log(`Entro en initializer`);
+  console.log(`Entro en initializerTypes`);
   try {
     let errors: Array<string> = [];
 

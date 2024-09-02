@@ -12,6 +12,7 @@ import { InputFormSelectClientes } from '../../components/InputFormSelectCliente
 import { InputFormSelectAddress } from '../../components/InputFormSelectAddress';
 import { InputDateCard } from '../../components/InputDateCard';
 import { IDataAddVenta } from '../../../main/interfaces/IVentas';
+import { formatDate } from '../../utils/date';
 // import { appendLogFile } from '../../main/util';
 
 export const AddVentaClienteCard = ():JSX.Element => {
@@ -29,7 +30,7 @@ export const AddVentaClienteCard = ():JSX.Element => {
     }
     else dispatch(setAddAddressInAddVenta(address));
 
-    dispatch(setAddDateInAddVenta(inputDate.toDateString()));
+    dispatch(setAddDateInAddVenta(formatDate(inputDate)));
   }, [cliente, address, inputDate]);
 
 

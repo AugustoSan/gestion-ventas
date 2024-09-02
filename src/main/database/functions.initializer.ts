@@ -4,7 +4,8 @@ import {
   fn_findMatchProducts, fn_getAllAddress, fn_getAllAddressByClient, fn_getAllClients,
   fn_getAllProducts, fn_getAllProductsByVenta, fn_getAllVentas, fn_getAllVentasByClient,
   fn_insertAddress, fn_insertClient, fn_insertProduct, fn_insertVenta, fn_updateAddress,
-  fn_updateClient, fn_updateProduct, fn_GetAllPagos, fn_FindPagosByCliente
+  fn_updateClient, fn_updateProduct, fn_GetAllPagos, fn_FindPagosByCliente,
+  fn_InsertPagos, fn_DeletePagoById,
 } from './querysDatabase';
 import { IQueryDB } from '../interfaces';
 import { getClientDB } from './database-pg';
@@ -12,7 +13,7 @@ import { getClientDB } from './database-pg';
 
 export const initializerFunctions = async ():Promise<Array<string>> =>
 {
-  console.log(`Entro en initializer`);
+  console.log(`Entro en initializerFunctions`);
   try {
     let errors: Array<string> = [];
 
@@ -42,6 +43,20 @@ export const initializerFunctions = async ():Promise<Array<string>> =>
     if(!validateFnFindPagosByVenta)
     {
       const getErrors = await createFunction(fn_FindPagosByVenta);
+      errors = [...errors, ...getErrors]
+    }
+
+    const validatefn_InsertPagos = await checkIfFunctionExists(fn_InsertPagos.name);
+    if(!validatefn_InsertPagos)
+    {
+      const getErrors = await createFunction(fn_InsertPagos);
+      errors = [...errors, ...getErrors]
+    }
+
+    const validatefn_DeletePagoById = await checkIfFunctionExists(fn_DeletePagoById.name);
+    if(!validatefn_DeletePagoById)
+    {
+      const getErrors = await createFunction(fn_DeletePagoById);
       errors = [...errors, ...getErrors]
     }
 
@@ -264,7 +279,7 @@ const createFunction = async (entity: IQueryDB): Promise<Array<string>> => {
       // console.log(`Función creada con éxito.`);
   } catch (err) {
       // console.error('Error al crear la función:', err);
-      errors = [...errors, 'Error al crear la función:', JSON.stringify(err)];
+      errors = [...errors, `Error al crear la función: ${name}`, JSON.stringify(err)];
   } finally {
       await client.end();
       // console.log('Conexión a la base de datos cerrada.');

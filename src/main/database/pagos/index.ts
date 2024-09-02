@@ -1,9 +1,8 @@
-import { PagedList } from "../../utils/Pagination";
+import { formatDate } from "../../utils/DateTime";
 import { WriteFileSQLBackup } from "../../files/log";
-import { IPago } from "../../interfaces";
 import { getClientDB } from "../database-pg";
-import { fn_FindPagoById, fn_FindPagosByCliente, fn_FindPagosByVenta, fn_GetAllPagos } from "../querysDatabase";
-import { IAddPago } from "../../interfaces/IPagos";
+import { fn_DeletePagoById, fn_FindPagoById, fn_FindPagosByCliente, fn_FindPagosByVenta, fn_GetAllPagos } from "../querysDatabase";
+import { IAddPago, IPago } from "../../interfaces/IPagos";
 
 // export const getAllPagosWithPagination = async ({page, sizePage}: IDataPagination):Promise<PagedList<IProducto>> => {
 //   const client = await getClientDB();
@@ -105,7 +104,29 @@ export const addPago = async ({id_client, monto}: IAddPago):Promise<number> => {
   const client = await getClientDB();
   await client.connect();
   try {
-    const query = `SELECT fn_insertPago(${id_client}, ${monto}) AS id;`;
+    // 2024-09-02T22:02:48.142
+    const date = new Date(); // Remove 'Z' to avoid timezone issues
+
+    const query = `SELECT fn_insertPago(${id_client}, ${monto}, '${formatDate(date)}'::TIMESTAMP) AS id;`;
+    console.log('query: ', query);
+    const temp = await client.query(`${query}`);
+    const result:Array<number> = temp.rows;
+    const _id:number = result.length > 0 ? temp.rows[0].id : -1;
+    console.log(`_id: ${_id}`);
+    return _id;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return -1;
+  } finally {
+    await client.end();
+  }
+}
+
+export const deletePago = async (id: number):Promise<number> => {
+  const client = await getClientDB();
+  await client.connect();
+  try {
+    const query = `SELECT ${fn_DeletePagoById.name}(${id}) AS id;`;
     const temp = await client.query(`${query}`);
     const result:Array<number> = temp.rows;
     const _id:number = result.length > 0 ? temp.rows[0].id : -1;

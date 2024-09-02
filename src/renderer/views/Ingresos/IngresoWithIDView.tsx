@@ -1,24 +1,113 @@
-import React, { SetStateAction } from 'react';
+import React, { useState, useEffect } from 'react';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import { useLocation, useParams } from 'react-router-dom';
 import { InputPriceCard } from '../../components/InputPriceCard';
-import { useState } from 'react';
+import { InputCard } from '../../components/InputCard';
+import { useFindPagoById } from '../../hooks';
+import { Loading } from '../../components/Loading';
+import { numberToPrice } from '../../utils/price';
+import { dateToString } from '../../utils/date';
+import { InfoIngresoView } from './InfoIngresoView';
+
 
 export const IngresoWithIDView = ():JSX.Element => {
   const [price, setPrice] = useState<number>(0);
+  const [error, setError] = useState<string>('');
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [idPago, setIdPago] = useState<number>(-1);
   const { id } = useParams();
-  const location = useLocation();
-/*   console.log(`location: ${location.key}`);
-  console.log(`location: ${location.hash}`);
-  console.log(`location: ${location.pathname}`);
-  console.log(`location: ${location.search}`);
-  console.log(`location: ${location.state}`);
-  console.log(`id: ${id}`); */
+  const { result, isLoading, isSuccess, error: errorsHook} = useFindPagoById({isValid: isEnabled, id: idPago});
+
+  useEffect(() => {
+    try {
+      if(id === undefined)
+      {
+        setError('El id es undefined');
+        return;
+      }
+      const getId = Number(id);
+      setIdPago(getId);
+      setIsEnabled(true);
+    } catch (error) {
+      console.log(error);
+      setError('Ocurrio un error al parsear el id');
+    }
+  }, []);
+
+  useEffect(() => {
+    if(errorsHook !== null)
+    {
+      setError(errorsHook.message);
+    }
+    if(isSuccess)
+      {
+        setIsEnabled(false);
+      }
+    if(idPago === -1)
+    {
+      setIsEnabled(true);
+    }
+  }, [errorsHook, idPago, isSuccess]);
+
+  console.log(result);
+
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 className="h2">Ingreso</h1>
-        <InputPriceCard title={'Precio'} value={price} onChange={setPrice} />
+        <h1 className="h2">Información del abono</h1>
       </div>
+      <Card className="mb-2">
+        <Card.Header>Información del abono</Card.Header>
+        <Card.Body>
+          {
+            isLoading ? <Loading /> : null
+          }
+          {
+            error.length !== 0
+            ? (<Alert variant={'danger'}>{error}</Alert>)
+            : <></>
+          }
+          {
+            result === null
+              ? null
+              : <InfoIngresoView pago={result} />
+          }
+        </Card.Body>
+        <Card.Footer>
+          <Container>
+            <Row>
+              <Col xs={6}>
+                <Button
+                  variant='outline-secondary'
+                  onClick={() => {
+                    // dispatch(setSelectView("all"));
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </Col>
+              <Col xs={6}>
+              <Button
+                  variant='outline-primary'
+                  onClick={() => {
+                    // if(validateInputs() && cliente !== null){
+                    //   setPago({id_client: cliente.id, monto: abono});
+                    //   // dispatch(setSelectView('all'));
+                    // }
+                  }}
+                >
+                  Abonar
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </Card.Footer>
+      </Card>
     </main>
   );
 }

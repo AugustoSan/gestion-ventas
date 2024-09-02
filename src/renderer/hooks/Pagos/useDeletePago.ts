@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
-import { IPago } from '../../../main/interfaces/IPagos';
 
 interface IDataResponse {
-    result: IPago | null;
+    result: number | null;
     isLoading: boolean;
     isSuccess: boolean;
     status: string;
     error: Error | null;
 }
 
-export const useFindPagoById = ({ isValid, id }: IDataRequestFindById): IDataResponse => {
-  const [result, setResult] = useState<IPago | null>(null);
+export const useDeletePago = ({ isValid, id }: IDataRequestFindById): IDataResponse => {
+  const [result, setResult] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [status, setStatus] = useState<string>('');
@@ -23,7 +22,7 @@ export const useFindPagoById = ({ isValid, id }: IDataRequestFindById): IDataRes
       const callContractFunction = async (): Promise<void> => {
         setIsLoading(true);
         try {
-            const response = await window.electron.ipcRenderer.FindPagoById(id);
+            const response = await window.electron.ipcRenderer.DeletePago(id);
             setIsSuccess(true);
             setResult(response);
         } catch (err) {

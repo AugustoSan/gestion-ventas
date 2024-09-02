@@ -8,7 +8,7 @@ export class PagedList<T> {
     public nextPageNumber: number | null;
     public previousPageNumber: number | null;
     public items: T[];
-  
+
     constructor(items: T[], count: number, pageNumber: number, pageSize: number) {
       this.items = items;
       this.totalCount = count;
@@ -22,12 +22,12 @@ export class PagedList<T> {
       this.nextPageNumber = this.hasNextPage ? currentPageTemp + 1 : null;
       this.previousPageNumber = this.hasPreviousPage ? currentPageTemp - 1 : null;
     }
-  
+
     public static create<T>(source: T[], pageNumber: number, pageSize: number): PagedList<T> {
       const count = source.length;
       const start = pageNumber * pageSize;
       const items = source.slice(start, start + pageSize);
-  
+
       return new PagedList<T>(items, count, pageNumber, pageSize);
     }
 
@@ -41,8 +41,7 @@ export class PagedList<T> {
         };
       }
   }
-  
+
 //   // Example usage
 //   const source = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Example data source
 //   const pageNumber = 2; // Current pag
-  

@@ -64,6 +64,7 @@ const electronHandler = {
     GetAllPagosByClient:(id: number):Promise<Array<IPago>> => ipcRenderer.invoke('pagos:getAllPagosByClientHandler', id),
     FindPagoById:(id: number):Promise<IPago | null> => ipcRenderer.invoke('pagos:findPagoByIdHandler', id),
     InsertPago:(pago: IAddPago):Promise<number> => ipcRenderer.invoke('pagos:addPagoHandler', pago),
+    DeletePago:(id: number):Promise<number> => ipcRenderer.invoke('pagos:deletePagoHandler', id),
   },
 };
 

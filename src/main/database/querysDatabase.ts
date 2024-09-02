@@ -176,7 +176,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT *  FROM tblClientes
+	FOR reg IN SELECT id, name AS nombre, app AS apellidoPaterno, apm AS apellidoMaterno, tel AS telefono  FROM tblClientes
     LOOP
         RETURN NEXT reg;
     END LOOP;
@@ -196,7 +196,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblClientes
+	FOR reg IN SELECT id, name AS nombre, app AS apellidoPaterno, apm AS apellidoMaterno, tel AS telefono FROM tblClientes
                 WHERE
                 name ILIKE '%' || texto ||  '%' OR
                 app ILIKE '%' || texto ||  '%' OR
@@ -221,7 +221,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblClientes
+	FOR reg IN SELECT id, name AS nombre, app AS apellidoPaterno, apm AS apellidoMaterno, tel AS telefono FROM tblClientes
                 WHERE
                 id = _id
     LOOP
@@ -305,7 +305,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT *  FROM tblDirecciones
+	FOR reg IN SELECT id, id_client, direccion  FROM tblDirecciones
     LOOP
         RETURN NEXT reg;
     END LOOP;
@@ -377,7 +377,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT *
+	FOR reg IN SELECT id, concepto, precio
                 FROM tblProductos
                 ORDER BY concepto ASC
     LOOP
@@ -400,7 +400,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblProductos
+	FOR reg IN SELECT id, concepto, precio FROM tblProductos
                 WHERE concepto ILIKE '%' || texto ||  '%'
     LOOP
         RETURN NEXT reg;
@@ -421,7 +421,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblProductos
+	FOR reg IN SELECT id, concepto, precio FROM tblProductos
                 WHERE
                 id = _id
     LOOP
@@ -499,7 +499,8 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblVentas ORDER BY fecha ASC
+	FOR reg IN SELECT id, id_client, id_direccion, fecha, total, por_pagar, estatus
+                FROM tblVentas ORDER BY fecha ASC
     LOOP
         RETURN NEXT reg;
     END LOOP;
@@ -519,7 +520,8 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblVentas
+	FOR reg IN SELECT id, id_client, id_direccion, fecha, total, por_pagar, estatus
+                FROM tblVentas
                 WHERE
                 id = _id
     LOOP
@@ -555,7 +557,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT * FROM tblVentaProductos WHERE id_venta=_id
+	FOR reg IN SELECT id, id_venta, id_producto, precio, cantidad FROM tblVentaProductos WHERE id_venta=_id
     LOOP
         RETURN NEXT reg;
     END LOOP;
@@ -592,7 +594,7 @@ DECLARE
     reg RECORD;
 BEGIN
 	FOR reg IN SELECT ventas.id AS id, dir.direccion AS direccion, ventas.id_direccion AS id_direccion,
-                ventas.fecha AS fecha, ventas.total AS total, ventas.por_pagar AS por_pagar,
+                ventas.fecha, ventas.total AS total, ventas.por_pagar AS por_pagar,
                 ventas.estatus AS estatus
                 FROM tblVentas AS ventas
                 INNER JOIN tblDirecciones AS dir
@@ -677,6 +679,7 @@ export const type_pago:IQueryDB =
   query: `CREATE TYPE type_pago AS (
 	id INTEGER,
 	id_venta INTEGER,
+	id_cliente INTEGER,
 	fecha TIMESTAMP,
 	monto NUMERIC
 );`,
@@ -692,7 +695,7 @@ $BODY$
 DECLARE
     reg RECORD;
 BEGIN
-	FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
+	FOR reg IN SELECT id, id_venta, id_cliente, fecha, monto FROM tblPagos
                 WHERE
                 id = _id
     LOOP
@@ -714,7 +717,7 @@ export const fn_GetAllPagos:IQueryDB =
     DECLARE
         reg RECORD;
     BEGIN
-      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos WHERE monto != 0
+      FOR reg IN SELECT id, id_venta, id_cliente, fecha, monto FROM tblPagos WHERE monto != 0
         LOOP
             RETURN NEXT reg;
         END LOOP;
@@ -734,7 +737,7 @@ export const fn_FindPagosByVenta:IQueryDB =
     DECLARE
         reg RECORD;
     BEGIN
-      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
+      FOR reg IN SELECT id, id_venta, id_cliente, fecha, monto FROM tblPagos
                     WHERE
                     id_venta = _id AND monto != 0
         LOOP
@@ -756,7 +759,7 @@ export const fn_FindPagosByCliente:IQueryDB =
     DECLARE
         reg RECORD;
     BEGIN
-      FOR reg IN SELECT id, id_venta, fecha, monto FROM tblPagos
+      FOR reg IN SELECT id, id_venta, id_cliente, fecha, monto FROM tblPagos
                     WHERE
                     id_cliente = _id AND monto != 0
         LOOP
@@ -774,19 +777,17 @@ export const fn_InsertPagos:IQueryDB =
 {
   query: `CREATE OR REPLACE FUNCTION fn_insertPago(
     _id_client INTEGER,
-    _pago NUMERIC
+    _pago NUMERIC,
+    _fecha TIMESTAMP
 )
 RETURNS INTEGER AS $BODY$
 DECLARE
-    _id INTEGER;SELECT id, * FROM tblPagos
-                    WHERE
-                    id_venta = 2
+    _id INTEGER;
     _status INTEGER;
     _por_pagar NUMERIC;
-    _pagado NUMERIC := _pago; -- Inicialmente el pago completo ingresado
-    _venta RECORD; -- Para iterar sobre las ventas no pagadas
+    _pagado NUMERIC := _pago;
+    _venta RECORD;
 BEGIN
-    -- Seleccionar las ventas no pagadas o parcialmente pagadas
     FOR _venta IN
         SELECT ventas.id, ventas.total, ventas.por_pagar
         FROM tblVentas AS ventas
@@ -794,27 +795,22 @@ BEGIN
         ORDER BY ventas.fecha ASC
     LOOP
         IF _venta.por_pagar <= _pagado THEN
-            -- Si el pago cubre o excede lo que falta por pagar
             _por_pagar := 0;
             _pagado := _pagado - _venta.por_pagar;
             _status := 0; -- Pagado
         ELSE
-            -- Si el pago es menor que lo que falta por pagar
             _por_pagar := _venta.por_pagar - _pagado;
             _status := 1; -- Falta por pagar
             _pagado := 0;
         END IF;
 
-        -- Actualizar la venta
         UPDATE tblVentas
         SET por_pagar = _por_pagar, estatus = _status
         WHERE id = _venta.id;
 
-        -- Insertar el pago
         INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto)
-        VALUES (_venta.id, _id_client, NOW(), _pago - _pagado);
+        VALUES (_venta.id, _id_client, _fecha, _pago - _pagado);
 
-        -- Si ya se ha consumido todo el pago, salir del ciclo
         IF _pagado = 0 THEN
             EXIT;
         END IF;
@@ -824,5 +820,53 @@ BEGIN
 END
 $BODY$ LANGUAGE 'plpgsql';`,
   name: 'fn_insertPago',
+  type: 'function'
+};
+
+
+export const fn_DeletePagoById:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_deletePago(
+    _id_pago INTEGER
+)
+RETURNS INTEGER AS $BODY$
+DECLARE
+    _id_venta INTEGER;
+    _monto_pago NUMERIC;
+    _venta RECORD;
+BEGIN
+    SELECT id_venta, monto INTO _id_venta, _monto_pago
+    FROM tblPagos
+    WHERE id = _id_pago;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'El pago con ID % no existe.', _id_pago;
+    END IF;
+
+    DELETE FROM c
+    WHERE id = _id_pago;
+
+    SELECT id, total, por_pagar, estatus INTO _venta
+    FROM tblVentas
+    WHERE id = _id_venta;
+
+    _venta.por_pagar := _venta.por_pagar + _monto_pago;
+
+    IF _venta.por_pagar = _venta.total THEN
+        _venta.estatus := 2; -- Pausado (sin pagos)
+    ELSIF _venta.por_pagar > 0 THEN
+        _venta.estatus := 1; -- Falta por pagar
+    ELSE
+        _venta.estatus := 0; -- Pagado (caso improbable, pero manejado)
+    END IF;
+
+    UPDATE tblVentas
+    SET por_pagar = _venta.por_pagar, estatus = _venta.estatus
+    WHERE id = _venta.id;
+
+    RETURN 1;
+END
+$BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_deletePago',
   type: 'function'
 };

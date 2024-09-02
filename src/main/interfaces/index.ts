@@ -29,13 +29,6 @@ export interface IProducto {
   list_prices: Array<IPriceProduct>
 }
 
-export interface IPago {
-  id: number;
-  id_client: number;
-  fecha: string;
-  monto: number;
-}
-
 export interface IVentasProductos {
   id: number;
   id_venta: number;

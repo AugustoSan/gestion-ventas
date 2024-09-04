@@ -160,6 +160,9 @@ const createWindow = async () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+    if (process.env.NODE_ENV === 'development') {
+      process.exit(0); // Cierra el proceso Node.js, lo que también detiene Webpack
+    }
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
@@ -184,7 +187,11 @@ app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
-    app.quit();
+    if (process.env.NODE_ENV === 'development') {
+      process.exit(0); // Cierra el proceso Node.js, incluyendo Webpack
+    } else {
+      app.quit();
+    }
   }
 });
 

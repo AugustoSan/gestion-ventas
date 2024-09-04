@@ -100,14 +100,11 @@ export const findPagoById = async (id: number):Promise<IPago | null> => {
 }
 
 
-export const addPago = async ({id_client, monto}: IAddPago):Promise<number> => {
+export const addPago = async ({id_client, monto, fecha}: IAddPago):Promise<number> => {
   const client = await getClientDB();
   await client.connect();
   try {
-    // 2024-09-02T22:02:48.142
-    const date = new Date(); // Remove 'Z' to avoid timezone issues
-
-    const query = `SELECT fn_insertPago(${id_client}, ${monto}, '${formatDate(date)}'::TIMESTAMP) AS id;`;
+    const query = `SELECT fn_insertPago(${id_client}, ${monto}, '${formatDate(fecha)}'::TIMESTAMP) AS id;`;
     console.log('query: ', query);
     const temp = await client.query(`${query}`);
     const result:Array<number> = temp.rows;

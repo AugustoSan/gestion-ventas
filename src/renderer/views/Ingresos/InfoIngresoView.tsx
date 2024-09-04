@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import { useLocation, useParams } from 'react-router-dom';
 import { InputPriceCard } from '../../components/InputPriceCard';
 import { InputCard } from '../../components/InputCard';
-import { useFindPagoById } from '../../hooks';
-import { Loading } from '../../components/Loading';
-import { numberToPrice } from '../../utils/price';
+import { useGetClientById } from '../../hooks';
 import { dateToString, timeToString } from '../../utils/date';
 import { IPago } from '../../../main/interfaces/IPagos';
 
@@ -19,14 +11,36 @@ interface IDataProps{
 }
 
 export const InfoIngresoView = ({pago}:IDataProps):JSX.Element => {
-  const {id, id_cliente, fecha, monto} = pago;
+  const [isValid, setIsValid] = useState<boolean>(true);
+  const [cliente, setCliente] = useState<string>('');
+  const {id, id_cliente, fecha, monto, id_venta} = pago;
   const itemDate = new Date(fecha);
+  const {result, isSuccess, error} = useGetClientById({isValid, id: id_cliente});
 
-  return (
+  useEffect(() => {
+    if(isSuccess)
+    {
+      setIsValid(false);
+    }
+    if(result !== null )
+    {
+      setCliente(`${result.nombre} ${result.apellidopaterno} ${result.apellidomaterno}`);
+    }
+  },[isSuccess, result, error]);
+
+  return error !== null
+  ? (<Alert variant={'danger'}>{error.message}</Alert>)
+  : (
     <>
       <InputCard
         title={'ID'}
         value={id.toString()}
+        onChange={() => {}}
+        disabled={true}
+      />
+      <InputCard
+        title={'Folio Venta'}
+        value={id_venta.toString()}
         onChange={() => {}}
         disabled={true}
       />
@@ -44,7 +58,7 @@ export const InfoIngresoView = ({pago}:IDataProps):JSX.Element => {
       />
       <InputCard
         title={'Cliente'}
-        value={id_cliente.toString()}
+        value={cliente}
         onChange={() => {}}
         disabled={true}
       />

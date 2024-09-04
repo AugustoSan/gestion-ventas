@@ -18,7 +18,7 @@ import { formatDate } from '../../utils/date';
 export const AddVentaClienteCard = ():JSX.Element => {
   const [cliente, setCliente] = useState<IClient | null>(null);
   const [address, setAddress] = useState<IDirection | null>(null);
-  const [inputDate, setInputDate] = useState<Date>(new Date(Date.now()));
+  const [inputDate, setInputDate] = useState<Date>(new Date());
   const [error, setError] = useState<string>('');
   const dispatch = useCustomDispatch();
 
@@ -88,7 +88,7 @@ export const AddVentaClienteCard = ():JSX.Element => {
                       const newVenta:IDataAddVenta = {
                         id_client: cliente.id,
                         id_direccion: address.id,
-                        fecha: inputDate.toISOString(),
+                        fecha: formatDate(inputDate),
                         total: 0,
                         pagado: 0,
                         productos: []

@@ -1,6 +1,7 @@
 import { ITypeVenta, IVenta, IVentasProductos } from "../../interfaces";
 import { IDataPagination } from "../../interfaces/IProducts";
 import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas";
+import { formatDate } from "../../utils/DateTime";
 import { PagedList } from "../../utils/Pagination";
 import { getClientDB } from "../database-pg";
 import { type_product_venta } from "../querysDatabase";

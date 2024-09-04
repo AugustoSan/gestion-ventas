@@ -9,5 +9,6 @@ export interface IPago {
 export interface IAddPago {
   id_client: number;
   monto: number;
+  fecha: Date;
 }
 

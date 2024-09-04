@@ -11,6 +11,7 @@ import { useFindAddressById, useGetClientById, useGetVentaById } from '../../hoo
 import { useEffect } from 'react';
 import { setSelectVenta, setSelectView } from '../../redux/slice/ventas';
 import { TablaPagosByVenta } from '../../components/TablaPagosByVenta';
+import { dateToString } from '../../utils/date';
 
 interface IDataProps{
   id: number;
@@ -72,8 +73,14 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
       <Card.Header>Información de la venta</Card.Header>
       <Card.Body>
         <InputCard
-          title={'ID'}
+          title={'Folio'}
           value={result.id.toString()}
+          onChange={() => {}}
+          disabled={true}
+        />
+        <InputCard
+          title={'Fecha'}
+          value={dateToString(new Date(result.fecha))}
           onChange={() => {}}
           disabled={true}
         />
@@ -101,12 +108,18 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
           onChange={() => {}}
           disabled={true}
         />
-        <TablaPagosByVenta idVenta={id}/>
+        <Container className="mb-3">
+          <Row>
+            <Col>
+              <TablaPagosByVenta idVenta={id}/>
+            </Col>
+          </Row>
+        </Container>
       </Card.Body>
       <Card.Footer>
         <Container>
           <Row>
-            <Col xs={4}>
+            <Col xs={6}>
               <Button
                 variant="danger"
                 onClick={
@@ -121,7 +134,7 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
                 Eliminar
               </Button>
             </Col>
-            <Col xs={4}>
+            <Col xs={6}>
               <Button
                 variant="secondary"
                 onClick={
@@ -135,25 +148,6 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
                 Cerrar
               </Button>
             </Col>
-            {/* <Col xs={4}>
-              <Button
-                variant="primary"
-                onClick={
-                  () => {
-                    const temp:IDataUpdateProduct = {
-                      id: selectProducto.id,
-                      product: {
-                        concepto: inputConcepto,
-                        precio: inputPrecio
-                      }
-                    }
-                    dispatch(UpdateProduct(temp));
-                  }
-                }
-                >
-                Guardar
-              </Button>
-            </Col> */}
           </Row>
         </Container>
       </Card.Footer>

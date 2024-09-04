@@ -39,7 +39,7 @@ export const TablaVentas = ():JSX.Element => {
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
-                <th scope="col">ID</th>
+                <th scope="col">Folio</th>
                 <th scope="col">Cliente</th>
                 {/* <th scope="col">Dirección</th> */}
                 <th scope="col">Fecha</th>

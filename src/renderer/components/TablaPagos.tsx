@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { ItemPagoTabla } from './ItemPagoTabla';
-import { IPago } from '../../main/interfaces';
+import { IPago } from '../../main/interfaces/IPagos';
 
 interface IDataProps{
   arrayPagos: IPago[] | null

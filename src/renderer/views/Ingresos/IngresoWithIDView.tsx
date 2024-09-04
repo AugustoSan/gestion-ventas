@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { InputPriceCard } from '../../components/InputPriceCard';
 import { InputCard } from '../../components/InputCard';
 import { useFindPagoById } from '../../hooks';
@@ -16,6 +16,7 @@ import { InfoIngresoView } from './InfoIngresoView';
 
 
 export const IngresoWithIDView = ():JSX.Element => {
+  const navigate = useNavigate();
   const [price, setPrice] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
@@ -85,7 +86,7 @@ export const IngresoWithIDView = ():JSX.Element => {
                 <Button
                   variant='outline-secondary'
                   onClick={() => {
-                    // dispatch(setSelectView("all"));
+                    navigate(-1);
                   }}
                 >
                   Cancelar
@@ -93,15 +94,16 @@ export const IngresoWithIDView = ():JSX.Element => {
               </Col>
               <Col xs={6}>
               <Button
-                  variant='outline-primary'
+                  variant='outline-danger'
                   onClick={() => {
                     // if(validateInputs() && cliente !== null){
                     //   setPago({id_client: cliente.id, monto: abono});
                     //   // dispatch(setSelectView('all'));
                     // }
+                    navigate(-1);
                   }}
                 >
-                  Abonar
+                  Eliminar
                 </Button>
               </Col>
             </Row>

@@ -11,6 +11,7 @@ export const tblClientes:IQueryDB =
         app text NOT NULL DEFAULT '-',
         apm text DEFAULT '-',
         tel text DEFAULT '-',
+        create_date TIMESTAMP NOT NULL DEFAULT Now() ,
         PRIMARY KEY (id)
     );`
 }
@@ -35,6 +36,7 @@ export const tblProductos:IQueryDB =
       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
       concepto text NOT NULL DEFAULT '-',
       precio numeric(15,2) NOT NULL DEFAULT 0,
+      create_date TIMESTAMP NOT NULL DEFAULT Now() ,
       PRIMARY KEY (id)
   );`,
   name: 'tblProductos',
@@ -49,6 +51,8 @@ export const tblVentas:IQueryDB =
         id_client integer NOT NULL DEFAULT 0,
         id_direccion integer NOT NULL DEFAULT 0,
         fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        create_date TIMESTAMP NOT NULL DEFAULT Now() ,
+        fecha_pago TIMESTAMP NULL,
         total numeric(15,2) NOT NULL DEFAULT 0,
         por_pagar numeric(15,2) NOT NULL DEFAULT 0,
         estatus integer NOT NULL DEFAULT 0,
@@ -80,7 +84,8 @@ export const tblPagos:IQueryDB =
       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( START 1 ),
       id_venta integer DEFAULT 0,
       id_cliente integer NOT NULL DEFAULT 0,
-      fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      fecha TIMESTAMP DEFAULT Now() ,
+      create_date TIMESTAMP NOT NULL DEFAULT Now() ,
       monto numeric(15,2) NOT NULL DEFAULT 0,
       PRIMARY KEY (id)
   );`,
@@ -242,7 +247,8 @@ RETURNS INTEGER AS $BODY$
 DECLARE _id INTEGER;
 DECLARE _direction TEXT;
 BEGIN
-	INSERT INTO tblClientes(name, app, apm, tel) VALUES (_name, _app, _apm, _tel) RETURNING id INTO _id;
+  SET TIMEZONE='Mexico/General';
+	INSERT INTO tblClientes(name, app, apm, tel, create_date) VALUES (_name, _app, _apm, _tel, NOW()::TIMESTAMP) RETURNING id INTO _id;
     -- Loop through the _dir array and insert each address
     FOREACH _direction IN ARRAY _dir
     LOOP
@@ -441,7 +447,8 @@ export const fn_insertProduct:IQueryDB =
 RETURNS INTEGER AS $BODY$
 DECLARE _id INTEGER;
 BEGIN
-	INSERT INTO tblProductos(concepto, precio) VALUES (_concepto, _precio) RETURNING id INTO _id;
+  SET TIMEZONE='Mexico/General';
+	INSERT INTO tblProductos(concepto, precio, create_date) VALUES (_concepto, _precio, NOW()::TIMESTAMP) RETURNING id INTO _id;
 	RETURN _id;
 END
 $BODY$ LANGUAGE 'plpgsql';`,
@@ -637,8 +644,10 @@ DECLARE
     _id INTEGER;
     _status INTEGER;
     _por_pagar NUMERIC;
+    _fecha_pago TIMESTAMP;
     _product type_product_venta;
 BEGIN
+    SET TIMEZONE='Mexico/General';
     _por_pagar = _total - _pagado;
 
     --status: 0: pagado, 1: falta por pagar, 2: pausado
@@ -652,13 +661,19 @@ BEGIN
     END IF;
 
     -- Insertar la venta y obtener el id generado
-    INSERT INTO tblVentas(id_client, id_direccion, fecha, total, por_pagar, estatus)
-    VALUES (_id_client, _id_direccion, _fecha, _total, _por_pagar, _status)
+    INSERT INTO tblVentas(id_client, id_direccion, fecha, total, por_pagar, estatus, create_date)
+    VALUES (_id_client, _id_direccion, _fecha, _total, _por_pagar, _status, NOW()::TIMESTAMP)
     RETURNING id INTO _id;
 
-    -- Insertar el pago
-    INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto)
-    VALUES (_id, _id_client, _fecha, _pagado);
+    IF _status = 0 THEN
+        UPDATE tblVentas SET fecha_pago = NOW()::TIMESTAMP WHERE id = _id;
+    END IF;
+
+    IF _pagado = 0 THEN
+        -- Insertar el pago
+        INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto, create_date)
+        VALUES (_id, _id_client, _fecha, _pagado, NOW()::TIMESTAMP);
+    END IF;
 
     -- Insertar cada producto en tblVentaProductos
     FOREACH _product IN ARRAY _products
@@ -788,6 +803,7 @@ DECLARE
     _pagado NUMERIC := _pago;
     _venta RECORD;
 BEGIN
+    SET TIMEZONE = 'Mexico/General';
     FOR _venta IN
         SELECT ventas.id, ventas.total, ventas.por_pagar
         FROM tblVentas AS ventas
@@ -805,11 +821,11 @@ BEGIN
         END IF;
 
         UPDATE tblVentas
-        SET por_pagar = _por_pagar, estatus = _status
+        SET por_pagar = _por_pagar, estatus = _status, fecha_pago = NOW()::timestamp
         WHERE id = _venta.id;
 
-        INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto)
-        VALUES (_venta.id, _id_client, _fecha, _pago - _pagado);
+        INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto, create_date)
+        VALUES (_venta.id, _id_client, NOW()::timestamp, _pago - _pagado, NOW()::TIMESTAMP);
 
         IF _pagado = 0 THEN
             EXIT;
@@ -831,42 +847,105 @@ export const fn_DeletePagoById:IQueryDB =
 )
 RETURNS INTEGER AS $BODY$
 DECLARE
-    _id_venta INTEGER;
-    _monto_pago NUMERIC;
-    _venta RECORD;
+    _pago RECORD;
 BEGIN
-    SELECT id_venta, monto INTO _id_venta, _monto_pago
-    FROM tblPagos
-    WHERE id = _id_pago;
+    FOR _pago IN
+        SELECT id_venta, id_cliente, fecha, monto AS montoSum
+        FROM tblPagos  WHERE id = _id_pago
+    LOOP
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'El pago con ID % no existe.', _id_pago;
-    END IF;
+        UPDATE tblVentas
+        SET por_pagar = _por_pagar + montoSum, estatus = 1, fecha_pago = NULL
+        WHERE id = id_venta;
 
-    DELETE FROM c
-    WHERE id = _id_pago;
-
-    SELECT id, total, por_pagar, estatus INTO _venta
-    FROM tblVentas
-    WHERE id = _id_venta;
-
-    _venta.por_pagar := _venta.por_pagar + _monto_pago;
-
-    IF _venta.por_pagar = _venta.total THEN
-        _venta.estatus := 2; -- Pausado (sin pagos)
-    ELSIF _venta.por_pagar > 0 THEN
-        _venta.estatus := 1; -- Falta por pagar
-    ELSE
-        _venta.estatus := 0; -- Pagado (caso improbable, pero manejado)
-    END IF;
-
-    UPDATE tblVentas
-    SET por_pagar = _venta.por_pagar, estatus = _venta.estatus
-    WHERE id = _venta.id;
+        DELETE FROM tblPagos WHERE id = _id_pago;
+    END LOOP;
 
     RETURN 1;
 END
 $BODY$ LANGUAGE 'plpgsql';`,
   name: 'fn_deletePago',
+  type: 'function'
+};
+
+export const fn_GetAllRegistryTiempoPago:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_GetAllRegistryTiempoPago()
+    RETURNS SETOF tbltiempopago AS
+    $BODY$
+    DECLARE
+        reg RECORD;
+    BEGIN
+      FOR reg IN SELECT id, porcentaje, dias
+            FROM tbltiempopago
+        LOOP
+            RETURN NEXT reg;
+        END LOOP;
+
+        RETURN;
+    END
+    $BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_GetAllRegistryTiempoPago',
+  type: 'function'
+};
+
+export const fn_FindRegistryTiempoPagoById:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_FindRegistryTiempoPagoById(_id INTEGER)
+    RETURNS SETOF tbltiempopago AS
+    $BODY$
+    DECLARE
+        reg RECORD;
+    BEGIN
+      FOR reg IN SELECT id, porcentaje, dias
+            FROM tbltiempopago WHERE id = _id
+        LOOP
+            RETURN NEXT reg;
+        END LOOP;
+
+        RETURN;
+    END
+    $BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_FindRegistryTiempoPagoById',
+  type: 'function'
+};
+
+export const fn_insertRegTiempoPago:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_insertRegTiempoPago( _porcentaje INTEGER, _dias INTEGER)
+RETURNS INTEGER AS $BODY$
+DECLARE _id INTEGER;
+BEGIN
+	INSERT INTO tbltiempopago(porcentaje, dias) VALUES (_porcentaje, _dias) RETURNING id INTO _id;
+	RETURN _id;
+END
+$BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_insertRegTiempoPago',
+  type: 'function'
+};
+
+export const fn_updateRegTiempoPago:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_updateRegTiempoPago( _id INTEGER, _porcentaje INTEGER, _dias INTEGER)
+RETURNS INTEGER AS $BODY$
+BEGIN
+	UPDATE tbltiempopago SET porcentaje=_porcentaje, dias=_dias WHERE id=_id;
+	RETURN _id;
+END
+$BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_updateRegTiempoPago',
+  type: 'function'
+};
+
+export const fn_deleteRegTiempoPago:IQueryDB =
+{
+  query: `CREATE OR REPLACE FUNCTION fn_deleteRegTiempoPago( _id INTEGER)
+RETURNS INTEGER AS $BODY$
+BEGIN
+	DELETE FROM tbltiempopago WHERE id=_id;
+	RETURN _id;
+END
+$BODY$ LANGUAGE 'plpgsql';`,
+  name: 'fn_deleteRegTiempoPago',
   type: 'function'
 };

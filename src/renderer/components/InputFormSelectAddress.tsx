@@ -14,7 +14,7 @@ interface IDataProps {
 
 export const InputFormSelectAddress = ({cliente, onChange}:IDataProps):JSX.Element => {
 
-/*   console.log('cliente:', cliente); */
+  console.log('cliente:', cliente);
 
 
   return (
@@ -37,10 +37,12 @@ export const InputFormSelectAddress = ({cliente, onChange}:IDataProps):JSX.Eleme
                 }} disabled={cliente === null ? true : false}>
                   {
                     cliente === null
-                    ? <option value={-1}>{`Sin direcciones registradas`}</option>
-                    : cliente.direcciones.map((address, index) => {
-                      return (<option key={`${index}-${address.id}-item-address`} value={address.id}>{`${address.direccion}`}</option>)
-                    })
+                    ? <option value={-1}>{`Seleccione un cliente`}</option>
+                    : cliente.direcciones.length === 0
+                      ? <option value={-1}>{`Sin direcciones registradas`}</option>
+                      : cliente.direcciones.map((address, index) => {
+                        return (<option key={`${index}-${address.id}-item-address`} value={address.id}>{`${address.direccion}`}</option>)
+                      })
                   }
                 </Form.Select>
               </Col>

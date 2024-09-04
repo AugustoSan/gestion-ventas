@@ -3,6 +3,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { getDate } from '../utils/date';
 
 interface IDataProps {
   value: Date;
@@ -18,10 +19,10 @@ export const InputDateCard = ({value, onChange, disabled = false}:IDataProps):JS
           <Col xs={4}><InputGroup.Text>Fecha</InputGroup.Text></Col>
           <Col xs={8}>
             <Form.Control
-              value={`${value.toISOString().slice(0, 10)}`}
+              value={`${getDate(value)}`}
               type={'date'}
               min="2000-01-01"
-              max="2100-12-31"
+              max={`${getDate(new Date())}`}
               onChange={(event) => {
                 /* console.log('event:', event.target.value);
                 console.log(`${value.getFullYear()}-${value.getMonth()}-${value.getDay()}`);

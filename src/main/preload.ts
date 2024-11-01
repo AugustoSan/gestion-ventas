@@ -1,12 +1,12 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { IClient, IDirection, IPago, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
+import { IClient, IDirection, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from './interfaces/IClients';
 import { IDataAddProduct, IDataFindPricesProduct, IDataPagination, IDataUpdateProduct } from './interfaces/IProducts';
 import { IDataAddVenta } from './interfaces/IVentas';
 import { PagedList } from './utils/Pagination';
-import { IAddPago } from './interfaces/IPagos';
+import { IAddPago, IPago } from './interfaces/IPagos';
 
 export type Channels = 'ipc-example';
 

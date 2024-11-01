@@ -10,12 +10,21 @@ import { IngresoView } from '../views/Ingresos/IngresoView';
 import { VentasView } from '../views/Ventas/VentasView';
 import { ProductosView } from '../views/Productos/ProductosView';
 import { menuItems } from '../utils/menuItems';
-import { IngresoWithIDView } from '../views/Ingresos/IngresoWithIDView';
 
 export const RouterComponent:React.FC = () => {
   const [showView, setShowView] = useState<JSX.Element | null>(null);
   const {selectOption} = useCustomSelector((state) => state.menuSlice);
-  const { home, clientes, ingresos, ventas, pagos, productos } = menuItems;
+  const {
+    home,
+    clientes,
+    addCliente,
+    infoCliente,
+    updateCliente,
+    ingresos,
+    ventas,
+    pagos,
+    productos
+  } = menuItems;
 
   useEffect(() => {
     switch (selectOption) {

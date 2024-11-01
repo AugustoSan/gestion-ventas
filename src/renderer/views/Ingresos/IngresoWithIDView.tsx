@@ -5,28 +5,30 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { InputPriceCard } from '../../components/InputPriceCard';
-import { InputCard } from '../../components/InputCard';
 import { useFindPagoById } from '../../hooks';
 import { Loading } from '../../components/Loading';
-import { numberToPrice } from '../../utils/price';
-import { dateToString } from '../../utils/date';
 import { InfoIngresoView } from './InfoIngresoView';
-
+import { useCustomSelector } from '../../hooks/redux';
 
 export const IngresoWithIDView = ():JSX.Element => {
-  const navigate = useNavigate();
+  const {id} = useCustomSelector((state) => state.menuSlice);
   const [price, setPrice] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [idPago, setIdPago] = useState<number>(-1);
-  const { id } = useParams();
+  // const { id } = useParams();
   const { result, isLoading, isSuccess, error: errorsHook} = useFindPagoById({isValid: isEnabled, id: idPago});
+
+  const getIdFromPath = () => {
+    const path = window.location.pathname; // Obtiene el path (ej: "/pagos/123")
+    const parts = path.split("/"); // Divide la ruta en partes
+
+    return parts[2]; // `123` si la ruta es `/pagos/123`
+  };
 
   useEffect(() => {
     try {
-      if(id === undefined)
+      if(id === null || id === undefined)
       {
         setError('El id es undefined');
         return;
@@ -86,7 +88,7 @@ export const IngresoWithIDView = ():JSX.Element => {
                 <Button
                   variant='outline-secondary'
                   onClick={() => {
-                    navigate(-1);
+                    // navigate(-1);
                   }}
                 >
                   Cancelar
@@ -100,7 +102,7 @@ export const IngresoWithIDView = ():JSX.Element => {
                     //   setPago({id_client: cliente.id, monto: abono});
                     //   // dispatch(setSelectView('all'));
                     // }
-                    navigate(-1);
+                    // navigate(-1);
                   }}
                 >
                   Eliminar

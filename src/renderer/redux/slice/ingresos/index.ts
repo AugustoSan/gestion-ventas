@@ -1,7 +1,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IClient, IPago } from '../../../../main/interfaces';
+import { IClient } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
+import { IPago } from '../../../../main/interfaces/IPagos';
 
 interface IingresoSlice {
   selectView: "all" | "viewByClient" | "viewPago" | "add" | "update";

@@ -5,17 +5,19 @@ import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { numberToPrice } from "../utils/price";
 import { dateToString } from "../utils/date";
 import { useGetClientById } from "../hooks/";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { menuItems } from "../utils/menuItems";
 import { setSelectView } from "../redux/slice/ingresos";
 import { IPago } from "../../main/interfaces/IPagos";
+import { IngresoWithIDView } from "../views/Ingresos/IngresoWithIDView";
+import { setIdMenu } from "../redux/slice/menu";
 
 interface IDataProps{
   pago: IPago;
 }
 
 export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { pagos } = menuItems;
   const {id, id_cliente, fecha, monto} = pago;
   const dispatch = useCustomDispatch();
@@ -34,7 +36,8 @@ export const ItemPagoTabla = ({pago}: IDataProps):JSX.Element => {
         onClick={
           () => {
             console.log(`${pagos.href}/${id}`);
-            navigate(`${pagos.href}/${id}`);
+            dispatch(setIdMenu(id));
+            // navigate(`${pagos.href}/${id}`);
             // dispatch(setSelectView('viewPago'));
           }
         }

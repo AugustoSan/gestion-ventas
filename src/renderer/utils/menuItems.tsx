@@ -17,6 +17,21 @@ const clientes:IItemMenu = {
   href: "/clientes",
   icon: <BsFillPersonVcardFill />
 }
+const addCliente:IItemMenu = {
+  title: "AddCliente",
+  href: "/addCliente",
+  icon: <BsFillPersonVcardFill />
+}
+const infoCliente:IItemMenu = {
+  title: "infoCliente",
+  href: "/infoCliente",
+  icon: <BsFillPersonVcardFill />
+}
+const updateCliente:IItemMenu = {
+  title: "updateCliente",
+  href: "/updateCliente",
+  icon: <BsFillPersonVcardFill />
+}
 const ingresos:IItemMenu = {
   title: "Abonos",
   href: "/ingresos",
@@ -40,6 +55,9 @@ const pagos:IItemMenu = {
 export const menuItems = {
   home,
   clientes,
+  addCliente,
+  infoCliente,
+  updateCliente,
   ingresos,
   ventas,
   pagos,

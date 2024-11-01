@@ -1,6 +1,8 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 
-import { Route, Routes } from 'react-router-dom';
+// import { Route, Routes } from 'react-router-dom';
+import { useCustomSelector } from '../hooks/redux';
 
 import {HomeView} from '../views/HomeView';
 import { ClientesView } from '../views/Clientes/ClientesView';
@@ -11,16 +13,36 @@ import { menuItems } from '../utils/menuItems';
 import { IngresoWithIDView } from '../views/Ingresos/IngresoWithIDView';
 
 export const RouterComponent:React.FC = () => {
-  const {home, clientes, ingresos, ventas, productos, pagos} = menuItems;
-  return (
-    <Routes>
-      <Route path={clientes.href} element={<ClientesView />} />
-      <Route path={home.href} element={<HomeView />} />
-      <Route path={ingresos.href} element={<IngresoView />} />
-      <Route path={ventas.href} element={<VentasView />} />
-      <Route path={`${pagos.href}/:id`} element={<IngresoWithIDView />} />
-      <Route path={productos.href} element={<ProductosView />} />
-      <Route path="/*" element={<HomeView />} />
-    </Routes>
-  );
+  const [showView, setShowView] = useState<JSX.Element | null>(null);
+  const {selectOption} = useCustomSelector((state) => state.menuSlice);
+  const { home, clientes, ingresos, ventas, pagos, productos } = menuItems;
+
+  useEffect(() => {
+    switch (selectOption) {
+      case home.href:
+        setShowView(<HomeView />);
+        break;
+      case clientes.href:
+        setShowView(<ClientesView />);
+        break;
+      case ingresos.href:
+        setShowView(<IngresoView />);
+        break;
+      case ventas.href:
+        setShowView(<VentasView />);
+        break;
+      case pagos.href:
+        setShowView(<HomeView />);
+        break;
+      case productos.href:
+        setShowView(<ProductosView />);
+        break;
+      default:
+        setShowView(<HomeView />);
+        break;
+    }
+  }, [selectOption])
+
+
+  return showView;
 }

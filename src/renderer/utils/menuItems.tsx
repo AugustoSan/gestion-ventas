@@ -3,6 +3,7 @@ import { MdOutlinePointOfSale } from "react-icons/md";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import { FaCircleDollarToSlot } from "react-icons/fa6";
 import { TbBottleFilled } from "react-icons/tb";
+import { GiReceiveMoney } from "react-icons/gi";
 import { IItemMenu } from "../../main/interfaces";
 
 const home:IItemMenu = {
@@ -34,7 +35,7 @@ const productos:IItemMenu = {
 const pagos:IItemMenu = {
   title: "Pagos",
   href: "/pagos",
-  icon: <TbBottleFilled />
+  icon: <GiReceiveMoney />
 }
 export const menuItems = {
   home,
@@ -44,3 +45,12 @@ export const menuItems = {
   pagos,
   productos
 }
+
+export const listMenuItems = [
+  home,
+  clientes,
+  ingresos,
+  ventas,
+  pagos,
+  productos
+]

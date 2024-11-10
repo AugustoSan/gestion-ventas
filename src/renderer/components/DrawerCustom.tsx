@@ -1,18 +1,20 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
 import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Button,
+  Box,
+  Toolbar,
+} from '@mui/material';
 import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { MenuItem } from './MenuItem';
 import { menuItems, listMenuItems } from '../utils/menuItems';
 import { useState } from 'react';
@@ -35,7 +37,14 @@ export const DrawerCustom = ():JSX.Element => {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
           <List>
             {listMenuItems.map((item, index) => (
               <ListItem key={`menu-item-${item.title}`} disablePadding>
@@ -49,6 +58,23 @@ export const DrawerCustom = ():JSX.Element => {
             ))}
           </List>
           <Divider />
+          {/* Botón de salir */}
+          <Box p={2}>
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => { console.log('Configuracion') }}>
+                  <ListItemIcon><SettingsIcon /></ListItemIcon>
+                  <ListItemText primary={'Configuración'} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => { console.log('Salir') }}>
+                  <ListItemIcon><LogoutIcon /></ListItemIcon>
+                  <ListItemText primary={'Salir'} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Box>
         </Box>
       </Drawer>
   );

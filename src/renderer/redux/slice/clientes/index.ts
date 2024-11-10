@@ -4,6 +4,8 @@ import { IClient, IDirection } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
 import { IDataAddAddress, IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/IClients';
 import { createPaginationForSlides } from '../../../utils/pagination';
+import { setSelectMenu } from '../menu';
+import { menuItems } from '../../../utils/menuItems';
 
 // import {PagedList} from './../../../utils/Filters';
 // import { findAllClients } from '../../../../main/database/database';
@@ -174,8 +176,8 @@ export const AddClient = (client: IDataAddClient): Thunk => async (dispatch): Pr
       direcciones: []
     }
     dispatch(setAddClienteArray(newClient));
-    dispatch(setHandleAddClient(false));
-    dispatch(setSelectClient(newClient));
+    dispatch(setSelectMenu(menuItems.clientes.href));
+    // dispatch(setSelectClient(newClient));
   }
   return 0;
 }

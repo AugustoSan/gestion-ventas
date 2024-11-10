@@ -20,6 +20,7 @@ import { addProductoHandler, deleteProductoHandler, getAllProductosWithPaginatio
 import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
 import { addPagoHandler, deletePagoHandler, findPagoByIdHandler, getAllPagosByClientHandler, getAllPagosByVentaHandler, getAllPagosHandler } from './handles/Pagos';
 import { initializer } from './database/database-pg';
+import { getConfigHandler } from './handles/Settings';
 
 class AppUpdater {
   constructor() {
@@ -47,6 +48,8 @@ ipcMain.on('get-erros-init', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+// Settings
+ipcMain.handle('settings:getConfig', getConfigHandler);
 // Clientes
 ipcMain.handle('clients:getAllClients', findAllClientsHandler);
 ipcMain.handle('clients:getAllClientsWithPagination', findAllClientsWithPaginationHandler);

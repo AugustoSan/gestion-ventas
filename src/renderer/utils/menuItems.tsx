@@ -4,6 +4,7 @@ import { BsFillPersonVcardFill } from "react-icons/bs";
 import { FaCircleDollarToSlot } from "react-icons/fa6";
 import { TbBottleFilled } from "react-icons/tb";
 import { GiReceiveMoney } from "react-icons/gi";
+import SettingsIcon from '@mui/icons-material/Settings';
 import { IItemMenu } from "../../main/interfaces";
 
 const home:IItemMenu = {
@@ -52,6 +53,11 @@ const pagos:IItemMenu = {
   href: "/pagos",
   icon: <GiReceiveMoney />
 }
+const settings:IItemMenu = {
+  title: "Configuración",
+  href: "/settings",
+  icon: <SettingsIcon />
+}
 export const menuItems = {
   home,
   clientes,
@@ -61,7 +67,8 @@ export const menuItems = {
   ingresos,
   ventas,
   pagos,
-  productos
+  productos,
+  settings
 }
 
 export const listMenuItems = [

@@ -14,7 +14,6 @@ import {
 import Divider from '@mui/material/Divider';
 import ListItemButton from '@mui/material/ListItemButton';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { MenuItem } from './MenuItem';
 import { menuItems, listMenuItems } from '../utils/menuItems';
 import { useState } from 'react';
@@ -62,9 +61,9 @@ export const DrawerCustom = ():JSX.Element => {
           <Box p={2}>
             <List>
               <ListItem disablePadding>
-                <ListItemButton onClick={() => { console.log('Configuracion') }}>
-                  <ListItemIcon><SettingsIcon /></ListItemIcon>
-                  <ListItemText primary={'Configuración'} />
+                <ListItemButton onClick={() => { dispatch(setSelectMenu(menuItems.settings.href)) }}>
+                  <ListItemIcon>{menuItems.settings.icon}</ListItemIcon>
+                  <ListItemText primary={menuItems.settings.title} />
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding>

@@ -14,6 +14,9 @@ import { VentasView } from '../views/Ventas/VentasView';
 import { ProductosView } from '../views/Productos/ProductosView';
 import { menuItems } from '../utils/menuItems';
 import { AddClienteCard } from '../views/Clientes/AddClienteCard';
+import { InfoClienteCard } from '../views/Clientes/InfoClienteCard';
+import { UpdateClienteCard } from '../views/Clientes/UpdateClienteCard';
+import { SettingsView } from '../views/SettingsView';
 
 export const RouterComponent:React.FC = () => {
   const [showView, setShowView] = useState<JSX.Element | null>(null);
@@ -27,7 +30,8 @@ export const RouterComponent:React.FC = () => {
     ingresos,
     ventas,
     pagos,
-    productos
+    productos,
+    settings
   } = menuItems;
 
   useEffect(() => {
@@ -41,6 +45,12 @@ export const RouterComponent:React.FC = () => {
       case addCliente.href:
         setShowView(<AddClienteCard />);
         break;
+      case infoCliente.href:
+        setShowView(<InfoClienteCard />);
+        break;
+      // case infoCliente.href:
+      //   setShowView(<UpdateClienteCard />);
+      //   break;
       case ingresos.href:
         setShowView(<IngresoView />);
         break;
@@ -52,6 +62,9 @@ export const RouterComponent:React.FC = () => {
         break;
       case productos.href:
         setShowView(<ProductosView />);
+        break;
+      case settings.href:
+        setShowView(<SettingsView />);
         break;
       default:
         setShowView(<HomeView />);

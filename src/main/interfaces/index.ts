@@ -90,3 +90,15 @@ export interface IQueryDB {
   type: 'table' | 'function' | 'type';
   query: string;
 }
+
+// export interface ISetting {
+//   title: string;
+//   value: string;
+// }
+
+export interface IConfig {
+  host: string;
+  port: string;
+  database: string;
+  user: string;
+}

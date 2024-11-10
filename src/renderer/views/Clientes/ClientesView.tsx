@@ -8,10 +8,12 @@ import { AddClienteCard } from './AddClienteCard';
 import { TablaClienteCard } from './TablaClientes';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 
-import { setHandleAddClient } from '../../redux/slice/clientes';
+// import { setHandleAddClient } from '../../redux/slice/clientes';
 import { TablaAddressByCliente } from './TablaAddressByCliente';
 import { InputSearchCliente } from '../../components/InputSearchCliente';
 import { ButtonAddNewAddress } from '../../components/ButtonAddNewAddress';
+import { setSelectMenu } from '../../redux/slice/menu';
+import { menuItems } from '../../utils/menuItems';
 
 export const ClientesView = ():JSX.Element => {
   const { selectClient, handleAddClient, handleWatchAddress } = useCustomSelector((state) => state.clientSlice);
@@ -20,7 +22,7 @@ export const ClientesView = ():JSX.Element => {
   const dispatch = useCustomDispatch();
 
   return (
-    <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 overflow-y-auto">
+    <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 className="h2">Clientes</h1>
         {
@@ -32,7 +34,7 @@ export const ClientesView = ():JSX.Element => {
       {
         selectClient === null && handleAddClient !== true
           ? (<div className="card mb-2">
-              <Button variant="outline-primary" size="lg" onClick={() => dispatch(setHandleAddClient(!handleAddClient))}>
+              <Button variant="outline-primary" size="lg" onClick={() => dispatch(setSelectMenu(menuItems.addCliente.href))}>
                 {'Agregar nuevo cliente'}
               </Button>
             </div>)
@@ -43,6 +45,6 @@ export const ClientesView = ():JSX.Element => {
           ? <AddClienteCard /> : <TablaClienteCard />
           : handleWatchAddress === false ? <InfoClienteCard /> : <TablaAddressByCliente />
       }
-    </main>
+    </>
   );
 }

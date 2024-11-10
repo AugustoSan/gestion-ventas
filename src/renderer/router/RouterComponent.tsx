@@ -1,5 +1,8 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import {
+  Toolbar,
+} from '@mui/material';
 
 // import { Route, Routes } from 'react-router-dom';
 import { useCustomSelector } from '../hooks/redux';
@@ -10,6 +13,7 @@ import { IngresoView } from '../views/Ingresos/IngresoView';
 import { VentasView } from '../views/Ventas/VentasView';
 import { ProductosView } from '../views/Productos/ProductosView';
 import { menuItems } from '../utils/menuItems';
+import { AddClienteCard } from '../views/Clientes/AddClienteCard';
 
 export const RouterComponent:React.FC = () => {
   const [showView, setShowView] = useState<JSX.Element | null>(null);
@@ -34,6 +38,9 @@ export const RouterComponent:React.FC = () => {
       case clientes.href:
         setShowView(<ClientesView />);
         break;
+      case addCliente.href:
+        setShowView(<AddClienteCard />);
+        break;
       case ingresos.href:
         setShowView(<IngresoView />);
         break;
@@ -53,5 +60,10 @@ export const RouterComponent:React.FC = () => {
   }, [selectOption])
 
 
-  return showView;
+  return (
+    <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 overflow-y-auto mt-2">
+      <Toolbar />
+      {showView}
+    </main>
+  );
 }

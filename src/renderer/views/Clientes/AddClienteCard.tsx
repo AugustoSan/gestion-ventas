@@ -11,6 +11,8 @@ import { useCustomDispatch } from '../../hooks/redux';
 import { AddClient, setHandleAddClient } from '../../redux/slice/clientes';
 import { IDataAddClient } from '../../../main/interfaces/IClients';
 import { InputCard } from '../../components/InputCard';
+import { setSelectMenu } from '../../redux/slice/menu';
+import { menuItems } from '../../utils/menuItems';
 // import { appendLogFile } from '../../main/util';
 
 export const AddClienteCard = ():JSX.Element => {
@@ -120,7 +122,7 @@ export const AddClienteCard = ():JSX.Element => {
             <Col xs={6}>
               <Button
                 variant='outline-secondary'
-                onClick={() => dispatch(setHandleAddClient(false))}
+                onClick={() => dispatch(setSelectMenu(menuItems.clientes.href))}
               >
                 Cancelar
               </Button>

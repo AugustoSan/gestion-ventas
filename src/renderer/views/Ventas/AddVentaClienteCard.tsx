@@ -40,7 +40,11 @@ export const AddVentaClienteCard = ():JSX.Element => {
       setError('Por favor seleccione un cliente');
       return false;
     }
-    if(address === null ){
+    if(cliente != null && cliente.direcciones.length === 0 ){
+      setError('El cliente no tiene ninguna direccion registrada. Registre una para continuar');
+      return false;
+    }
+    if(cliente != null && cliente.direcciones.length > 0 && address === null ){
       setError('Por favor seleccione una dirección');
       return false;
     }

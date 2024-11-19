@@ -53,6 +53,7 @@ export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):
             <Select
               options={options}
               onChange={(prod) => {
+                console.log(prod);
                 if(prod === null) return;
                 onChange(prod.value);
               }}

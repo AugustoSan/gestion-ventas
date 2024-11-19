@@ -6,23 +6,71 @@ import { Graphic } from '../components/Graphic';
 import { graphicDataIngresos, graphicDataPedidos, graphicLabelsDays } from '../utils/graphics';
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { GetAllClients } from '../redux/slice/clientes';
-import { IClient } from '../../main/interfaces';
 import { setSelectClienteSearch } from '../redux/slice/ventas';
-import { GetAllProducts } from '../redux/slice/productos';
 import { TablaVentas } from './Ventas/TablaVentas';
+import { useGetPagosForGraphic } from '../hooks/Pagos/useGetPagosForGraphic';
+import { useGetVentasForGraphics } from '../hooks/Ventas/useGetVentasForGraphics';
+import { getDate } from '../utils/date';
 
 export const HomeView = ():JSX.Element => {
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [id, setId] = useState<number>(0);
+  const [listPagos, setListPagos] = useState<Array<number>>([]);
+  const [labels, setLabels] = useState<Array<string>>([])
+  const [listVentas, setListVentas] = useState<Array<number>>([]);
   const {clientesArray, pagination: paginationClient} = useCustomSelector((state) => state.clientSlice);
-  const {pagination: paginationProduct} = useCustomSelector((state) => state.productSlice);
-  const [clientSelected, setClientSelected] = useState<IClient | null>(null);
+  const { selectClientSearchVentas } = useCustomSelector((state) => state.ventaSlice)
   const [dropdownSelect, setDropdownSelect] = useState<string>('Seleccionar cliente');
   const dispatch = useCustomDispatch();
+  const {result, isLoading, isSuccess, error } = useGetPagosForGraphic({isValid: isEnabled, id});
+  // const {resultVentas, isLoadingVentas, isSuccessVentas, errorVentas } = useGetVentasForGraphics({isValid: isEnabled, id});
+
+
   useEffect(() => {
     dispatch(GetAllClients(paginationClient.currentPage, paginationClient.sizePage));
     // dispatch(GetAllVentas());
     // dispatch(GetAllProducts(pagination.currentPage, pagination.sizePage));
     dispatch(setSelectClienteSearch(null));
   }, []);
+
+  useEffect(() => {
+    if(result != null)
+    {
+      const newListPagos = result.map((pago) => pago.monto);
+      setListPagos(newListPagos);
+      const newListLabels = result.map((pago) => getDate(new Date(pago.fecha)));
+      setLabels(newListLabels);
+    }
+    // if(resultVentas != null)
+    //   {
+    //     const newListVentas= resultVentas.map((venta) => venta.);
+    //     setListVentas(newListVentas);
+    //   }
+  }, [result]);
+
+
+  useEffect(() => {
+    if(isLoading)
+    {
+      setIsEnabled(false);
+    }
+  }, [isLoading, isSuccess]);
+
+  useEffect(() => {
+    if(selectClientSearchVentas === null)
+    {
+      setId(0);
+      setIsEnabled(true);
+    }
+    else {
+      setId(selectClientSearchVentas);
+      setIsEnabled(true);
+    }
+  }, [selectClientSearchVentas]);
+
+  console.log('pagos: ',result);
+
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -67,7 +115,7 @@ export const HomeView = ():JSX.Element => {
         </div>
       </div>
 
-      <Graphic dataIngresos={graphicDataIngresos} dataPedidos={graphicDataPedidos} labels={graphicLabelsDays}/>
+      <Graphic dataPagos={listPagos} labels={labels}/>
       <TablaVentas />
 
     </>

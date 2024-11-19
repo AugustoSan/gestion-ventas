@@ -9,7 +9,7 @@ interface IDataResponse {
     error: Error | null;
 }
 
-export const useGetAllPagos = ( isValid: boolean): IDataResponse => {
+export const useGetPagosForGraphic = ( { isValid, id }: IDataRequestFindById ): IDataResponse => {
   const [result, setResult] = useState<Array<IPago> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -23,9 +23,16 @@ export const useGetAllPagos = ( isValid: boolean): IDataResponse => {
       const callContractFunction = async (): Promise<void> => {
         setIsLoading(true);
         try {
+          if(id <= 0)
+          {
             const response = await window.electron.ipcRenderer.GetAllPagos();
-            setIsSuccess(true);
             setResult(response);
+          }
+          else {
+            const response = await window.electron.ipcRenderer.GetAllPagosByClient(id);
+            setResult(response);
+          }
+          setIsSuccess(true);
         } catch (err) {
           if (err instanceof Error) {
             setError(err);
@@ -36,6 +43,7 @@ export const useGetAllPagos = ( isValid: boolean): IDataResponse => {
           }
         } finally {
           setIsLoading(false);
+          setCalls(0);
         }
       };
       callContractFunction();

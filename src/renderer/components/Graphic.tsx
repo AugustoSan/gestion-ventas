@@ -3,12 +3,12 @@ import { Chart } from 'chart.js/auto';
 
 
 interface IDataProps {
-  dataIngresos: number[];
-  dataPedidos: number[];
+  dataPagos: number[];
+  // dataVentas: number[];
   labels: string[];
 }
 
-export const Graphic = ({dataIngresos, dataPedidos, labels}:IDataProps):JSX.Element => {
+export const Graphic = ({dataPagos, labels}:IDataProps):JSX.Element => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
@@ -27,7 +27,7 @@ export const Graphic = ({dataIngresos, dataPedidos, labels}:IDataProps):JSX.Elem
             datasets: [
               {
                 label: 'Pedidos',
-                data: dataIngresos,
+                data: dataPagos,
                 backgroundColor: 'transparent',
                 borderColor: '#007bff',
                 borderWidth: 4,
@@ -40,13 +40,13 @@ export const Graphic = ({dataIngresos, dataPedidos, labels}:IDataProps):JSX.Elem
               //   data: [15339, 25339, 15339, 25339]
               // },
 
-              {
-                type: 'line',
-                backgroundColor: '#5BFF33',
-                borderColor: '#5BFF33',
-                label: 'Pagos',
-                data: dataPedidos,
-              },
+              // {
+              //   type: 'line',
+              //   backgroundColor: '#5BFF33',
+              //   borderColor: '#5BFF33',
+              //   label: 'Pagos',
+              //   data: dataVentas,
+              // },
             ],
           },
           options: {
@@ -62,7 +62,7 @@ export const Graphic = ({dataIngresos, dataPedidos, labels}:IDataProps):JSX.Elem
         });
       }
     }
-  }, [dataIngresos, dataPedidos, labels]);
+  }, [dataPagos, labels]);
 
 
   return (

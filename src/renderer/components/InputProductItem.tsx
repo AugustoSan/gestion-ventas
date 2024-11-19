@@ -55,6 +55,9 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
     return true;
   }
 
+  console.log('producto:', producto);
+  console.log('inputCantidad:', inputCantidad);
+
   return (
     <>
       <InputFormSelectProduct onChange={onChangeProduct} />

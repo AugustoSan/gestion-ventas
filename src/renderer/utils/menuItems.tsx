@@ -34,9 +34,9 @@ const updateCliente:IItemMenu = {
   icon: <BsFillPersonVcardFill />
 }
 const ingresos:IItemMenu = {
-  title: "Abonos",
+  title: "Pagos",
   href: "/ingresos",
-  icon: <FaCircleDollarToSlot />
+  icon: <GiReceiveMoney />
 }
 const ventas:IItemMenu = {
   title: "Ventas",
@@ -76,6 +76,5 @@ export const listMenuItems = [
   clientes,
   ingresos,
   ventas,
-  pagos,
   productos
 ]

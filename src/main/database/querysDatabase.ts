@@ -669,7 +669,7 @@ BEGIN
         UPDATE tblVentas SET fecha_pago = NOW()::TIMESTAMP WHERE id = _id;
     END IF;
 
-    IF _pagado = 0 THEN
+    IF _pagado > 0 THEN
         -- Insertar el pago
         INSERT INTO tblPagos(id_venta, id_cliente, fecha, monto, create_date)
         VALUES (_id, _id_client, _fecha, _pagado, NOW()::TIMESTAMP);

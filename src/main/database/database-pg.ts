@@ -9,24 +9,40 @@ dotnev.config();
 
 export const getClientDB = ():Client =>
 {
-  return new Client({
-    host: process.env.DATABASE_HOST,
-    port: parseInt(process.env.DATABASE_PORT ?? '5432'),
-    database: process.env.DATABASE_DATABASE,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-  });
+  try {
+    return new Client({
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT ?? '5432'),
+      database: process.env.DATABASE_DATABASE,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw error.message;
+    } else {
+      throw JSON.stringify(error); // Captura valores no estándar
+    }
+  }
 }
 
 export const getClientPostgres = ():Client =>
   {
-    return new Client({
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT ?? '5432'),
-      database: 'postgres',
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-    });
+    try {
+      return new Client({
+        host: process.env.DATABASE_HOST,
+        port: parseInt(process.env.DATABASE_PORT ?? '5432'),
+        database: 'postgres',
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw error.message;
+      } else {
+        throw JSON.stringify(error); // Captura valores no estándar
+      }
+    }
   }
 
 export const initializer = async ():Promise<Array<string>> =>
@@ -49,7 +65,13 @@ export const initializer = async ():Promise<Array<string>> =>
 
     return errors;
   } catch (error) {
-      return ["Ocurrio un error en el initializer"];
+    if (error instanceof Error) {
+      return ["Ocurrio un error en el initializer", error.message];
+    } else if (typeof error === 'string') {
+      return ["Ocurrió un error en el initializer", error];
+    } else {
+      return ["Ocurrio un error en el initializer", JSON.stringify(error)];
+    }
   }
 }
 
@@ -63,9 +85,12 @@ const checkDatabaseIfExist = async(): Promise<boolean> => {
     const res = await client.query(query);
     if(res.rows.length > 0)return true;
     else return false;
-  } catch (err) {
-      // console.error('Error checking database existence:', err);
-      return false;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw error.message;
+    } else {
+      throw JSON.stringify(error); // Captura valores no estándar
+    }
   } finally {
       await client.end();
   }

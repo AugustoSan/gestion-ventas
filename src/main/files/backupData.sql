@@ -1,1 +1,0 @@
-INSERT INTO productos(concepto, precio) VALUES ('Lata de chiles San Marcos', 0)

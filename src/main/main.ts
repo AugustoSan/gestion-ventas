@@ -30,6 +30,18 @@ class AppUpdater {
   }
 }
 
+const createWindowError = () => {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  })
+
+  win.loadFile('index.html')
+}
+
 let mainWindow: BrowserWindow | null = null;
 
 // findAllClients().then((data) => {
@@ -212,6 +224,7 @@ app
       {
         errors.forEach(error => {
           console.log(`error: ${error}`);
+          alert(`Error: ${error}`);
         });
       }
       else{

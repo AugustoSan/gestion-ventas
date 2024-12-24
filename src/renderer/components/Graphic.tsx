@@ -28,10 +28,13 @@ export const Graphic = ({dataPagos, labels}:IDataProps):JSX.Element => {
               {
                 label: 'Pedidos',
                 data: dataPagos,
-                backgroundColor: 'transparent',
-                borderColor: '#007bff',
+                // backgroundColor: 'transparent',
+                // borderColor: '#007bff',s
                 borderWidth: 4,
-                pointBackgroundColor: '#007bff'
+                // pointBackgroundColor: '#007bff',
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
               },
               // {
               //   type: 'bar',
@@ -49,16 +52,16 @@ export const Graphic = ({dataPagos, labels}:IDataProps):JSX.Element => {
               // },
             ],
           },
-          options: {
-            plugins: {
-              legend: {
-                display: false
-              },
-              tooltip: {
-                boxPadding: 3
-              }
-            }
-          }
+          // options: {
+          //   plugins: {
+          //     legend: {
+          //       display: false
+          //     },
+          //     tooltip: {
+          //       boxPadding: 3
+          //     }
+          //   }
+          // }
         });
       }
     }

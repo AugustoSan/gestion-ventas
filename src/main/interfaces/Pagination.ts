@@ -1,4 +1,4 @@
-interface IPagination
+export interface IPagination
 {
   currentPage: number;
   sizePage: number;
@@ -11,7 +11,7 @@ interface IPagination
   actionGoToPage: React.Dispatch<React.SetStateAction<any>>;
 }
 
-interface IPaginationForSlides
+export interface IPaginationForSlides
 {
   currentPage: number;
   sizePage: number;
@@ -23,7 +23,7 @@ interface IPaginationForSlides
   previousPageNumber: number | null;
 }
 
-interface IDataRequestFindById {
+export interface IDataRequestFindById {
   isValid: boolean;
   id: number;
 }

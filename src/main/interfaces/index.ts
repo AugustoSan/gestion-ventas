@@ -1,70 +1,31 @@
-export { IDataRequestSearchWithString, IDataRequestSearchWithStringAndPagination } from "./IClients";
-export interface IDirection {
-  id: number;
-  id_client: number;
-  direccion: string;
-}
+export {
+  IFiltersGraphics, IGraphicResponse
+} from "./IGraphics";
 
-export interface IClient {
-  id: number;
-  nombre: string;
-  apellidopaterno: string,
-  apellidomaterno: string;
-  saldo: number;
-  telefono: string;
-  direcciones: IDirection[];
-}
+export {
+  IClient, IDataAddClient, IDataAddAddress, IDataUpdateAddress,
+  IDataUpdateClient, IDirection, IDataRequestSearchWithString,
+  IDataRequestSearchWithStringAndPagination
+} from "./IClients";
 
-export interface IPriceProduct {
-  id: number;
-  id_producto: number;
-  id_client: number;
-  precio: number;
-}
+export {
+  IPagination, IPaginationForSlides, IDataRequestFindById
+} from "./Pagination";
 
-export interface IProducto {
-  id: number;
-  concepto: string;
-  precio: number;
-  list_prices: Array<IPriceProduct>
-}
+export {
+  IPago, IAddPago
+} from "./IPagos";
 
-export interface IVentasProductos {
-  id: number;
-  id_venta: number;
-  id_producto: number;
-  id_precio: number;
-  cantidad: number;
-}
+export {
+  IDataUpdateProduct, IDataFindPricesProduct, IPriceProduct,
+  IProducto, IPrecioProductoCliente
+} from "./IProducts";
 
-export interface ITypeVenta {
-  id: number;
-  id_client: number;
-  id_direccion: number;
-  fecha: Date;
-  total: number;
-  por_pagar: number;
-  estatus: number;
-  productos: Array<IVentasProductos>
-}
+export {
+  IDataAddVentaProductos, IDataAddVenta, IVentasProductos,
+  ITypeVenta, IVenta
+} from "./IVentas";
 
-export interface IVenta {
-  id: number;
-  id_client: number;
-  id_direccion: number;
-  fecha: string;
-  total: number;
-  por_pagar: number;
-  status: number;
-  productos: Array<IVentasProductos>
-}
-
-export interface IPrecioProductoCliente {
-  id: number;
-  id_producto: number;
-  id_client: number;
-  precio: number;
-}
 
 export interface IItemMenu {
   title: string;

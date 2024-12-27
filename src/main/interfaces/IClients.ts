@@ -1,3 +1,17 @@
+export interface IDirection {
+  id: number;
+  id_client: number;
+  direccion: string;
+}
+export interface IClient {
+  id: number;
+  nombre: string;
+  apellidopaterno: string,
+  apellidomaterno: string;
+  saldo: number;
+  telefono: string;
+  direcciones: IDirection[];
+}
 export interface IDataAddClient {
   nombre: string;
   apellidopaterno: string;

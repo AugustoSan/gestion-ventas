@@ -3,14 +3,13 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import './../public/css/dashboard.css'
 import './../public/css/dashboard.rtl.css'
 import { Graphic } from '../components/Graphic';
-import { graphicDataIngresos, graphicDataPedidos, graphicLabelsDays } from '../utils/graphics';
 import { useCustomDispatch, useCustomSelector } from '../hooks/redux';
 import { GetAllClients } from '../redux/slice/clientes';
 import { setSelectClienteSearch } from '../redux/slice/ventas';
 import { TablaVentas } from './Ventas/TablaVentas';
 import { useGetPagosForGraphic } from '../hooks/Pagos/useGetPagosForGraphic';
-import { useGetVentasForGraphics } from '../hooks/Ventas/useGetVentasForGraphics';
 import { getDate } from '../utils/date';
+import { useGetGraphics } from '../hooks/Graphics';
 
 export const HomeView = ():JSX.Element => {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
@@ -23,7 +22,12 @@ export const HomeView = ():JSX.Element => {
   const [dropdownSelect, setDropdownSelect] = useState<string>('Seleccionar cliente');
   const dispatch = useCustomDispatch();
   const {result, isLoading, isSuccess, error } = useGetPagosForGraphic({isValid: isEnabled, id});
-  // const {resultVentas, isLoadingVentas, isSuccessVentas, errorVentas } = useGetVentasForGraphics({isValid: isEnabled, id});
+  const {
+    result: resultGraphics,
+    isLoading: isLoadingGraphics,
+    isSuccess: isSuccessGraphics,
+    error: errorGraphics
+  } = useGetGraphics({isValid: isEnabled, from: new Date('1995-12-17T03:24:00'), to: new Date(Date.now()), id_client: id, estatus: 3});
 
 
   useEffect(() => {
@@ -69,7 +73,7 @@ export const HomeView = ():JSX.Element => {
   }, [selectClientSearchVentas]);
 
   console.log('pagos: ',result);
-
+  console.log('graphics: ',resultGraphics, isLoadingGraphics, isSuccessGraphics, errorGraphics);
 
   return (
     <>

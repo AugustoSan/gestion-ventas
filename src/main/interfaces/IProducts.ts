@@ -24,3 +24,24 @@ export interface IDataFindPricesProduct {
   id_cliente: number;
   id_product: number;
 }
+
+export interface IPriceProduct {
+  id: number;
+  id_producto: number;
+  id_client: number;
+  precio: number;
+}
+
+export interface IProducto {
+  id: number;
+  concepto: string;
+  precio: number;
+  list_prices: Array<IPriceProduct>
+}
+
+export interface IPrecioProductoCliente {
+  id: number;
+  id_producto: number;
+  id_client: number;
+  precio: number;
+}

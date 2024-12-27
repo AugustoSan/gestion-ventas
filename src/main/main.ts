@@ -23,6 +23,7 @@ import { initializer } from './database/database-pg';
 import { getConfigHandler } from './handles/Settings';
 import { createWindow } from './mainWindow';
 import { createErrorWindow } from './errorWindow';
+import { getGraphicsHandler } from './handles/Graphics';
 
 class AppUpdater {
   constructor() {
@@ -109,6 +110,8 @@ ipcMain.handle('pagos:findPagoByIdHandler', findPagoByIdHandler);
 ipcMain.handle('pagos:addPagoHandler', addPagoHandler);
 ipcMain.handle('pagos:deletePagoHandler', deletePagoHandler);
 
+// Graficas
+ipcMain.handle('graphics:getGraphics', getGraphicsHandler);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

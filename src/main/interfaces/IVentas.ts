@@ -1,5 +1,3 @@
-import { IClient, IDirection, IPrecioProductoCliente, IProducto } from ".";
-
 export interface IDataAddVentaProductos {
   id_producto: number;
   precio: number;
@@ -15,17 +13,32 @@ export interface IDataAddVenta {
   productos: Array<IDataAddVentaProductos>
 }
 
-// export interface IDataUpdateClient {
-//   id: number;
-//   client: IDataAddClient;
-// }
+export interface IVentasProductos {
+  id: number;
+  id_venta: number;
+  id_producto: number;
+  id_precio: number;
+  cantidad: number;
+}
 
-// export interface IDataAddAddress {
-//   id_client: number;
-//   direccion: string;
-// }
+export interface ITypeVenta {
+  id: number;
+  id_client: number;
+  id_direccion: number;
+  fecha: Date;
+  total: number;
+  por_pagar: number;
+  estatus: number;
+  productos: Array<IVentasProductos>
+}
 
-// export interface IDataUpdateAddress {
-//   id: number;
-//   direccion: IDataAddAddress;
-// }
+export interface IVenta {
+  id: number;
+  id_client: number;
+  id_direccion: number;
+  fecha: string;
+  total: number;
+  por_pagar: number;
+  status: number;
+  productos: Array<IVentasProductos>
+}

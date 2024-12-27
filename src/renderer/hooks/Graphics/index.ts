@@ -1,0 +1,1 @@
+export { useGetGraphics } from "./useGetGraphics";

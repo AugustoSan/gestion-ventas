@@ -1,7 +1,7 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { IClient, IConfig, IDirection, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
+import { IClient, IConfig, IDirection, IFiltersGraphics, IGraphicResponse, IPriceProduct, IProducto, IVenta, IVentasProductos } from './interfaces';
 import { IDataAddAddress, IDataAddClient, IDataUpdateAddress, IDataUpdateClient } from './interfaces/IClients';
 import { IDataAddProduct, IDataFindPricesProduct, IDataPagination, IDataUpdateProduct } from './interfaces/IProducts';
 import { IDataAddVenta } from './interfaces/IVentas';
@@ -67,6 +67,8 @@ const electronHandler = {
     FindPagoById:(id: number):Promise<IPago | null> => ipcRenderer.invoke('pagos:findPagoByIdHandler', id),
     InsertPago:(pago: IAddPago):Promise<number> => ipcRenderer.invoke('pagos:addPagoHandler', pago),
     DeletePago:(id: number):Promise<number> => ipcRenderer.invoke('pagos:deletePagoHandler', id),
+    // Graphics
+    GetGraphics:(filters: IFiltersGraphics):Promise<IGraphicResponse> => ipcRenderer.invoke('graphics:getGraphics', filters),
   },
 };
 

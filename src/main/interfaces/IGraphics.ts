@@ -11,6 +11,6 @@ export interface IFiltersGraphics {
 export interface IGraphicResponse {
   ventas: Array<IVenta>;
   pagos: Array<IPago>;
-  labelsX: Array<string>;
-  labelsY: Array<string>;
+  // labelsX: Array<string>;
+  // labelsY: Array<string>;
 }

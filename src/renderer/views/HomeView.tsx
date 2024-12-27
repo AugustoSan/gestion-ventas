@@ -15,19 +15,14 @@ export const HomeView = ():JSX.Element => {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);
   const [listPagos, setListPagos] = useState<Array<number>>([]);
-  const [labels, setLabels] = useState<Array<string>>([])
+  const [labelsPagos, setLabelsPagos] = useState<Array<string>>([]);
+  const [labelsVentas, setLabelsVentas] = useState<Array<string>>([]);
   const [listVentas, setListVentas] = useState<Array<number>>([]);
   const {clientesArray, pagination: paginationClient} = useCustomSelector((state) => state.clientSlice);
   const { selectClientSearchVentas } = useCustomSelector((state) => state.ventaSlice)
   const [dropdownSelect, setDropdownSelect] = useState<string>('Seleccionar cliente');
   const dispatch = useCustomDispatch();
-  const {result, isLoading, isSuccess, error } = useGetPagosForGraphic({isValid: isEnabled, id});
-  const {
-    result: resultGraphics,
-    isLoading: isLoadingGraphics,
-    isSuccess: isSuccessGraphics,
-    error: errorGraphics
-  } = useGetGraphics({isValid: isEnabled, from: new Date('1995-12-17T03:24:00'), to: new Date(Date.now()), id_client: id, estatus: 3});
+  const {result, isLoading, isSuccess, error } = useGetGraphics({isValid: isEnabled, from: new Date('1995-12-17T03:24:00'), to: new Date(Date.now()), id_client: id, estatus: 3});
 
 
   useEffect(() => {
@@ -40,10 +35,15 @@ export const HomeView = ():JSX.Element => {
   useEffect(() => {
     if(result != null)
     {
-      const newListPagos = result.map((pago) => pago.monto);
+      const newListPagos = result.pagos.map((pago) => pago.monto);
       setListPagos(newListPagos);
-      const newListLabels = result.map((pago) => getDate(new Date(pago.fecha)));
-      setLabels(newListLabels);
+      const newListLabelsPagos = result.pagos.map((pago) => getDate(new Date(pago.fecha)));
+      setLabelsPagos(newListLabelsPagos);
+
+      const newListVentas = result.ventas.map((venta) => venta.total);
+      setListVentas(newListVentas);
+      const newListLabelsVentas = result.ventas.map((venta) => getDate(new Date(venta.fecha)));
+      setLabelsVentas(newListLabelsVentas);
     }
     // if(resultVentas != null)
     //   {
@@ -72,8 +72,7 @@ export const HomeView = ():JSX.Element => {
     }
   }, [selectClientSearchVentas]);
 
-  console.log('pagos: ',result);
-  console.log('graphics: ',resultGraphics, isLoadingGraphics, isSuccessGraphics, errorGraphics);
+  console.log('result: ',result);
 
   return (
     <>
@@ -119,8 +118,9 @@ export const HomeView = ():JSX.Element => {
         </div>
       </div>
 
-      <Graphic dataPagos={listPagos} labels={labels}/>
-      <TablaVentas />
+      <Graphic title='Ventas' data={listVentas} labels={labelsVentas} color='rgb(33, 154, 12)'/>
+      <Graphic title='Pagos' data={listPagos} labels={labelsPagos}/>
+      {/* <TablaVentas /> */}
 
     </>
   );

@@ -4,6 +4,7 @@ import { findAllVentas, findVentasByIDClient } from "../ventas";
 
 const getAllVentas = async ({from, to, id_client, status}: IFiltersGraphics ):Promise<Array<IVenta>> => {
   try {
+    console.log(`id: ${id_client}`);
     let response:Array<IVenta> = id_client === 0 ? await findAllVentas() : await findVentasByIDClient(id_client);
     if(from != null) response = response.filter(venta => new Date(venta.fecha) >= from);
     if(to != null) response = response.filter(venta => new Date(venta.fecha) <= to);
@@ -18,6 +19,7 @@ const getAllVentas = async ({from, to, id_client, status}: IFiltersGraphics ):Pr
 
 const getAllPagosGraphics = async ({from, to, id_client, status}: IFiltersGraphics ):Promise<Array<IPago>> => {
   try {
+    console.log(`id: ${id_client}`);
     let response:Array<IPago> = id_client === 0 ? await getAllPagos() : await getAllPagosByClient(id_client);
     if(from != null) response = response.filter(pago => new Date(pago.fecha) >= from);
     if(to != null) response = response.filter(pago => new Date(pago.fecha) <= to);
@@ -105,14 +107,14 @@ export const getGraphics = async (filters: IFiltersGraphics): Promise<IGraphicRe
   const response: IGraphicResponse = {
     ventas: [],
     pagos: [],
-    labelsX: [],
-    labelsY: []
+    // labelsX: [],
+    // labelsY: []
   };
   try {
     response.ventas = await getAllVentas(filters);
     response.pagos = await getAllPagosGraphics(filters);
-    response.labelsX = getLabelsX(response.ventas, response.pagos);
-    response.labelsY = getLabelsY(response.ventas, response.pagos);
+    // response.labelsX = getLabelsX(response.ventas, response.pagos);
+    // response.labelsY = getLabelsY(response.ventas, response.pagos);
     return response;
   } catch (error) {
     console.log('ERROR:', error);

@@ -3,12 +3,13 @@ import { Chart } from 'chart.js/auto';
 
 
 interface IDataProps {
-  dataPagos: number[];
-  // dataVentas: number[];
+  title: string;
+  data: number[];
   labels: string[];
+  color?: string;
 }
 
-export const Graphic = ({dataPagos, labels}:IDataProps):JSX.Element => {
+export const Graphic = ({data, labels, title, color}:IDataProps):JSX.Element => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
@@ -26,14 +27,14 @@ export const Graphic = ({dataPagos, labels}:IDataProps):JSX.Element => {
             labels: labels,
             datasets: [
               {
-                label: 'Pedidos',
-                data: dataPagos,
+                label: title,
+                data,
                 // backgroundColor: 'transparent',
                 // borderColor: '#007bff',s
                 borderWidth: 4,
                 // pointBackgroundColor: '#007bff',
                 fill: false,
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: color ?? 'rgb(75, 192, 192)',
                 tension: 0.1
               },
               // {
@@ -65,7 +66,7 @@ export const Graphic = ({dataPagos, labels}:IDataProps):JSX.Element => {
         });
       }
     }
-  }, [dataPagos, labels]);
+  }, [data, labels]);
 
 
   return (

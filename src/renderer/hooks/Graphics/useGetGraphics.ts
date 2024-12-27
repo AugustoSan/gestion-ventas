@@ -31,6 +31,7 @@ useEffect(() => {
     const callContractFunction = async (): Promise<void> => {
       setIsLoading(true);
       try {
+        console.log(`id cliente: ${id_client}`)
           const response = await window.electron.ipcRenderer.GetGraphics({
             from,
             to,
@@ -49,6 +50,7 @@ useEffect(() => {
         }
       } finally {
         setIsLoading(false);
+        setCalls(0);
       }
     };
     callContractFunction();

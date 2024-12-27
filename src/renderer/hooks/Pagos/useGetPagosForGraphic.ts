@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IPago } from '../../../main/interfaces/IPagos';
+import { IDataRequestFindById, IPago } from '../../../main/interfaces';
 
 interface IDataResponse {
     result: Array<IPago> | null;

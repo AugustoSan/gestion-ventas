@@ -22,7 +22,7 @@ const getAllVentas = async ():Promise<Array<IVenta>> => {
         total: result[i].total,
         por_pagar: result[i].por_pagar,
         status: result[i].estatus,
-        productos: []
+        productos: await findProductFromVenta(result[i].id)
       };
       response = [element, ...response];
     }

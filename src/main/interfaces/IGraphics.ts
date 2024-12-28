@@ -1,4 +1,4 @@
-import { IVenta } from ".";
+import { IProductoGraphics, IVenta } from ".";
 import { IPago } from "./IPagos";
 
 export interface IFiltersGraphics {
@@ -11,6 +11,7 @@ export interface IFiltersGraphics {
 export interface IGraphicResponse {
   ventas: Array<IVenta>;
   pagos: Array<IPago>;
+  productos: Array<IProductoGraphics>;
   // labelsX: Array<string>;
   // labelsY: Array<string>;
 }

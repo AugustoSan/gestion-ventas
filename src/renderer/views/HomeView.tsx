@@ -18,6 +18,8 @@ export const HomeView = ():JSX.Element => {
   const [labelsPagos, setLabelsPagos] = useState<Array<string>>([]);
   const [labelsVentas, setLabelsVentas] = useState<Array<string>>([]);
   const [listVentas, setListVentas] = useState<Array<number>>([]);
+  const [labelsProducts, setLabelsProducts] = useState<Array<string>>([]);
+  const [listProducts, setListProducts] = useState<Array<number>>([]);
   const {clientesArray, pagination: paginationClient} = useCustomSelector((state) => state.clientSlice);
   const { selectClientSearchVentas } = useCustomSelector((state) => state.ventaSlice)
   const [dropdownSelect, setDropdownSelect] = useState<string>('Seleccionar cliente');
@@ -44,6 +46,11 @@ export const HomeView = ():JSX.Element => {
       setListVentas(newListVentas);
       const newListLabelsVentas = result.ventas.map((venta) => getDate(new Date(venta.fecha)));
       setLabelsVentas(newListLabelsVentas);
+
+      const newListProducts = result.productos.map((prod) => prod.cantidad);
+      setListProducts(newListProducts);
+      const newListLabelsProducts = result.productos.map((prod) => prod.name);
+      setLabelsProducts(newListLabelsProducts);
     }
     // if(resultVentas != null)
     //   {
@@ -118,8 +125,9 @@ export const HomeView = ():JSX.Element => {
         </div>
       </div>
 
-      <Graphic title='Ventas' data={listVentas} labels={labelsVentas} color='rgb(33, 154, 12)'/>
-      <Graphic title='Pagos' data={listPagos} labels={labelsPagos}/>
+      <Graphic title='Ventas' data={listVentas} labels={labelsVentas} type='line' color='rgb(33, 154, 12)'/>
+      <Graphic title='Pagos' data={listPagos} labels={labelsPagos} type='line' />
+      <Graphic title='Productos' data={listProducts} labels={labelsProducts} type='bar' />
       {/* <TablaVentas /> */}
 
     </>

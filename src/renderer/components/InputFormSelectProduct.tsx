@@ -10,7 +10,8 @@ import { useGetAllProducts } from '../hooks';
 // import { IDataFindPricesProduct } from '../../main/interfaces/IProducts';
 
 interface IDataProps {
-  onChange: React.Dispatch<React.SetStateAction<IProducto | null>>;
+  onChangeValue: React.Dispatch<React.SetStateAction<IProducto | null>>;
+  reset: boolean;
   disabled?: boolean;
 }
 
@@ -19,9 +20,11 @@ interface OptionType {
   value: IProducto;
 }
 
-export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):JSX.Element => {
+// export const InputFormSelectProduct = ({value, disabled = false}:IDataProps):JSX.Element => {
+export const InputFormSelectProduct = ({onChangeValue, reset, disabled = false}:IDataProps):JSX.Element => {
   // const {productosArray} = useCustomSelector((state) => state.productSlice);
   const [isValid, setIsValid] = useState<boolean>(true);
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
   const {result, isLoading, isSuccess, error, status} = useGetAllProducts(isValid);
 
   const options:OptionType[] = result === null ? [] : result.map((producto) => {
@@ -32,17 +35,27 @@ export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):
     return newOption;
   } );
 
-  const productDefault:IProducto = {
-    id: 0,
-    concepto: 'Selecciona un producto',
-    precio: 0,
-    list_prices: []
-  }
-
   useEffect(() => {
     if(isSuccess) setIsValid(false);
-  }, [isSuccess])
+  }, [isSuccess]);
 
+  useEffect(() => {
+    if(reset) setSelectedOption(null);
+  }, [reset]);
+
+  const handleChange = (option: OptionType | null) => {
+    // Actualizar el estado del select
+    setSelectedOption(option);
+
+    // Ejecutar la acción de cambio si hay una opción seleccionada
+    if (option) {
+      console.log(option);
+      if(option === null) return;
+      onChangeValue(option.value);
+
+      // Después de ejecutar la acción, reiniciar el estado
+    }
+  };
 
   return (
     <InputGroup className="mb-3">
@@ -51,12 +64,15 @@ export const InputFormSelectProduct = ({onChange, disabled = false}:IDataProps):
           <Col xs={4}><InputGroup.Text>{"Seleccionar producto"}</InputGroup.Text></Col>
           <Col xs={8}>
             <Select
+              value={selectedOption}
+              defaultInputValue='Seleccionar producto'
               options={options}
-              onChange={(prod) => {
-                console.log(prod);
-                if(prod === null) return;
-                onChange(prod.value);
-              }}
+              // onChange={(prod) => {
+              //   console.log(prod);
+              //   if(prod === null) return;
+              //   onChange(prod.value);
+              // }}
+              onChange={handleChange}
               placeholder="Selecciona un producto"
               isClearable
               isSearchable

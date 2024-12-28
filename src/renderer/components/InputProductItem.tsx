@@ -20,11 +20,11 @@ interface IDataProps {
 export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps):JSX.Element => {
   const dispatch = useCustomDispatch();
   const [inputCantidad, setInputCantidad] = useState<number>(0);
-  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [isResetSelected, setIsResetSelected] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const productDefault: IProducto = {
     id: 0,
-    concepto: '',
+    concepto: 'Seleccione un producto',
     precio: 0,
     list_prices: []
   };
@@ -34,16 +34,15 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
   useEffect(() => {
     if(producto === null) {
       setInputProduct(productDefault);
-      setIsEnabled(false);
     }
     else {
-      setInputProduct(producto)
-      setIsEnabled(true);
+      setInputProduct(producto);
     }
   }, [producto]);
 
   const validate = (): boolean => {
-    if(inputProduct === productDefault){
+    console.log('inputProduct', inputProduct);
+    if(inputProduct.id === productDefault.id){
       setError('Seleccione un producto');
       return false;
     }
@@ -55,12 +54,19 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
     return true;
   }
 
+  const addNewProduct = (newProduct: IDataAddVentaProductos) => {
+    dispatch(setAddProductAddVenta(newProduct));
+    setInputProduct(productDefault);
+    setIsResetSelected(true);
+    setInputCantidad(0);
+  }
+
   console.log('producto:', producto);
   console.log('inputCantidad:', inputCantidad);
 
   return (
     <>
-      <InputFormSelectProduct onChange={onChangeProduct} />
+      <InputFormSelectProduct reset={isResetSelected} onChangeValue={onChangeProduct} />
       <InputCard
           title={'Precio'}
           value={`$ ${inputProduct.precio.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}
@@ -76,9 +82,7 @@ export const InputProductItem = ({producto, cliente, onChangeProduct}:IDataProps
               precio: inputProduct.precio,
               cantidad: inputCantidad
             }
-            dispatch(setAddProductAddVenta(newProduct));
-            setInputProduct(productDefault);
-            setInputCantidad(0);
+            addNewProduct(newProduct);
           }
         }}>
           {'Agregar producto'}

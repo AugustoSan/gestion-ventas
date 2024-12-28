@@ -6,10 +6,11 @@ interface IDataProps {
   title: string;
   data: number[];
   labels: string[];
+  type: 'bar' | 'line' | 'bubble' | 'doughnut' | 'pie' | 'scatter',
   color?: string;
 }
 
-export const Graphic = ({data, labels, title, color}:IDataProps):JSX.Element => {
+export const Graphic = ({data, labels, title, type, color}:IDataProps):JSX.Element => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
@@ -22,7 +23,7 @@ export const Graphic = ({data, labels, title, color}:IDataProps):JSX.Element => 
       const ctx = chartRef.current.getContext('2d');
       if (ctx) {
         chartInstanceRef.current = new Chart(ctx, {
-          type: 'line',
+          type,
           data: {
             labels: labels,
             datasets: [

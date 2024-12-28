@@ -18,7 +18,7 @@ export {
 
 export {
   IDataUpdateProduct, IDataFindPricesProduct, IPriceProduct,
-  IProducto, IPrecioProductoCliente
+  IProducto, IPrecioProductoCliente, IProductoGraphics
 } from "./IProducts";
 
 export {

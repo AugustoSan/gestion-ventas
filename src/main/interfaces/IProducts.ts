@@ -39,6 +39,12 @@ export interface IProducto {
   list_prices: Array<IPriceProduct>
 }
 
+export interface IProductoGraphics {
+  id: number;
+  cantidad: number;
+  name: string;
+}
+
 export interface IPrecioProductoCliente {
   id: number;
   id_producto: number;

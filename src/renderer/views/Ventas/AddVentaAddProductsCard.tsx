@@ -95,6 +95,7 @@ export const AddVentaAddProductsCard = ():JSX.Element => {
                       total: totalAddVenta,
                       productos: selectProductos
                     }
+                    console.log(newVenta);
                     /* console.log('newVenta: ', newVenta); */
                     dispatch(setAddVenta(newVenta));
                     // dispatch(AddNewVenta(newVenta));

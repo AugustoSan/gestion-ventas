@@ -1,7 +1,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Thunk } from '../../store';
-import { IClient, IDirection, IPrecioProductoCliente, IVenta } from '../../../../main/interfaces';
+import { IClient, IDirection, IPaginationForSlides, IPrecioProductoCliente, IVenta } from '../../../../main/interfaces';
 import { IDataAddVenta, IDataAddVentaProductos } from '../../../../main/interfaces/IVentas';
 import { IDataPagination } from '../../../../main/interfaces/IProducts';
 import { createPaginationForSlides } from '../../../utils/pagination';

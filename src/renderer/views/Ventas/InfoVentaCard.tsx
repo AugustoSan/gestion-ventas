@@ -12,6 +12,8 @@ import { useEffect } from 'react';
 import { setSelectVenta, setSelectView } from '../../redux/slice/ventas';
 import { TablaPagosByVenta } from '../../components/TablaPagosByVenta';
 import { dateToString } from '../../utils/date';
+import { Label } from '@mui/icons-material';
+import { Divider, Typography } from '@mui/material';
 
 interface IDataProps{
   id: number;
@@ -108,7 +110,14 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
           onChange={() => {}}
           disabled={true}
         />
+        <Divider />
         <Container className="mb-3">
+          <Row>
+            <Col>
+              <Typography>Pagos</Typography>
+            </Col>
+          </Row>
+          <Divider />
           <Row>
             <Col>
               <TablaPagosByVenta idVenta={id}/>

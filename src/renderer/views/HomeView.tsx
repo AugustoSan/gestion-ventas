@@ -10,6 +10,7 @@ import { TablaVentas } from './Ventas/TablaVentas';
 import { useGetPagosForGraphic } from '../hooks/Pagos/useGetPagosForGraphic';
 import { getDate } from '../utils/date';
 import { useGetGraphics } from '../hooks/Graphics';
+import { useGetAllClients, useGetAllClientsWithPagination } from '../hooks';
 
 export const HomeView = ():JSX.Element => {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);

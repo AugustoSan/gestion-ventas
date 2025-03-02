@@ -14,11 +14,24 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAddressByIdHandler, findAllAddressByClientHandler, findAllClientsHandler, findAllClientsWithPaginationHandler, findClienteByIdHandler, findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler } from './handles/Clientes';
-import { addProductoHandler, deleteProductoHandler, getAllProductosWithPaginationHandler, findProductoByIdHandler, findProductoHandler, getAllProductosHandler, updateProductoHandler } from './handles/Productos';
+import {
+  addAddressHandler, addClienteHandler, deleteAddressHandler, deleteClienteHandler, findAddressByIdHandler,
+  findAllAddressByClientHandler, findAllClientsHandler, findAllClientsWithPaginationHandler, findClienteByIdHandler,
+  findClienteHandler, getAllAddressHandler, updateAddressHandler, updateClienteHandler
+} from './handles/Clientes';
+import {
+  addProductoHandler, deleteProductoHandler, getAllProductosWithPaginationHandler, findProductoByIdHandler,
+  findProductoHandler, getAllProductosHandler, updateProductoHandler
+} from './handles/Productos';
 // import { migrateDB } from './database/database';
-import { addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler } from './handles/Ventas';
-import { addPagoHandler, deletePagoHandler, findPagoByIdHandler, getAllPagosByClientHandler, getAllPagosByVentaHandler, getAllPagosHandler } from './handles/Pagos';
+import {
+  addVentaHandler, findAllVentasHandler, findProductoFromVentaHandler, findVentaByIDHandler, findVentasByClienteHandler,
+  getDeudaByClienteHandler
+} from './handles/Ventas';
+import {
+  addPagoHandler, deletePagoHandler, findPagoByIdHandler, getAllPagosByClientHandler, getAllPagosByVentaHandler,
+  getAllPagosHandler
+} from './handles/Pagos';
 import { initializer } from './database/database-pg';
 import { getConfigHandler } from './handles/Settings';
 import { createWindow } from './mainWindow';
@@ -100,6 +113,8 @@ ipcMain.handle('ventas:getVentaByCliente', findVentasByClienteHandler);
 // ipcMain.handle('ventas:getVentaByID', findVentaByIDHandler);
 ipcMain.handle('ventas:getProductosFromVenta', findProductoFromVentaHandler);
 ipcMain.handle('ventas:addVenta', addVentaHandler);
+// Deuda
+ipcMain.handle('ventas:getDeudaByClientHandler', getDeudaByClienteHandler);
 
 // Pagos
 //getAllPagosHandler

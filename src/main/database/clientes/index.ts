@@ -8,6 +8,7 @@ import {
   fn_getAllAddress, fn_getAllAddressByClient, fn_getAllClients, fn_insertAddress, fn_insertClient,
   fn_updateAddress, fn_updateClient
 } from "../querysDatabase";
+import { getDeudaByClient } from "../ventas";
 
 const getAllAddress = async ():Promise<Array<IDirection>> => {
   const client = await getClientDB();
@@ -48,6 +49,9 @@ const getAllClients = async ():Promise<Array<IClient>> => {
     const allClients:Array<IClient> = await Promise.all(
       result.map(async (cliente) => {
         cliente.direcciones = await findAddressByIDClient(cliente.id);
+        const saldo = await getDeudaByClient(cliente.id);
+        console.log(`saldo: ${saldo}`);
+        cliente.saldo = saldo;
         return cliente;
       })
     );

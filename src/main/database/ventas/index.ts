@@ -4,7 +4,10 @@ import { IDataAddVenta, IDataAddVentaProductos } from "../../interfaces/IVentas"
 import { formatDate } from "../../utils/DateTime";
 import { PagedList } from "../../utils/Pagination";
 import { getClientDB } from "../database-pg";
-import { fn_FindVentaById, fn_getAllProductsByVenta, fn_getAllVentas, fn_getAllVentasByClient, fn_insertVenta, type_product_venta } from "../querysDatabase";
+import {
+  fn_FindVentaById, fn_getAllProductsByVenta, fn_getAllVentas, fn_getAllVentasByClient, fn_insertVenta,
+  type_product_venta, fn_FindDeudaByCliente
+} from "../querysDatabase";
 
 const getAllVentas = async ():Promise<Array<IVenta>> => {
   const client = await getClientDB();
@@ -177,3 +180,23 @@ export const addVenta = async ({id_client, id_direccion, fecha, total, pagado, p
   }
 }
 
+export const getDeudaByClient = async (id: number):Promise<number> => {
+  console.log('getDeudaByClient id:', id);
+  const client = await getClientDB();
+  await client.connect();
+  try {
+    const query = `SELECT * FROM ${fn_FindDeudaByCliente.name}(${id}) AS deuda`;
+    const temp = await client.query(query);
+    console.log(query);
+    const result:Array<number> = temp.rows;
+    console.log(result);
+    const deuda:number = result.length > 0 ? temp.rows[0].deuda : -1;
+    console.log(`deuda: ${deuda}`);
+    return deuda;
+  } catch (error) {
+    console.log('ERROR:', error);
+    return -1;
+  } finally {
+    await client.end();
+  }
+}

@@ -1,6 +1,6 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IClient, IDirection } from '../../../../main/interfaces';
+import { IClient, IDirection, IPaginationForSlides } from '../../../../main/interfaces';
 import { Thunk } from '../../store';
 import { IDataAddAddress, IDataAddClient, IDataUpdateClient } from '../../../../main/interfaces/IClients';
 import { createPaginationForSlides } from '../../../utils/pagination';

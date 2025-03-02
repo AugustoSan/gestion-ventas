@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IClient } from '../../../main/interfaces';
+import { IClient, IDataRequestFindById } from '../../../main/interfaces';
 
 interface IDataResponse {
     result: IClient | null;

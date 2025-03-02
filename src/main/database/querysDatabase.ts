@@ -788,6 +788,30 @@ export const fn_FindPagosByCliente:IQueryDB =
   type: 'function'
 };
 
+export const fn_FindDeudaByCliente: IQueryDB = {
+  query: `CREATE OR REPLACE FUNCTION fn_FindDeudaByCliente(_id INTEGER)
+    RETURNS numeric AS
+    $BODY$
+    DECLARE
+        deuda numeric;
+    BEGIN
+        SELECT SUM(v.total - COALESCE(p.total_pago, 0)) INTO deuda
+        FROM tblVentas v
+        LEFT JOIN (
+            SELECT id_venta, SUM(monto) AS total_pago
+            FROM tblPagos
+            GROUP BY id_venta
+        ) p ON v.id = p.id_venta
+        WHERE v.id_client = _id;
+
+        RETURN COALESCE(deuda, 0);
+    END
+    $BODY$ LANGUAGE plpgsql;`,
+  name: 'fn_FindDeudaByCliente',
+  type: 'function'
+};
+
+
 export const fn_InsertPagos:IQueryDB =
 {
   query: `CREATE OR REPLACE FUNCTION fn_insertPago(

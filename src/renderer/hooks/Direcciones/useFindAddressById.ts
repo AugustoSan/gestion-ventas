@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IDirection } from '../../../main/interfaces';
+import { IDirection, IDataRequestFindById } from '../../../main/interfaces';
 
 interface IDataResponse {
     result: IDirection | null;

@@ -10,6 +10,7 @@ import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { DeleteClient, UpdateClient, setHandleUpdateClient, setHandleWatchAddress, setSelectClient } from '../../redux/slice/clientes';
 import { InputCard } from '../../components/InputCard';
 import { IDataUpdateClient } from '../../../main/interfaces/IClients';
+import { numberToPrice } from '../../utils/price';
 // import { appendLogFile } from '../../main/util';
 
 
@@ -67,7 +68,7 @@ export const InfoClienteCard = ():JSX.Element => {
         />
         <InputCard
           title={'Saldo'}
-          value={`$ ${saldo.toLocaleString("es-ES", {style:"currency", currency:"MXN"})}`}
+          value={numberToPrice(saldo)}
           onChange={() => {}}
           disabled={true}
         />

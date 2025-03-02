@@ -4,7 +4,7 @@ import {
   fn_findMatchProducts, fn_getAllAddress, fn_getAllAddressByClient, fn_getAllClients,
   fn_getAllProducts, fn_getAllProductsByVenta, fn_getAllVentas, fn_getAllVentasByClient,
   fn_insertAddress, fn_insertClient, fn_insertProduct, fn_insertVenta, fn_updateAddress,
-  fn_updateClient, fn_updateProduct, fn_GetAllPagos, fn_FindPagosByCliente,
+  fn_updateClient, fn_updateProduct, fn_GetAllPagos, fn_FindPagosByCliente, fn_FindDeudaByCliente,
   fn_InsertPagos, fn_DeletePagoById,
 } from './querysDatabase';
 import { IQueryDB } from '../interfaces';
@@ -71,6 +71,13 @@ export const initializerFunctions = async ():Promise<Array<string>> =>
     if(!validatefn_FindPagosByCliente)
     {
       const getErrors = await createFunction(fn_FindPagosByCliente);
+      errors = [...errors, ...getErrors]
+    }
+
+    const validatefn_FindDeudaByCliente = await checkIfFunctionExists(fn_FindDeudaByCliente.name);
+    if(!validatefn_FindDeudaByCliente)
+    {
+      const getErrors = await createFunction(fn_FindDeudaByCliente);
       errors = [...errors, ...getErrors]
     }
 

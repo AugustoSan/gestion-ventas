@@ -1,4 +1,7 @@
-import { addVenta, findAllVentasWithPagination, findProductFromVenta, findVentaById, findVentasByIDClientWithPagination } from "../../database/ventas";
+import {
+  addVenta, findAllVentasWithPagination, findProductFromVenta, findVentaById, findVentasByIDClientWithPagination,
+  getDeudaByClient
+} from "../../database/ventas";
 import { IVenta, IVentasProductos } from "../../interfaces";
 import { IDataPagination } from "../../interfaces/IProducts";
 import { IDataAddVenta } from "../../interfaces/IVentas";
@@ -22,4 +25,7 @@ export const findProductoFromVentaHandler = async (event: Electron.IpcMainInvoke
 
 export const addVentaHandler = async (event: Electron.IpcMainInvokeEvent, venta: IDataAddVenta):Promise<number> => {
   return await addVenta(venta);
+}
+export const getDeudaByClienteHandler = async (event: Electron.IpcMainInvokeEvent, id: number):Promise<number> => {
+  return await getDeudaByClient(id);
 }

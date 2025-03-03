@@ -132,6 +132,7 @@ export const findClienteById = async (id: number):Promise<IClient | null> => {
     const allClients:Array<IClient> = await Promise.all(
       result.map(async (cliente) => {
         cliente.direcciones = await findAddressByIDClient(cliente.id);
+        cliente.saldo = await getDeudaByClient(cliente.id);
         return cliente;
       })
     );

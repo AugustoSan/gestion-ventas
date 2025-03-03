@@ -17,7 +17,7 @@ export const ItemVentaTabla = ({venta}: IDataProps):JSX.Element => {
 
   const [address, setAddress] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(true);
-  const {result:client, isLoading, isSuccess, error} = useGetClientById({isValid, id: id_client});
+  const {result:client, isLoading, isSuccess, error} = useGetClientById(id_client);
   const itemDate = new Date(fecha);
 
   useEffect(() => {

@@ -15,6 +15,7 @@ import { dateToString, timeToString } from '../../utils/date';
 import { InputDateCard } from '../../components/InputDateCard';
 import { SetStateAction } from 'react';
 import { setSelectView } from '../../redux/slice/ingresos';
+import { useGetDeudaByClient } from '../../hooks/Ventas/useGetDeudaByClient';
 
 
 export const AddIngreso = ():JSX.Element => {
@@ -23,7 +24,9 @@ export const AddIngreso = ():JSX.Element => {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [pago, setPago] = useState<IAddPago>({id_client: 0, monto: 0, fecha: new Date()});
   const [error, setError] = useState<string>('');
-  const [inputDate, setInputDate] = useState<Date>(new Date())
+  const [inputDate, setInputDate] = useState<Date>(new Date());
+  const [id, setId] = useState<number>(0);
+  const { result: deuda, isSuccess: isSuccessDeuda} = useGetDeudaByClient(id);
   const { result, isSuccess, error: errorsAddPago } = useAddPago({isValid: isEnabled, pago});
 
   const dispatch = useCustomDispatch();
@@ -47,6 +50,15 @@ export const AddIngreso = ():JSX.Element => {
       setError(errorsAddPago.message);
     }
   }, [isSuccess, result, errorsAddPago]);
+
+  useEffect(() => {
+    if(cliente !== null)
+    {
+      console.log(`Se reinician`)
+      setId(cliente.id);
+    }
+  }, [cliente, deuda, isSuccessDeuda]);
+
 
 
   const validateInputs = (): boolean => {
@@ -81,7 +93,7 @@ export const AddIngreso = ():JSX.Element => {
           : <></>
         }
         <InputFormSelectClientes  onChange={setCliente}/>
-        <InputPriceCard title={'Por pagar'} value={abono} onChange={setAbono} disabled={cliente === null ? true : false}/>
+        <InputPriceCard title={'Por pagar'} value={cliente != null ? deuda : 0} onChange={() => {}} disabled={cliente === null ? true : false}/>
         <InputPriceCard title={'Abonar'} value={abono} onChange={setAbono} disabled={cliente === null ? true : false}/>
         <InputDateCard value={inputDate} onChange={setInputDate} disabled={cliente === null ? true : false} />
       </Card.Body>

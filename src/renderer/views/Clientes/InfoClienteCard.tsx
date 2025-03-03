@@ -9,24 +9,42 @@ import Alert from 'react-bootstrap/Alert';
 import { useCustomDispatch, useCustomSelector } from '../../hooks/redux';
 import { DeleteClient, UpdateClient, setHandleUpdateClient, setHandleWatchAddress, setSelectClient } from '../../redux/slice/clientes';
 import { InputCard } from '../../components/InputCard';
-import { IDataUpdateClient } from '../../../main/interfaces/IClients';
+import { IClient, IDataUpdateClient } from '../../../main/interfaces/IClients';
 import { numberToPrice } from '../../utils/price';
+import { useGetClientById } from '../../hooks';
+import { Client } from 'pg';
+import { useEffect } from 'react';
 // import { appendLogFile } from '../../main/util';
 
 
 export const InfoClienteCard = ():JSX.Element => {
   const { selectClient, handleUpdateClient } = useCustomSelector((state) => state.clientSlice);
   const dispatch = useCustomDispatch();
-  const {id = 0, nombre = '-', apellidopaterno = '-', apellidomaterno = '-', telefono = '-', direcciones = [], saldo = 0} = selectClient ?? {};
-  const [inputName, setInputName] = useState<string>(nombre);
-  const [inputAPP, setInputAPP] = useState<string>(apellidopaterno);
-  const [inputAPM, setInputAPM] = useState<string>(apellidomaterno);
-  const [inputTel, setInputTel] = useState<string>(telefono);
-  const [arrayAddress, setarrayAddress] = useState<Array<string>>([]);
+  const {result, isSuccess} = useGetClientById(selectClient?.id ?? 0);
+  const [inputName, setInputName] = useState<string>(`-`);
+  const [inputAPP, setInputAPP] = useState<string>(`-`);
+  const [inputAPM, setInputAPM] = useState<string>(`-`);
+  const [inputTel, setInputTel] = useState<string>(`-`);
+  const [labelSaldo, setLabelSaldo] = useState<number>(0);
+  // const [arrayAddress, setarrayAddress] = useState<Array<string>>([]);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if(result != null)
+    {
+      const {nombre, apellidopaterno, apellidomaterno, telefono, saldo, direcciones} = result;
+      setInputName(nombre);
+      setInputAPP(apellidopaterno);
+      setInputAPM(apellidomaterno);
+      setInputTel(telefono);
+      setLabelSaldo(saldo);
+      // setarrayAddress([...direcciones]);
+    }
+  }, [result]);
+
+
   const validateInputs = ():boolean => {
-    if(inputName.length <= 2){
+    if(inputName.length <= 2){result
       setError('El nombre debe de tener al menos dos caractéres');
       return false;
     }
@@ -68,7 +86,7 @@ export const InfoClienteCard = ():JSX.Element => {
         />
         <InputCard
           title={'Saldo'}
-          value={numberToPrice(saldo)}
+          value={numberToPrice(labelSaldo)}
           onChange={() => {}}
           disabled={true}
         />
@@ -131,7 +149,7 @@ export const InfoClienteCard = ():JSX.Element => {
                           apellidopaterno: inputAPP,
                           apellidomaterno: inputAPM,
                           telefono: inputTel,
-                          direccioness: arrayAddress
+                          direccioness: []
                         }
                       }
                       dispatch(UpdateClient(temp));

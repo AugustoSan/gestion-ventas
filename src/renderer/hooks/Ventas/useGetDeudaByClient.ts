@@ -10,7 +10,7 @@ interface IDataResponseAllVentas {
   error: Error | null;
 }
 
-export const useGetDeudaByClient = ({isValid, id}: IDataRequestFindById): IDataResponseAllVentas => {
+export const useGetDeudaByClient = (id: number): IDataResponseAllVentas => {
 const [result, setResult] = useState<number>(-1);
 const [isLoading, setIsLoading] = useState<boolean>(false);
 const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -19,7 +19,8 @@ const [error, setError] = useState<Error | null>(null);
 const [calls, setCalls] = useState<number>(0);
 
 useEffect(() => {
-  if (isValid && calls === 0) {
+  console.log(`Entro en useGetDeudaByClient`);
+  if (id > 0) {
     setCalls(1);
     const callContractFunction = async (): Promise<void> => {
       setIsLoading(true);
@@ -37,11 +38,12 @@ useEffect(() => {
         }
       } finally {
         setIsLoading(false);
+        setCalls(0);
       }
     };
     callContractFunction();
   }
-}, [isValid, calls]);
+}, [id]);
 
 return {result, isLoading, isSuccess, status, error};
 }

@@ -15,24 +15,24 @@ interface IPagination {
 }
 
 export const PaginationComponent = ({
-  currentPage, 
-  sizePage, 
-  totalPages, 
-  totalCount, 
+  currentPage,
+  sizePage,
+  totalPages,
+  totalCount,
   hasPreviousPage,
   hasNextPage,
   nextPageNumber,
   previousPageNumber,
   actionGoToPage,
 }: IPagination): JSX.Element => {
-  
+
   const [pagesToShow, setPagesToShow] = useState<Array<number | string>>([]);
 
   useEffect(() => {
     const getPagesToShow = (): Array<number | string> => {
       const totalNumbers = 5;
       const totalBlocks = totalNumbers + 2;
-      
+
       if (totalPages > totalBlocks) {
         const startPage = Math.max(2, currentPage - 2);
         const endPage = Math.min(totalPages - 1, currentPage + 2);
@@ -65,14 +65,15 @@ export const PaginationComponent = ({
         <Pagination.First onClick={() => actionGoToPage(0)} disabled={!hasPreviousPage} />
         <Pagination.Prev onClick={() => actionGoToPage(currentPage - 1)} disabled={!hasPreviousPage} />
         {
-          pagesToShow.map((page, index) => 
+          pagesToShow.map((page, index) =>
             typeof page === 'string' ? (
               <Pagination.Ellipsis key={`ellipsis-${index}`} />
             ) : (
-              <Pagination.Item 
-                key={`item-pagination-${index}`} 
+              <Pagination.Item
+                key={`item-pagination-${index}`}
                 active={page === (currentPage + 1)}
                 onClick={() => {
+                  console.log(currentPage + 1);
                   if (page === (currentPage + 1)) return;
 
                   actionGoToPage(page - 1);

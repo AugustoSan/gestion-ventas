@@ -41,7 +41,7 @@ export const InfoVentaCard = ({id}: IDataProps):JSX.Element => {
     isSuccess: isSuccessClient,
     error: errorClient,
     status: statusClient
-  } = useGetClientById({isValid: isEnabledResult, id: idClient});
+  } = useGetClientById(idClient);
   const {
     result: direction,
     isLoading: isLoadingDirection,

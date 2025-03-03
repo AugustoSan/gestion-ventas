@@ -34,7 +34,11 @@ export const TablaVentas = ():JSX.Element => {
             hasNextPage={hasNextPage}
             nextPageNumber={nextPageNumber}
             previousPageNumber={previousPageNumber}
-            actionGoToPage={(page: number) => { dispatch(GetAllProducts(page, sizePage));}}
+            actionGoToPage={(page: number) => {
+              console.log(`page: ${page}`);
+              console.log(`sizePage: ${sizePage}`);
+              dispatch(GetAllProducts(page, sizePage));
+            }}
           />
           <Table striped bordered hover size="sm">
             <thead>

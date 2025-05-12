@@ -60,10 +60,10 @@ const configuration: webpack.Configuration = {
    * If you run the bundle in node.js it falls back to these values of node.js.
    * https://github.com/webpack/webpack/issues/2010
    */
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
+  // node: {
+  //   __dirname: false,
+  //   __filename: false,
+  // },
 
   watch: true,
 };

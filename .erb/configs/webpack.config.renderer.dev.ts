@@ -164,10 +164,10 @@ const configuration: webpack.Configuration = {
     }),
   ],
 
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
+  // node: {
+  //   __dirname: false,
+  //   __filename: false,
+  // },
 
   devServer: {
     port,
